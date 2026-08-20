@@ -1,10 +1,39 @@
-Copyright (c) 2026 Pavel Moiseev. All rights reserved.
+Copyright (c) 2026 Pavel Moiseev
 
-This repository is made publicly viewable for portfolio and
-demonstration purposes only. No permission is granted to copy,
-modify, distribute, sublicense, or otherwise use any part of this
-repository's code, content, or assets, in whole or in part, for any
-purpose, without prior written permission from the copyright holder.
+This repository contains two distinct categories of material, licensed
+differently as described below.
 
-All content (text, images, video, and other media) is likewise
-proprietary and may not be reused without permission.
+## 1. Code / Interface
+
+This applies to the source code, components, styles, configuration, and
+build tooling — everything in `site/` except the directories listed under
+"Content" below.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this code to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of it, subject to the following condition:
+
+Any use, whether of the original or a modified version, must include
+clear and visible attribution to the original author with a link to
+https://moiseevp.ru/ — for a deployed site, this means a visible credit
+and link somewhere on the site (e.g. in the footer); for redistributed
+source code, it means keeping this notice and a link to the original
+repository.
+
+THE CODE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
+
+## 2. Content
+
+This applies to everything under `site/content/` and the media in
+`site/public/` (text, case studies, images, video, and the resume file) —
+i.e. all material specific to Pavel Moiseev and his work.
+
+All rights reserved. No permission is granted to copy, modify,
+distribute, or otherwise reuse any of this content, in whole or in part,
+for any purpose, without prior written permission from the copyright
+holder.

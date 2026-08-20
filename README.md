@@ -23,4 +23,7 @@ Images/videos/the resume PDF live in `site/public/`; reference them by their `/`
 
 ## License
 
-All rights reserved — see [LICENSE](LICENSE). This repository is public for portfolio purposes only; reuse requires permission.
+See [LICENSE](LICENSE) — split by material:
+
+- **Code/interface** (`site/` excluding content/media) — free to use, provided you keep a visible attribution link to [moiseevp.ru](https://moiseevp.ru/).
+- **Content** (`site/content/`, media in `site/public/`) — all rights reserved, no reuse without permission.
