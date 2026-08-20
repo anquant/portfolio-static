@@ -1,0 +1,110 @@
+---
+pubdate: "2025-05-03"
+category: "razrabotka"
+title: "Установка MySQL для Directus"
+annotation: "Установка MySQL для Directus с включением mysql_native_password на Linux сервере."
+image_background_color: "#B7D4E6"
+image_src: "/images/blog/ustanovka-mysql-dlya-directus.png"
+image_width: 600
+image_height: 600
+meta_title: "Установка MySQL для Directus с mysql_native_password на Linux сервере"
+meta_description: "Пошаговая установка MySQL и настройка mysql_native_password для корректной работы Directus на Linux сервере."
+---
+Если вы создаёте приложение, например, с <b>Next.js</b>, и хотите использовать <b>Directus</b> как headless CMS с базой данных <b>MySQL</b>, важно правильно установить и настроить MySQL. В частности, рекомендуется использовать аутентификационный плагин mysql_native_password, поскольку <b>Directus</b> может не поддерживать новый механизм caching_sha2_password, применяемый по умолчанию в MySQL 8+.
+
+## Установка MySQL
+
+```bash
+sudo apt update
+sudo apt install mysql-server
+```
+
+После установки MySQL root-пользователь будет использовать аутентификацию через сокет (auth_socket), и подключение по паролю (-u root -p) работать не будет. Для начала работы используйте:
+
+```bash
+sudo mysql
+```
+
+---
+
+## (Необязательно) Настройка root-доступа по паролю
+
+Если вы хотите подключаться к MySQL как root-пользователь с помощью пароля (например, через mysql -u root -p или с использованием GUI-клиентов), выполните:
+
+```bash
+sudo mysql
+```
+
+Затем в MySQL:
+
+```sql
+ALTER USER 'root'@'localhost'
+IDENTIFIED WITH mysql_native_password BY 'your_secure_password';
+FLUSH PRIVILEGES;
+```
+
+Теперь можно подключаться по:
+
+```bash
+mysql -u root -p
+```
+
+---
+
+## Создание базы данных и пользователя для Directus
+
+Войдите в MySQL (например, через sudo mysql, если не настраивали пароль для root):
+
+```bash
+sudo mysql
+```
+
+Создайте базу данных и пользователя, указав нужный аутентификационный плагин:
+
+```sql
+CREATE DATABASE directus_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'directus_user'@'localhost'
+IDENTIFIED WITH mysql_native_password BY 'your_secure_password';
+
+GRANT ALL PRIVILEGES ON directus_db.* TO 'directus_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+## Проверка используемого плагина
+
+Убедитесь, что пользователь Directus создан с нужным плагином:
+
+```sql
+SELECT user, host, plugin
+FROM mysql.user
+WHERE user = 'directus_user';
+```
+
+Ожидаемый результат:
+
+```
+| directus_user | localhost | mysql_native_password |
+```
+
+## Что делать дальше?
+
+Теперь вы можете перейти к установке <b>Directus</b> и подключению к базе данных. При установке Directus (через Docker, npm или npx), укажите следующие параметры подключения к базе данных:
+
+- <b>Host</b>: localhost
+- <b>Database</b>: directus_db
+- <b>User</b>: directus_user
+- <b>Password</b>: (тот, что вы указали при создании пользователя)
+
+Пример настройки в .env для Directus:
+
+```env
+DB_CLIENT=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=directus_db
+DB_USER=directus_user
+DB_PASSWORD=your_secure_password
+```
+
+Теперь можно запускать Directus и начинать настройку CMS через веб-интерфейс.

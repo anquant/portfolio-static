@@ -1,0 +1,202 @@
+[
+  {
+    "id": 13,
+    "title": "QuantumTec",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-13.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 6,
+    "title": "АКВАСТАТИКА",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-6.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 9,
+    "title": "MLS",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-9.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 14,
+    "title": "Hutterer & Lechner GmbH",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-14.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 10,
+    "title": "VESTA",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-10.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 4,
+    "title": "ИГЕМ РАН",
+    "link": "https://igem.ru/",
+    "logo": {
+      "src": "/images/clients/client-4.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 3,
+    "title": "КУБАНЬ-ЛОТОК",
+    "link": "https://www.kubanlotok.ru/",
+    "logo": {
+      "src": "/images/clients/client-3.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 2,
+    "title": "Интерма-СПб",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-2.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 1,
+    "title": "Трубару",
+    "link": "https://trubaru.ru/",
+    "logo": {
+      "src": "/images/clients/client-1.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 12,
+    "title": "Сириус",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-12.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 16,
+    "title": "СТРОЙИНВЕСТ",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-16.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 18,
+    "title": "ЭКСПЕРТ СЕРВИС РУС",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-18.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 17,
+    "title": "LCI Partner",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-17.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 8,
+    "title": "Benefit Litigation",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-8.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 11,
+    "title": "ОцЭкс",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-11.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 5,
+    "title": "Альпира",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-5.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 15,
+    "title": "Системы кабельного обогрева",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-15.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 7,
+    "title": "ТКО",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-7.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 20,
+    "title": "ОСК",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-20.png",
+      "width": 400,
+      "height": 200
+    }
+  },
+  {
+    "id": 19,
+    "title": "Bestwatch",
+    "link": null,
+    "logo": {
+      "src": "/images/clients/client-19.png",
+      "width": 400,
+      "height": 200
+    }
+  }
+]

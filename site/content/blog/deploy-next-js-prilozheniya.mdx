@@ -1,0 +1,211 @@
+---
+pubdate: "2025-04-27"
+category: "razrabotka"
+title: "Деплой Next.js приложения"
+annotation: "В этой статье описан весь процесс деплоя: от подключения к серверу по SSH до настройки проксирования через Nginx и установки SSL-сертификата от Let’s Encrypt."
+image_background_color: "#C4C7CE"
+image_src: "/images/blog/deploy-next-js-prilozheniya.png"
+image_width: 600
+image_height: 600
+meta_title: "Деплой Next.js приложения на хостинг — пошаговая инструкция"
+meta_description: "Подробная инструкция по развертыванию Next.js приложения на хостинге для разработчиков любого уровня."
+---
+Деплой Next.js приложения на собственный сервер может показаться сложной задачей, особенно если вы ранее не сталкивались с управлением Linux-сервером или настройкой веб-сервера. Однако, следуя пошаговым инструкциям, вы сможете развернуть свое приложение, обеспечить его стабильную работу и защитить соединение с помощью HTTPS. В этой статье рассмотрим весь процесс деплоя: от подключения к серверу по SSH до настройки проксирования через Nginx и установки SSL-сертификата от Let’s Encrypt.
+
+## Подключение к серверу
+
+Подключаемся по SSH от имени пользователя root:
+
+```bash
+ssh root@<IP-адрес_или_домен> -p <порт>
+```
+
+> Замените &lt;IP-адрес_или_домен&gt; и &lt;порт&gt; на реальные значения. Если используется стандартный порт (22), параметр -p можно опустить.
+
+## Обновление пакетов
+
+```bash
+sudo apt update
+```
+
+## Создание нового пользователя и настройка SSH-доступа
+
+```bash
+adduser <имя_пользователя>
+usermod -aG sudo <имя_пользователя>
+```
+
+Отключитесь от сервера (exit) и скопируйте ваш SSH-ключ в нового пользователя:
+
+```bash
+ssh-copy-id <имя_пользователя>@<IP-адрес_или_домен>
+```
+
+Подключаемся под новым пользователем:
+
+```bash
+ssh <имя_пользователя>@<IP-адрес_или_домен>
+```
+
+## Отключение доступа по SSH для root
+
+Откройте конфигурационный файл SSH:
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+Найдите и измените строку:
+
+```bash
+PermitRootLogin no
+```
+
+Сохраните файл и перезапустите SSH-сервис:
+
+```bash
+sudo systemctl restart ssh
+```
+
+## Настройка SSH-ключей для доступа к GitHub
+
+Сгенерируйте пару ключей:
+
+```bash
+ssh-keygen
+```
+
+Скопируйте публичный ключ:
+
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+Добавьте его в <b>Deploy Keys</b> на GitHub (в настройках репозитория: <i>Settings → Deploy keys</i>).
+
+## Клонирование репозитория и установка Node.js
+
+```bash
+git clone <ссылка_на_репозиторий>
+cd <директория_проекта>
+```
+
+Установка nvm и Node.js:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+```
+
+## Установка зависимостей и сборка проекта
+
+```bash
+npm ci
+npm run build
+```
+
+## Установка и настройка PM2 для запуска Next.js
+
+Устанавливаем pm2 глобально:
+
+```bash
+npm install -g pm2
+```
+
+Запускаем приложение как фоновый процесс:
+
+```bash
+pm2 start npm --name <название_процесса> -- start
+```
+
+Настраиваем автоматический запуск pm2 при перезагрузке сервера:
+
+```bash
+pm2 startup
+pm2 save
+```
+
+## Настройка брандмауэра (UFW)
+
+```bash
+sudo apt install ufw
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+sudo ufw status verbose
+```
+
+## Установка и настройка Nginx
+
+```bash
+sudo apt install nginx
+sudo systemctl enable nginx
+sudo systemctl is-enabled nginx
+```
+
+Создайте конфигурационный файл:
+
+```bash
+sudo nano /etc/nginx/sites-available/<ваш_домен>.conf
+```
+
+> Замените <b>ваш_домен</b> на фактическое доменное имя вашего сайта (например, moiseevp.ru).
+
+Пример конфигурации (для домена без www):
+
+```bash
+server {
+    listen 80;
+    server_name <ваш_домен> www.<ваш_домен>;
+    return 301 https://<ваш_домен>$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name www.<ваш_домен>;
+    return 301 https://<ваш_домен>$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name <ваш_домен>;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Активируем конфигурацию:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/<ваш_домен>.conf /etc/nginx/sites-enabled/
+sudo nginx -s reload
+```
+
+## Настройка HTTPS с Let’s Encrypt
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d <ваш_домен>
+```
+
+Проверка планировщика обновления сертификатов:
+
+```bash
+sudo systemctl status certbot.timer
+```
+
+Пробный запуск обновления:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+Теперь ваше Next.js приложение успешно развернуто на сервере, работает в фоновом режиме с помощью PM2, доступно через доменное имя и защищено SSL-сертификатом. Такой подход обеспечивает стабильность, безопасность и масштабируемость проекта. Надеемся, эта инструкция поможет вам быстрее и увереннее ориентироваться в процессе деплоя. Удачи в разработке и сопровождении вашего веб-приложения!

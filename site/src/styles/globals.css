@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f2f2f2;
+  --background-light: #e5e5e5;
+  --background-dark: #202020;
+  --text: #303030;
+  --gray-text: #909090;
+  --link: #3043df;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+}
+
+/* Next Ui */
+
+.border-default-200 {
+  border-color: var(--gray-text) !important;
+  border-bottom-width: 1.5px;
+}
+
+.after\:content-\[\'\*\'\]::after {
+  color: var(--text) !important;
+}
+
+/* Content blocks */
+
+.content-blocks h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.content-blocks h3,
+.content-blocks h4,
+.content-blocks h5,
+.content-blocks h6 {
+  margin-top: 1.6rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+@media (width >= 768px) {
+  .content-blocks h2 {
+    max-width: 90%;
+    margin-top: 2.6rem;
+    font-size: 1.8rem;
+  }
+
+  .content-blocks h3,
+  .content-blocks h4,
+  .content-blocks h5,
+  .content-blocks h6 {
+    max-width: 90%;
+    margin-top: 2.2rem;
+    font-size: 1.35rem;
+  }
+}
+
+.content-blocks p {
+  margin-bottom: 0.8rem;
+  font-weight: 300;
+}
+
+.content-blocks p a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.content-blocks p a:hover {
+  color: #3043df;
+}
+
+.content-blocks strong,
+.content-blocks b {
+  font-weight: 600;
+}
+
+.content-blocks ul,
+.content-blocks ol {
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  list-style-position: outside;
+  font-weight: 300;
+}
+
+.content-blocks ul {
+  list-style-type: disc;
+}
+
+.content-blocks ol {
+  list-style-type: decimal;
+}
+
+.content-blocks li::marker {
+  font-weight: 600;
+}
+
+.content-blocks blockquote {
+  font-weight: 300;
+}
+
+/* Animation */
+
+@keyframes pulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+.animate-pulse {
+  animation: pulse 2.5s cubic-bezier(0.5, 0, 0.7, 1) infinite;
+}
+
+/* Swiper */
+
+.swiper-button-disabled {
+  opacity: 0.2;
+}
