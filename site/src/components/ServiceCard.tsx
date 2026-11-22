@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ServicesListData } from "@/lib/types/servicesType";
-import { MdOutlineArrowOutward } from "react-icons/md";
+import { FiArrowRight } from "react-icons/fi";
 import Reveal from "./Reveal";
 
 type ServiceCardProps = {
@@ -24,7 +24,7 @@ export default function ServiceCard({ services }: ServiceCardProps) {
               {String(index + 1).padStart(2, "0")}
             </span>
             <div>
-              <h2 className="font-display text-2xl lg:text-3xl font-semibold">
+              <h2 className="t-card-lg transition-colors group-hover:text-accent">
                 {service.preview_title}
               </h2>
               <p className="mt-2 text-base md:text-lg text-muted max-w-xl">
@@ -47,7 +47,7 @@ export default function ServiceCard({ services }: ServiceCardProps) {
               aria-hidden
               className="grid place-items-center size-11 md:size-14 rounded-full border border-line text-xl transition-colors group-hover:bg-fg group-hover:text-bg group-hover:border-fg"
             >
-              <MdOutlineArrowOutward />
+              <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
         </Reveal>

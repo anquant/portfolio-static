@@ -63,7 +63,7 @@ export default function Article({
           </div>
         </article>
         {articles?.length > 0 && (
-          <section className="mt-24 md:mt-32">
+          <section className="section-gap">
             <SectionHeader
               title="Другие статьи"
               className="!mb-0"
@@ -76,7 +76,7 @@ export default function Article({
                 </Link>
               }
             />
-            <ArticleCard articles={articles} />
+            <ArticleCard articles={articles} headingAs="h3" />
           </section>
         )}
         <Footer />

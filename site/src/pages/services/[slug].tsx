@@ -10,6 +10,8 @@ import dynamic from "next/dynamic";
 import WorkCard from "@/components/WorkCard";
 import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
+import PageIntro from "@/components/PageIntro";
+import { FiArrowRight } from "react-icons/fi";
 import Button from "@/components/Button";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -70,54 +72,30 @@ export default function CurrentService({
         </div>
         <div className="container-page relative pb-20 md:pb-32 lg:min-h-[44rem]">
           <Header />
-          <nav
-            aria-label="Хлебные крошки"
-            style={{ "--d": "100ms" } as React.CSSProperties}
-            className="reveal flex gap-2 text-sm text-muted mb-6"
+          <PageIntro
+            crumbs={[{ href: "/services", label: "Услуги" }]}
+            current={service.preview_title}
+            title={title}
+            size="title"
+            lead={introtext}
+            glow={false}
           >
-            <Link href="/services" className="hover:text-fg transition-colors">
-              Услуги
-            </Link>
-            <span aria-hidden>/</span>
-            <span className="text-fg">{service.preview_title}</span>
-          </nav>
-          <h1
-            style={{ "--d": "250ms" } as React.CSSProperties}
-            className="reveal t-title max-w-4xl"
-          >
-            {title}
-          </h1>
-          {tech_list && (
-            <ul
-              style={{ "--d": "450ms" } as React.CSSProperties}
-              className="reveal flex flex-wrap gap-2 mt-8"
-            >
-              {tech_list.map((item) => (
-                <li
-                  key={item}
-                  className="rounded-full border border-line bg-surface/70 px-4 py-2 text-sm"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-          {introtext && (
-            <p
-              style={{ "--d": "600ms" } as React.CSSProperties}
-              className="reveal mt-10 max-w-2xl text-lg md:text-xl text-muted leading-relaxed"
-            >
-              {introtext}
-            </p>
-          )}
-          <div
-            style={{ "--d": "750ms" } as React.CSSProperties}
-            className="reveal mt-10"
-          >
+            {tech_list && (
+              <ul className="flex flex-wrap gap-2 mb-10">
+                {tech_list.map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-full border border-line bg-surface/70 px-4 py-2 text-sm"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
             <Button type="link" href="/contacts">
-              Обсудить задачу <span aria-hidden>→</span>
+              Обсудить задачу <FiArrowRight aria-hidden />
             </Button>
-          </div>
+          </PageIntro>
         </div>
       </section>
 
@@ -163,12 +141,13 @@ export default function CurrentService({
       ))}
 
       <div className="container-page">
-        <section className="mt-20 md:mt-32">
+        <section className="section-gap">
           <SectionHeader
             title="Реализованные проекты"
             aside={
               <Link href="/#works" className="transition-colors hover:text-fg">
-                Все проекты →
+                Все проекты{" "}
+                <FiArrowRight aria-hidden className="inline -mt-0.5" />
               </Link>
             }
           />

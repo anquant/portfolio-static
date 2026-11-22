@@ -7,9 +7,14 @@ import { ru } from "date-fns/locale";
 
 type ArticleCardProps = {
   articles?: ArticleCardData[];
+  /** h2 on the blog index (directly under the page h1), h3 under a section h2 */
+  headingAs?: "h2" | "h3";
 };
 
-export default function ArticleCard({ articles }: ArticleCardProps) {
+export default function ArticleCard({
+  articles,
+  headingAs: Heading = "h2",
+}: ArticleCardProps) {
   if (!articles || articles.length === 0) {
     return <div className="text-muted mt-10">Здесь пока нет статей…</div>;
   }
@@ -38,9 +43,9 @@ export default function ArticleCard({ articles }: ArticleCardProps) {
                   })}
                 </time>
               </div>
-              <h2 className="font-display text-xl lg:text-2xl font-semibold leading-snug transition-colors group-hover:text-accent">
+              <Heading className="t-card transition-colors group-hover:text-accent">
                 {article.title}
-              </h2>
+              </Heading>
               {article.annotation && (
                 <p className="text-sm md:text-base text-muted line-clamp-3">
                   {article.annotation}

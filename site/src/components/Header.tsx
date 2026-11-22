@@ -11,6 +11,7 @@ import { Fragment, useState } from "react";
 import Link from "next/link";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
+import { FiArrowRight } from "react-icons/fi";
 import Button from "./Button";
 
 export const navigation = [
@@ -73,9 +74,7 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
                 href={item.slug}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-full px-4 py-2 text-sm transition-colors ${
-                  active
-                    ? "bg-surface-2 text-fg"
-                    : "text-muted hover:text-fg"
+                  active ? "bg-surface-2 text-fg" : "text-muted hover:text-fg"
                 }`}
               >
                 {item.title}
@@ -143,28 +142,32 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
                   </Button>
                 </div>
                 <nav aria-label="Основное меню" className="mt-16 flex flex-col">
-                  {[...navigation, { title: "Контакты", slug: "/contacts" }].map(
-                    (item, i) => {
-                      const active = isActive(path, item.slug);
-                      return (
-                        <Link
-                          key={item.slug}
-                          href={item.slug}
-                          onClick={() => setOpen(false)}
-                          aria-current={active ? "page" : undefined}
-                          style={{ "--d": `${120 + i * 60}ms` } as React.CSSProperties}
-                          className={`reveal flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
-                            active ? "text-accent" : "text-fg hover:text-accent"
-                          }`}
-                        >
-                          {item.title}
-                          <span aria-hidden className="text-xl text-muted">
-                            →
-                          </span>
-                        </Link>
-                      );
-                    }
-                  )}
+                  {[
+                    ...navigation,
+                    { title: "Контакты", slug: "/contacts" },
+                  ].map((item, i) => {
+                    const active = isActive(path, item.slug);
+                    return (
+                      <Link
+                        key={item.slug}
+                        href={item.slug}
+                        onClick={() => setOpen(false)}
+                        aria-current={active ? "page" : undefined}
+                        style={
+                          { "--d": `${120 + i * 60}ms` } as React.CSSProperties
+                        }
+                        className={`reveal flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
+                          active ? "text-accent" : "text-fg hover:text-accent"
+                        }`}
+                      >
+                        {item.title}
+                        <FiArrowRight
+                          aria-hidden
+                          className="text-xl text-muted"
+                        />
+                      </Link>
+                    );
+                  })}
                 </nav>
                 <div className="mt-auto pb-10 pt-10">
                   <Button

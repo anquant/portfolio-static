@@ -16,9 +16,7 @@ export const mdxComponents: MDXComponentsMap = {
     const match = /language-(\w+)/.exec(className);
     const value = String(child?.props?.children ?? "").replace(/\n$/, "");
 
-    return (
-      <CodeBlock language={match?.[1]} value={value} className="mb-6" />
-    );
+    return <CodeBlock language={match?.[1]} value={value} className="mb-6" />;
   },
   blockquote: (props: { children?: React.ReactNode }) => (
     <blockquote
@@ -43,6 +41,9 @@ export const mdxComponents: MDXComponentsMap = {
     <td className="border border-line p-3" {...props} />
   ),
   th: (props: React.ThHTMLAttributes<HTMLTableCellElement>) => (
-    <th className="border border-line bg-surface p-3 text-left text-fg" {...props} />
+    <th
+      className="border border-line bg-surface p-3 text-left text-fg"
+      {...props}
+    />
   ),
 };

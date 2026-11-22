@@ -30,7 +30,7 @@ export default function ProjectMedia({
   width,
   height,
   alt,
-  color = "#8c9cff",
+  color = "rgb(var(--accent))",
   sizes,
   priority,
   mode = "static",

@@ -8,8 +8,8 @@ import { IoMdCopy, IoMdCheckmark } from "react-icons/io";
 const codeStyle = {
   borderRadius: "1rem",
   padding: "1.25rem",
-  background: "rgb(21 21 24)",
-  border: "1px solid rgb(46 46 52)",
+  background: "rgb(var(--surface))",
+  border: "1px solid rgb(var(--line))",
   fontSize: "0.9rem",
 };
 
@@ -51,10 +51,7 @@ export default function CodeBlock({
           {value}
         </SyntaxHighlighter>
       ) : (
-        <SyntaxHighlighter
-          style={nord}
-          customStyle={codeStyle}
-        >
+        <SyntaxHighlighter style={nord} customStyle={codeStyle}>
           {value}
         </SyntaxHighlighter>
       )}

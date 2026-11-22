@@ -9,7 +9,7 @@ import CaseVideo from "@/components/CaseVideo";
 import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
 import Link from "next/link";
-import { MdOutlineArrowOutward } from "react-icons/md";
+import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 
 interface WorkProps {
   work: WorksData;
@@ -78,7 +78,7 @@ export default function Work({ work, next }: WorkProps) {
                     className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
                   >
                     {new URL(link).hostname}
-                    <MdOutlineArrowOutward />
+                    <FiArrowUpRight />
                   </a>
                 </div>
               )}
@@ -129,7 +129,7 @@ export default function Work({ work, next }: WorkProps) {
         </Reveal>
 
         {mockups_description && (
-          <Reveal className="max-w-4xl mt-20 md:mt-32 text-xl md:text-2xl leading-snug">
+          <Reveal className="max-w-4xl section-gap text-xl md:text-2xl leading-snug">
             <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
           </Reveal>
         )}
@@ -157,7 +157,7 @@ export default function Work({ work, next }: WorkProps) {
           </div>
         )}
 
-        <div className="mt-20 md:mt-32 max-w-5xl">
+        <div className="section-gap max-w-5xl">
           <Row label="Результат">
             <div dangerouslySetInnerHTML={{ __html: result }} />
           </Row>
@@ -167,11 +167,11 @@ export default function Work({ work, next }: WorkProps) {
           <Reveal>
             <Link
               href={`/${next.slug}`}
-              className="group mt-24 md:mt-32 flex items-center justify-between gap-6 rounded-3xl border border-line bg-surface p-8 md:p-12 transition-colors hover:bg-surface-2"
+              className="group section-gap flex items-center justify-between gap-6 rounded-3xl border border-line bg-surface p-8 md:p-12 transition-colors hover:bg-surface-2"
             >
               <div>
                 <div className="eyebrow mb-3">Следующий проект</div>
-                <div className="font-display text-3xl md:text-5xl font-bold transition-colors group-hover:text-accent">
+                <div className="t-card-lg md:text-5xl transition-colors group-hover:text-accent">
                   {next.title}
                 </div>
               </div>
@@ -179,7 +179,7 @@ export default function Work({ work, next }: WorkProps) {
                 aria-hidden
                 className="grid place-items-center size-12 md:size-16 shrink-0 rounded-full border border-line text-2xl transition-colors group-hover:bg-fg group-hover:text-bg"
               >
-                →
+                <FiArrowRight />
               </span>
             </Link>
           </Reveal>

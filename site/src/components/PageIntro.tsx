@@ -14,8 +14,8 @@ type PageIntroProps = {
   lead?: ReactNode;
   /** Extra content under the lead (tags, buttons, meta) */
   children?: ReactNode;
-  /** Colour of the light source behind the title; defaults to the accent */
-  glow?: string;
+  /** Colour of the light source behind the title; accent by default, false = none (3D heroes) */
+  glow?: string | false;
   className?: string;
 };
 
@@ -38,16 +38,20 @@ export default function PageIntro({
 }: PageIntroProps) {
   return (
     <section className={`relative isolate ${className}`}>
-      <div
-        aria-hidden
-        className="reveal pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[140vw] rounded-full blur-3xl opacity-60"
-        style={{
-          ...d(0),
-          background: `radial-gradient(closest-side, ${
-            glow ? `color-mix(in srgb, ${glow} 40%, transparent)` : "rgb(var(--accent) / 0.16)"
-          }, transparent)`,
-        }}
-      />
+      {glow !== false && (
+        <div
+          aria-hidden
+          className="reveal pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[140vw] rounded-full blur-3xl opacity-60"
+          style={{
+            ...d(0),
+            background: `radial-gradient(closest-side, ${
+              glow
+                ? `color-mix(in srgb, ${glow} 40%, transparent)`
+                : "rgb(var(--accent) / 0.16)"
+            }, transparent)`,
+          }}
+        />
+      )}
       {crumbs && crumbs.length > 0 && (
         <nav
           aria-label="Хлебные крошки"

@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import ClientsSection from "@/components/ClientsSection";
 import WorkCard from "@/components/WorkCard";
 import SectionHeader from "@/components/SectionHeader";
+import { FiArrowDown } from "react-icons/fi";
 import { getHome, getWorks, getClients } from "@/lib/content";
 import { GetStaticProps } from "next";
 import { HomeData } from "@/lib/types/homeType";
@@ -88,7 +89,7 @@ export default function Home({ home, works, clients }: HomeProps) {
               </div>
               <h1
                 style={{ "--d": "300ms" } as React.CSSProperties}
-                className="reveal font-display text-[2.4rem] leading-[1.08] md:text-6xl lg:text-[4.2rem] font-bold tracking-tight"
+                className="reveal t-hero"
               >
                 {title_h1}
               </h1>
@@ -103,7 +104,7 @@ export default function Home({ home, works, clients }: HomeProps) {
                 className="reveal mt-10 flex flex-wrap gap-3"
               >
                 <Button type="link" href="#works">
-                  Смотреть проекты <span aria-hidden>↓</span>
+                  Смотреть проекты <FiArrowDown aria-hidden />
                 </Button>
                 <Button type="link" href="/contacts" variant="secondary">
                   Обсудить проект

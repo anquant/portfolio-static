@@ -1,6 +1,13 @@
 "use client";
 
-import { CSSProperties, ElementType, ReactNode, useEffect, useRef, useState } from "react";
+import {
+  CSSProperties,
+  ElementType,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type RevealProps = {
   children: ReactNode;

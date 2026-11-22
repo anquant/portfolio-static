@@ -21,7 +21,7 @@ export default function ClientsSection({
   if (!clients || clients.length === 0) return null;
 
   return (
-    <section className="mt-32 md:mt-44" aria-labelledby="clients-title">
+    <section className="section-gap" aria-labelledby="clients-title">
       <SectionHeader
         id="clients-title"
         title={title}

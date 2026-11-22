@@ -2,7 +2,7 @@ import ProjectMedia from "./ProjectMedia";
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { WorksData } from "@/lib/types/worksType";
-import { MdOutlineArrowOutward } from "react-icons/md";
+import { FiArrowRight } from "react-icons/fi";
 
 type WorkCardProps = {
   works?: WorksData[];
@@ -47,7 +47,7 @@ export default function WorkCard({ works }: WorkCardProps) {
                 <span className="h-px w-8 bg-line" />
                 {work.link && <span>{new URL(work.link).hostname}</span>}
               </div>
-              <h3 className="font-display text-3xl md:text-4xl font-bold mt-5 transition-colors group-hover:text-accent">
+              <h3 className="t-card-lg mt-5 transition-colors group-hover:text-accent">
                 {work.title}
               </h3>
               <p className="text-base md:text-lg text-fg/85 leading-snug mt-4">
@@ -58,7 +58,7 @@ export default function WorkCard({ works }: WorkCardProps) {
               </p>
               <span className="mt-7 inline-flex w-fit items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm transition-colors group-hover:border-accent group-hover:text-accent">
                 Смотреть кейс
-                <MdOutlineArrowOutward className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <FiArrowRight className="transition-transform group-hover:translate-x-1" />
               </span>
             </div>
           </Link>

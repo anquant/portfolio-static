@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Button from "./Button";
 import Reveal from "./Reveal";
+import { FiArrowRight, FiArrowUp, FiArrowUpRight } from "react-icons/fi";
 import { navigation, siteName } from "./Header";
 
 type FooterProps = {
@@ -28,7 +29,7 @@ export function Footer({ cta = true }: FooterProps) {
               </p>
             </div>
             <Button type="link" href="/contacts">
-              Написать мне <span aria-hidden>→</span>
+              Написать мне <FiArrowRight aria-hidden />
             </Button>
           </div>
         </Reveal>
@@ -63,14 +64,14 @@ export function Footer({ cta = true }: FooterProps) {
             rel="noopener noreferrer"
             className="text-muted transition-colors hover:text-fg"
           >
-            Behance ↗
+            Behance <FiArrowUpRight aria-hidden className="inline -mt-0.5" />
           </Link>
         </nav>
         <a
           href="#beginning"
           className="text-sm text-muted transition-colors hover:text-fg"
         >
-          Наверх ↑
+          Наверх <FiArrowUp aria-hidden className="inline -mt-0.5" />
         </a>
       </div>
     </footer>

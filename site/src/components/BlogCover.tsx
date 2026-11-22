@@ -17,7 +17,7 @@ type BlogCoverProps = {
  */
 export default function BlogCover({
   image,
-  color = "#8c9cff",
+  color = "rgb(var(--accent))",
   priority,
   mode = "card",
   className = "",
@@ -26,7 +26,9 @@ export default function BlogCover({
   return (
     <div
       className={`relative isolate flex items-center justify-center overflow-hidden ${className}`}
-      style={{ background: `color-mix(in srgb, ${color} 9%, rgb(var(--surface)))` }}
+      style={{
+        background: `color-mix(in srgb, ${color} 9%, rgb(var(--surface)))`,
+      }}
     >
       <div
         aria-hidden
@@ -42,7 +44,9 @@ export default function BlogCover({
         alt=""
         priority={priority}
         className={`h-auto drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)] transition-transform duration-700 ${
-          card ? "w-1/2 group-hover:scale-105 group-hover:-translate-y-1" : "w-2/5"
+          card
+            ? "w-1/2 group-hover:scale-105 group-hover:-translate-y-1"
+            : "w-2/5"
         }`}
       />
     </div>

@@ -22,7 +22,9 @@ import * as THREE from "three";
 
 /** Reads an "R G B" token from :root (see globals.css) as a THREE.Color */
 function cssColor(name: string, fallback: string) {
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
   const parts = raw.split(/\s+/).map(Number);
   if (parts.length === 3 && parts.every((n) => !Number.isNaN(n))) {
     return new THREE.Color(parts[0] / 255, parts[1] / 255, parts[2] / 255);
@@ -67,8 +69,10 @@ const motion = {
 
 const ease = {
   outCubic: (t: number) => 1 - Math.pow(1 - t, 3),
-  inOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
-  outBack: (t: number, s = 1.4) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
+  inOutCubic: (t: number) =>
+    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  outBack: (t: number, s = 1.4) =>
+    1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
   inOutBack: (t: number, s = 1.2) => {
     const c = s * 1.525;
     return t < 0.5
@@ -92,7 +96,10 @@ function Driver({ speed }: { speed: number }) {
     const d = THREE.MathUtils.damp;
 
     motion.time += dt * speed;
-    motion.intro = Math.min(1, motion.intro + (dt / INTRO_DURATION) * (speed || 1e9));
+    motion.intro = Math.min(
+      1,
+      motion.intro + (dt / INTRO_DURATION) * (speed || 1e9)
+    );
 
     motion.x = d(motion.x, input.x, 4, dt);
     motion.y = d(motion.y, input.y, 4, dt);
@@ -100,11 +107,17 @@ function Driver({ speed }: { speed: number }) {
     motion.scroll = d(motion.scroll, input.scroll, 6, dt);
 
     // Energy from cursor speed (screen heights per second): fast attack, slow release
-    const v = Math.hypot(input.x - prev.x, input.y - prev.y) / Math.max(dt, 1e-3);
+    const v =
+      Math.hypot(input.x - prev.x, input.y - prev.y) / Math.max(dt, 1e-3);
     prev.x = input.x;
     prev.y = input.y;
     const target = THREE.MathUtils.clamp(v / 4, 0, 1) * (input.active ? 1 : 0);
-    motion.energy = d(motion.energy, target, target > motion.energy ? 5 : 1.2, dt);
+    motion.energy = d(
+      motion.energy,
+      target,
+      target > motion.energy ? 5 : 1.2,
+      dt
+    );
   });
   return null;
 }
@@ -124,7 +137,11 @@ function useInput(target: React.RefObject<HTMLElement | null>) {
       const el = target.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      input.scroll = THREE.MathUtils.clamp(-r.top / Math.max(r.height, 1), 0, 1);
+      input.scroll = THREE.MathUtils.clamp(
+        -r.top / Math.max(r.height, 1),
+        0,
+        1
+      );
     };
     onScroll();
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -244,7 +261,10 @@ const pointFragment = /* glsl */ `
   }
 `;
 
-function pointUniforms(gl: THREE.WebGLRenderer, theme: ReturnType<typeof useTheme>) {
+function pointUniforms(
+  gl: THREE.WebGLRenderer,
+  theme: ReturnType<typeof useTheme>
+) {
   return {
     uTime: { value: 0 },
     uIntro: { value: 0 },
@@ -402,7 +422,14 @@ function WaveField() {
     u.uMouseStrength.value = motion.strength;
   });
 
-  return <points ref={points} geometry={geometry} material={material} position={[0, FIELD_Y, 0]} />;
+  return (
+    <points
+      ref={points}
+      geometry={geometry}
+      material={material}
+      position={[0, FIELD_Y, 0]}
+    />
+  );
 }
 
 /* ------------------------------------------------------------------------ */
@@ -443,7 +470,10 @@ function Anchor({
     const dt = Math.min(rawDelta, MAX_DELTA);
     const tx = baseX + motion.x * 0.2;
     const ty =
-      baseY + motion.y * 0.14 + Math.sin(motion.time * 0.6) * 0.05 + motion.scroll * lift;
+      baseY +
+      motion.y * 0.14 +
+      Math.sin(motion.time * 0.6) * 0.05 +
+      motion.scroll * lift;
     if (!placed.current) {
       g.position.set(tx, ty, 0);
       placed.current = true;
@@ -451,7 +481,12 @@ function Anchor({
     g.position.x = THREE.MathUtils.damp(g.position.x, tx, 2.5, dt);
     g.position.y = THREE.MathUtils.damp(g.position.y, ty, 2.5, dt);
     g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -motion.y * 0.3, 2.5, dt);
-    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, -motion.x * 0.08, 2.5, dt);
+    g.rotation.z = THREE.MathUtils.damp(
+      g.rotation.z,
+      -motion.x * 0.08,
+      2.5,
+      dt
+    );
 
     const intro = popIn ? 0.55 + 0.45 * ease.outBack(motion.intro) : 1;
     const exit = 1 - motion.scroll * 0.3;
@@ -553,7 +588,8 @@ function Blob() {
     u.uEnergy.value = motion.energy;
     u.uIntro.value = ease.outCubic(motion.intro);
     // spins in during the intro, then turns slowly
-    m.rotation.y = motion.time * 0.12 + (1 - ease.outCubic(motion.intro)) * -2.2;
+    m.rotation.y =
+      motion.time * 0.12 + (1 - ease.outCubic(motion.intro)) * -2.2;
   });
 
   return <mesh ref={mesh} geometry={geometry} material={material} />;
@@ -700,7 +736,11 @@ function Lattice() {
     for (let x = 0; x < n; x++)
       for (let y = 0; y < n; y++)
         for (let z = 0; z < n; z++)
-          pos.push((x / (n - 1)) * 2 - 1, (y / (n - 1)) * 2 - 1, (z / (n - 1)) * 2 - 1);
+          pos.push(
+            (x / (n - 1)) * 2 - 1,
+            (y / (n - 1)) * 2 - 1,
+            (z / (n - 1)) * 2 - 1
+          );
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
     return g;
@@ -758,14 +798,17 @@ function Lattice() {
     const dt = Math.min(rawDelta, MAX_DELTA);
     const u = (p.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);
-    scan.current += dt * (0.12 + motion.energy * 0.5) * (motion.time === 0 ? 0 : 1);
+    scan.current +=
+      dt * (0.12 + motion.energy * 0.5) * (motion.time === 0 ? 0 : 1);
     u.uScan.value = scan.current;
 
     // Mechanical 90° turns, alternating Y and X axes, with a small overshoot.
     // The lattice is symmetric, so every resting pose looks "square".
     const t = motion.time;
     const n = Math.floor(t / STEP_PERIOD);
-    const phase = ease.inOutBack(Math.min(1, (t - n * STEP_PERIOD) / STEP_DURATION));
+    const phase = ease.inOutBack(
+      Math.min(1, (t - n * STEP_PERIOD) / STEP_DURATION)
+    );
     const yTurns = Math.ceil(n / 2) + (n % 2 === 0 ? phase : 0);
     const xTurns = Math.floor(n / 2) + (n % 2 === 1 ? phase : 0);
     p.rotation.set(xTurns * (Math.PI / 2), yTurns * (Math.PI / 2), 0);
@@ -931,7 +974,8 @@ function Burst() {
     const cu = (c.material as THREE.ShaderMaterial).uniforms;
     const appear = ease.outBack(Math.min(1, motion.intro * 1.6));
     cu.uSize.value = (0.55 + beat * 0.35 + motion.energy * 0.25) * appear;
-    cu.uGlow.value = (0.45 + beat * 0.5 + motion.energy * 0.3) * (1 - motion.scroll);
+    cu.uGlow.value =
+      (0.45 + beat * 0.5 + motion.energy * 0.3) * (1 - motion.scroll);
   });
 
   return (
@@ -969,8 +1013,13 @@ const centrepieces: Record<
  * Full-bleed interactive background for hero sections (home, services).
  * Client-only (loaded through next/dynamic).
  */
-export default function HeroScene({ variant = "blob" }: { variant?: HeroVariant }) {
-  const { maxExtent, popIn, Shape } = centrepieces[variant] ?? centrepieces.blob;
+export default function HeroScene({
+  variant = "blob",
+}: {
+  variant?: HeroVariant;
+}) {
+  const { maxExtent, popIn, Shape } =
+    centrepieces[variant] ?? centrepieces.blob;
   const wrapper = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
   const [ready, setReady] = useState(false);
@@ -1004,7 +1053,11 @@ export default function HeroScene({ variant = "blob" }: { variant?: HeroVariant 
         dpr={[1, 1.5]}
         frameloop={visible ? "always" : "never"}
         camera={{ position: [0, 1.4, 6.5], fov: 40 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
         onCreated={({ camera }) => {
           camera.lookAt(0, -0.2, 0);
           requestAnimationFrame(() => setReady(true));

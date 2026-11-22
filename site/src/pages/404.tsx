@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import Header, { navigation } from "@/components/Header";
 import Button from "@/components/Button";
+import { Footer } from "@/components/Footer";
 
 export default function Error404() {
   const seo = {
@@ -12,7 +13,7 @@ export default function Error404() {
     <Layout seo={seo}>
       <div className="container-page min-h-screen flex flex-col">
         <Header />
-        <section className="flex-1 flex flex-col justify-center pb-24">
+        <section className="flex-1 flex flex-col justify-center">
           <div className="reveal font-display text-[7rem] md:text-[12rem] font-bold leading-none text-surface-2 select-none">
             404
           </div>
@@ -38,6 +39,7 @@ export default function Error404() {
             ))}
           </div>
         </section>
+        <Footer cta={false} />
       </div>
     </Layout>
   );

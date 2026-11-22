@@ -76,6 +76,22 @@
   .t-section {
     @apply font-display font-semibold text-2xl md:text-3xl;
   }
+  /* Home hero: the one deliberately larger, longer headline */
+  .t-hero {
+    @apply font-display font-bold tracking-tight text-[2.4rem] leading-[1.08] md:text-6xl lg:text-[4.2rem];
+  }
+  /* Card titles: large (projects, services, next project) and compact (article grid) */
+  .t-card-lg {
+    @apply font-display font-bold tracking-tight text-3xl md:text-4xl;
+  }
+  .t-card {
+    @apply font-display font-semibold text-xl lg:text-2xl leading-snug;
+  }
+
+  /* Vertical rhythm: gap before a major section (page end uses the footer's own gap) */
+  .section-gap {
+    @apply mt-24 md:mt-32;
+  }
 
   /*
    * Page-load reveal: soft rise + un-blur, staggered with --d (delay).
