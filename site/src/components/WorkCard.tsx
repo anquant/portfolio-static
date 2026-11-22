@@ -1,5 +1,6 @@
 import ProjectMedia from "./ProjectMedia";
 import Link from "next/link";
+import Reveal from "./Reveal";
 import { WorksData } from "@/lib/types/worksType";
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -15,13 +16,21 @@ export default function WorkCard({ works }: WorkCardProps) {
   return (
     <div className="grid grid-cols-1 gap-16 md:gap-24">
       {works.map((work, index) => (
-        <article key={work.slug} id={`work-${index + 1}`} className="scroll-mt-24">
+        <Reveal
+          as="article"
+          key={work.slug}
+          id={`work-${index + 1}`}
+          className="scroll-mt-24"
+        >
           <Link
             href={`/${work.slug}`}
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
             <ProjectMedia
-              src={work.illustration?.src ?? "/assets/images/default-image-portfolio.jpg"}
+              src={
+                work.illustration?.src ??
+                "/assets/images/default-image-portfolio.jpg"
+              }
               width={work.illustration?.width ?? 1800}
               height={work.illustration?.height ?? 1200}
               alt=""
@@ -53,7 +62,7 @@ export default function WorkCard({ works }: WorkCardProps) {
               </span>
             </div>
           </Link>
-        </article>
+        </Reveal>
       ))}
     </div>
   );

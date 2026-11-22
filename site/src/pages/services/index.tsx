@@ -5,13 +5,17 @@ import { getServicesPage, getServicesList } from "@/lib/content";
 import { GetStaticProps } from "next";
 import { ServicesPageData, ServicesListData } from "@/lib/types/servicesType";
 import ServiceCard from "@/components/ServiceCard";
+import PageIntro from "@/components/PageIntro";
 
 interface ServicesProps {
   services_page: ServicesPageData;
   services_list: ServicesListData[];
 }
 
-export default function Services({ services_page, services_list }: ServicesProps) {
+export default function Services({
+  services_page,
+  services_list,
+}: ServicesProps) {
   const { title, introtext, meta_title, meta_description } = services_page;
   const seo = { meta_title, meta_description };
 
@@ -19,15 +23,8 @@ export default function Services({ services_page, services_list }: ServicesProps
     <Layout seo={seo}>
       <div className="container-page">
         <Header />
-        <section>
-          <h1 className="font-display text-5xl lg:text-7xl font-bold tracking-tight">
-            {title}
-          </h1>
-          {introtext && (
-            <p className="mt-6 text-lg md:text-xl text-muted max-w-xl">{introtext}</p>
-          )}
-          <ServiceCard services={services_list} />
-        </section>
+        <PageIntro title={title} lead={introtext} />
+        <ServiceCard services={services_list} />
         <Footer />
       </div>
     </Layout>

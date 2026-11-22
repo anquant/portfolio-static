@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Button from "./Button";
+import Reveal from "./Reveal";
 import { navigation, siteName } from "./Header";
 
 type FooterProps = {
@@ -13,7 +14,7 @@ export function Footer({ cta = true }: FooterProps) {
   return (
     <footer className="mt-32 md:mt-44">
       {cta && (
-        <div className="relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-12 md:px-14 md:py-16">
+        <Reveal className="relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-12 md:px-14 md:py-16">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-accent/20 blur-3xl"
@@ -21,9 +22,7 @@ export function Footer({ cta = true }: FooterProps) {
           <div className="relative flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="eyebrow mb-4">Есть задача?</div>
-              <h2 className="font-display text-3xl md:text-5xl font-semibold leading-tight max-w-2xl">
-                Обсудим ваш проект
-              </h2>
+              <h2 className="t-title max-w-2xl">Обсудим ваш проект</h2>
               <p className="mt-4 max-w-lg text-muted">
                 Расскажите о задаче — предложу решение, сроки и формат работы.
               </p>
@@ -32,14 +31,17 @@ export function Footer({ cta = true }: FooterProps) {
               Написать мне <span aria-hidden>→</span>
             </Button>
           </div>
-        </div>
+        </Reveal>
       )}
 
       <div className="flex flex-col gap-8 border-t border-line mt-16 py-10 md:flex-row md:items-center md:justify-between">
         <div className="text-sm text-muted">
           © {currentYear} {siteName}
         </div>
-        <nav aria-label="Навигация в подвале" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+        <nav
+          aria-label="Навигация в подвале"
+          className="flex flex-wrap gap-x-6 gap-y-3 text-sm"
+        >
           {navigation.map((item) => (
             <Link
               key={item.slug}

@@ -6,6 +6,8 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { WorksData } from "@/lib/types/worksType";
 import ProjectMedia from "@/components/ProjectMedia";
 import CaseVideo from "@/components/CaseVideo";
+import PageIntro from "@/components/PageIntro";
+import Reveal from "@/components/Reveal";
 import Link from "next/link";
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -14,14 +16,20 @@ interface WorkProps {
   next: { slug: string; title: string } | null;
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 border-t border-line pt-8">
+    <Reveal className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 border-t border-line pt-8">
       <h2 className="md:col-span-3 eyebrow pt-1">{label}</h2>
       <div className="md:col-span-9 text-lg md:text-xl leading-relaxed text-fg/90">
         {children}
       </div>
-    </div>
+    </Reveal>
   );
 }
 
@@ -48,47 +56,34 @@ export default function Work({ work, next }: WorkProps) {
   return (
     <Layout seo={seo}>
       {/* Project colour is used as a soft glow, not as a light page background */}
-      <section className="relative overflow-hidden">
-        {color && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-[44rem] opacity-25"
-            style={{
-              background: `radial-gradient(60% 60% at 50% 0%, ${color}, transparent)`,
-            }}
-          />
-        )}
+      <section className="relative">
         <div className="container-page relative">
           <Header />
-          <nav aria-label="Хлебные крошки" className="flex gap-2 text-sm text-muted mb-6">
-            <Link href="/" className="hover:text-fg transition-colors">
-              Проекты
-            </Link>
-            <span aria-hidden>/</span>
-            <span className="text-fg">{title}</span>
-          </nav>
-          <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight">
-            {title}
-          </h1>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-8 md:items-end">
-            <div className="md:col-span-7 space-y-3">
-              <p className="text-lg md:text-xl">{description}</p>
-              <p className="text-muted">{infotext}</p>
-            </div>
-            {link && (
-              <div className="md:col-span-5 md:justify-self-end">
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="nofollow noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
-                >
-                  {new URL(link).hostname}
-                  <MdOutlineArrowOutward />
-                </a>
+          <PageIntro
+            crumbs={[{ href: "/", label: "Проекты" }]}
+            title={title}
+            glow={color}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:items-end">
+              <div className="md:col-span-7 space-y-3">
+                <p className="text-lg md:text-xl">{description}</p>
+                <p className="text-muted">{infotext}</p>
               </div>
-            )}
-          </div>
+              {link && (
+                <div className="md:col-span-5 md:justify-self-end">
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
+                  >
+                    {new URL(link).hostname}
+                    <MdOutlineArrowOutward />
+                  </a>
+                </div>
+              )}
+            </div>
+          </PageIntro>
           {illustration && (
             <ProjectMedia
               {...illustration}
@@ -96,7 +91,7 @@ export default function Work({ work, next }: WorkProps) {
               color={color}
               priority
               sizes="(min-width: 1280px) 80rem, 100vw"
-              className="mt-12 md:mt-16"
+              className="reveal mt-12 md:mt-16 [--d:600ms]"
             />
           )}
         </div>
@@ -112,24 +107,30 @@ export default function Work({ work, next }: WorkProps) {
           </Row>
         </div>
 
-        {video ? (
-          <CaseVideo video={video} poster={cover} title={title} color={color} />
-        ) : (
-          cover && (
-            <ProjectMedia
-              {...cover}
-              alt={`${title} — главный экран`}
+        <Reveal>
+          {video ? (
+            <CaseVideo
+              video={video}
+              poster={cover}
+              title={title}
               color={color}
-              sizes="(min-width: 1280px) 80rem, 100vw"
             />
-          )
-        )}
+          ) : (
+            cover && (
+              <ProjectMedia
+                {...cover}
+                alt={`${title} — главный экран`}
+                color={color}
+                sizes="(min-width: 1280px) 80rem, 100vw"
+              />
+            )
+          )}
+        </Reveal>
 
         {mockups_description && (
-          <div
-            className="max-w-4xl mt-20 md:mt-32 text-xl md:text-2xl leading-snug"
-            dangerouslySetInnerHTML={{ __html: mockups_description }}
-          />
+          <Reveal className="max-w-4xl mt-20 md:mt-32 text-xl md:text-2xl leading-snug">
+            <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
+          </Reveal>
         )}
 
         {mockups && mockups.length > 0 && (
@@ -139,13 +140,18 @@ export default function Work({ work, next }: WorkProps) {
             }`}
           >
             {mockups.map((item, index) => (
-              <ProjectMedia
-                key={index}
-                {...item}
-                alt={`${title} — макет ${index + 1}`}
-                color={color}
-                sizes={mockups.length > 1 ? "(min-width: 768px) 50vw, 100vw" : "100vw"}
-              />
+              <Reveal key={index} delay={(index % 2) * 120}>
+                <ProjectMedia
+                  {...item}
+                  alt={`${title} — макет ${index + 1}`}
+                  color={color}
+                  sizes={
+                    mockups.length > 1
+                      ? "(min-width: 768px) 50vw, 100vw"
+                      : "100vw"
+                  }
+                />
+              </Reveal>
             ))}
           </div>
         )}
@@ -157,23 +163,25 @@ export default function Work({ work, next }: WorkProps) {
         </div>
 
         {next && (
-          <Link
-            href={`/${next.slug}`}
-            className="group mt-24 md:mt-32 flex items-center justify-between gap-6 rounded-3xl border border-line bg-surface p-8 md:p-12 transition-colors hover:bg-surface-2"
-          >
-            <div>
-              <div className="eyebrow mb-3">Следующий проект</div>
-              <div className="font-display text-3xl md:text-5xl font-bold transition-colors group-hover:text-accent">
-                {next.title}
-              </div>
-            </div>
-            <span
-              aria-hidden
-              className="grid place-items-center size-12 md:size-16 shrink-0 rounded-full border border-line text-2xl transition-colors group-hover:bg-fg group-hover:text-bg"
+          <Reveal>
+            <Link
+              href={`/${next.slug}`}
+              className="group mt-24 md:mt-32 flex items-center justify-between gap-6 rounded-3xl border border-line bg-surface p-8 md:p-12 transition-colors hover:bg-surface-2"
             >
-              →
-            </span>
-          </Link>
+              <div>
+                <div className="eyebrow mb-3">Следующий проект</div>
+                <div className="font-display text-3xl md:text-5xl font-bold transition-colors group-hover:text-accent">
+                  {next.title}
+                </div>
+              </div>
+              <span
+                aria-hidden
+                className="grid place-items-center size-12 md:size-16 shrink-0 rounded-full border border-line text-2xl transition-colors group-hover:bg-fg group-hover:text-bg"
+              >
+                →
+              </span>
+            </Link>
+          </Reveal>
         )}
 
         <Footer />

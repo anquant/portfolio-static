@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import PageIntro from "@/components/PageIntro";
+import Reveal from "@/components/Reveal";
 import { getContacts } from "@/lib/content";
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine } from "react-icons/ri";
+import {
+  RiEyeLine,
+  RiEyeOffLine,
+  RiFileCopyLine,
+  RiCheckLine,
+} from "react-icons/ri";
 import { encode, decode, maskPhone } from "@/helpers/obfuscate";
 
 interface ContactsProps {
@@ -52,8 +59,15 @@ function CopyButton({ getValue }: { getValue: () => string }) {
   };
 
   return (
-    <IconButton onClick={handleCopy} label={copied ? "Скопировано" : "Скопировать"}>
-      {copied ? <RiCheckLine size={18} className="text-emerald-400" /> : <RiFileCopyLine size={18} />}
+    <IconButton
+      onClick={handleCopy}
+      label={copied ? "Скопировано" : "Скопировать"}
+    >
+      {copied ? (
+        <RiCheckLine size={18} className="text-emerald-400" />
+      ) : (
+        <RiFileCopyLine size={18} />
+      )}
     </IconButton>
   );
 }
@@ -85,19 +99,13 @@ export default function Contacts({
       <div className="container-page">
         <Header />
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-6">
-            <h1 className="font-display text-5xl lg:text-7xl font-bold tracking-tight">
-              {title}
-            </h1>
-            {text && (
-              <p className="mt-8 text-lg text-muted max-w-md leading-relaxed">
-                {text}
-              </p>
-            )}
-          </div>
-          <div className="lg:col-span-6 space-y-3 min-h-64">
+          <PageIntro title={title} lead={text} className="lg:col-span-6" />
+          <div className="lg:col-span-6 space-y-3 min-h-64 lg:pt-4">
             {email && (
-              <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+              <Reveal
+                delay={350}
+                className="rounded-2xl border border-line bg-surface p-6 md:p-8"
+              >
                 <div className="eyebrow mb-3">E-mail</div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Link
@@ -108,10 +116,13 @@ export default function Contacts({
                   </Link>
                   <CopyButton getValue={() => email} />
                 </div>
-              </div>
+              </Reveal>
             )}
             {maskedPhone && (
-              <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+              <Reveal
+                delay={450}
+                className="rounded-2xl border border-line bg-surface p-6 md:p-8"
+              >
                 <div className="eyebrow mb-3">Телефон</div>
                 <div className="flex flex-wrap items-center gap-3">
                   {phoneRevealed && phone ? (
@@ -130,11 +141,15 @@ export default function Contacts({
                     onClick={() => setPhoneRevealed((v) => !v)}
                     label={phoneRevealed ? "Скрыть номер" : "Показать номер"}
                   >
-                    {phoneRevealed ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
+                    {phoneRevealed ? (
+                      <RiEyeOffLine size={18} />
+                    ) : (
+                      <RiEyeLine size={18} />
+                    )}
                   </IconButton>
                   <CopyButton getValue={() => phone} />
                 </div>
-              </div>
+              </Reveal>
             )}
           </div>
         </section>

@@ -4,7 +4,9 @@ import { Footer } from "@/components/Footer";
 import { getBlogArticles, getArticleBySlug } from "@/lib/content";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { BlogArticlesData } from "@/lib/types/blogType";
-import Image from "next/image";
+import BlogCover from "@/components/BlogCover";
+import PageIntro from "@/components/PageIntro";
+import SectionHeader from "@/components/SectionHeader";
 import Link from "next/link";
 import ArticleCard from "@/components/ArticleCard";
 import { FiArrowRight } from "react-icons/fi";
@@ -21,7 +23,11 @@ interface ArticleProps {
   mdxSource: MDXRemoteSerializeResult;
 }
 
-export default function Article({ article, articles, mdxSource }: ArticleProps) {
+export default function Article({
+  article,
+  articles,
+  mdxSource,
+}: ArticleProps) {
   const { title, image, image_background_color, meta_title, meta_description } =
     article;
   const seo = { meta_title, meta_description };
@@ -31,49 +37,45 @@ export default function Article({ article, articles, mdxSource }: ArticleProps) 
       <div className="container-page">
         <Header />
         <article className="mx-auto max-w-3xl">
-          <nav aria-label="Хлебные крошки" className="flex gap-2 text-sm text-muted mb-6">
-            <Link href="/blog" className="hover:text-fg transition-colors">
-              Блог
-            </Link>
-            <span aria-hidden>/</span>
-            <span>{article.category.title}</span>
-          </nav>
-          <h1 className="font-display text-3xl leading-tight md:text-5xl md:leading-[1.15] font-bold tracking-tight">
-            {title}
-          </h1>
-          <time dateTime={article.pubdate} className="block mt-5 text-sm text-muted">
-            {format(new Date(article.pubdate), "d MMMM yyyy", { locale: ru })}
-          </time>
-          <div
-            className="relative mt-10 flex items-center justify-center aspect-[2/1] overflow-hidden rounded-3xl"
-            style={{ backgroundColor: image_background_color || "#d1d0ca" }}
+          <PageIntro
+            crumbs={[{ href: "/blog", label: "Блог" }]}
+            current={article.category.title}
+            title={title}
+            size="title"
+            glow={image_background_color}
           >
-            <Image
-              src={image?.src ?? "/assets/images/default-image-blog.png"}
-              width={image?.width ?? 600}
-              height={image?.height ?? 600}
-              alt=""
-              priority
-              className="w-2/5 h-auto"
-            />
-          </div>
+            <time
+              dateTime={article.pubdate}
+              className="block text-sm text-muted"
+            >
+              {format(new Date(article.pubdate), "d MMMM yyyy", { locale: ru })}
+            </time>
+          </PageIntro>
+          <BlogCover
+            image={image}
+            color={image_background_color}
+            mode="hero"
+            priority
+            className="reveal mt-10 aspect-[2/1] rounded-3xl border border-line [--d:500ms]"
+          />
           <div className="content-blocks mt-12 text-lg text-fg/90">
             <MDXRemote {...mdxSource} components={mdxComponents} />
           </div>
         </article>
         {articles?.length > 0 && (
           <section className="mt-24 md:mt-32">
-            <div className="flex items-end justify-between gap-6 border-b border-line pb-4">
-              <h2 className="font-display text-2xl md:text-3xl font-semibold">
-                Другие статьи
-              </h2>
-              <Link
-                href="/blog"
-                className="flex gap-2 items-center text-sm text-muted hover:text-fg transition-colors"
-              >
-                Все статьи <FiArrowRight />
-              </Link>
-            </div>
+            <SectionHeader
+              title="Другие статьи"
+              className="!mb-0"
+              aside={
+                <Link
+                  href="/blog"
+                  className="flex gap-2 items-center transition-colors hover:text-fg"
+                >
+                  Все статьи <FiArrowRight />
+                </Link>
+              }
+            />
             <ArticleCard articles={articles} />
           </section>
         )}

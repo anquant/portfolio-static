@@ -144,7 +144,7 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
                 </div>
                 <nav aria-label="Основное меню" className="mt-16 flex flex-col">
                   {[...navigation, { title: "Контакты", slug: "/contacts" }].map(
-                    (item) => {
+                    (item, i) => {
                       const active = isActive(path, item.slug);
                       return (
                         <Link
@@ -152,7 +152,8 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
                           href={item.slug}
                           onClick={() => setOpen(false)}
                           aria-current={active ? "page" : undefined}
-                          className={`flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
+                          style={{ "--d": `${120 + i * 60}ms` } as React.CSSProperties}
+                          className={`reveal flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
                             active ? "text-accent" : "text-fg hover:text-accent"
                           }`}
                         >

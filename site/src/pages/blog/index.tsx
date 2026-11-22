@@ -11,6 +11,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ArticleCard from "@/components/ArticleCard";
+import PageIntro from "@/components/PageIntro";
 import { SITE_URL } from "@/lib/site";
 
 interface BlogProps {
@@ -97,12 +98,13 @@ export default function Blog({
     <Layout seo={seo} site_url={SITE_URL} canonical={true}>
       <div className="container-page">
         <Header />
-        <section>
-          <h1 className="font-display text-5xl lg:text-7xl font-bold tracking-tight">
-            {title}
-          </h1>
+        <PageIntro title={title}>
           {categories_with_articles.length > 0 && (
-            <div role="group" aria-label="Категории" className="flex flex-wrap gap-2 mt-10">
+            <div
+              role="group"
+              aria-label="Категории"
+              className="flex flex-wrap gap-2"
+            >
               <button
                 type="button"
                 aria-pressed={!activeCategory}
@@ -124,9 +126,18 @@ export default function Blog({
               ))}
             </div>
           )}
-          <ArticleCard articles={paginatedArticles} />
+        </PageIntro>
+        <section>
+          {/* key: re-run the card reveal when the filter or page changes */}
+          <ArticleCard
+            key={`${activeCategory}-${currentPage}`}
+            articles={paginatedArticles}
+          />
           {totalPages > 1 && (
-            <nav aria-label="Страницы" className="flex justify-center mt-12 gap-2">
+            <nav
+              aria-label="Страницы"
+              className="flex justify-center mt-12 gap-2"
+            >
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
                   key={i}

@@ -24,6 +24,14 @@ export default {
       maxWidth: {
         page: "80rem",
       },
+      // One motion character for the whole site: quick start, long soft landing
+      transitionTimingFunction: {
+        DEFAULT: "cubic-bezier(0.2, 0.7, 0.1, 1)",
+        out: "cubic-bezier(0.2, 0.7, 0.1, 1)",
+      },
+      transitionDuration: {
+        DEFAULT: "300ms",
+      },
     },
   },
   plugins: [],
