@@ -110,6 +110,7 @@ export default function Work({ work, next }: WorkProps) {
         <Reveal>
           {video ? (
             <CaseVideo
+              key={video.src}
               video={video}
               poster={cover}
               title={title}
