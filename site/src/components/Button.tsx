@@ -1,202 +1,94 @@
-"use client";
-
 import { ReactNode, MouseEvent } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 
+type Variant = "primary" | "secondary" | "ghost";
+type Size = "normal" | "small";
+
 interface ButtonProps {
-  type?: "button" | "submit" | "link" | "div";
+  type?: "button" | "submit" | "link";
   href?: string;
-  size?: "normal" | "medium" | "small";
-  theme?: "light" | "dark";
-  border?: "default" | "none";
+  variant?: Variant;
+  size?: Size;
   className?: string;
   children: ReactNode;
   onClick?: (event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   disabled?: boolean;
+  external?: boolean;
+  "aria-label"?: string;
+  "aria-pressed"?: boolean;
 }
 
-const Button = ({
+/*
+ * Hover is an opacity fade of a separate layer, not a background-color
+ * transition: opacity runs on the compositor, so it stays smooth even while
+ * the WebGL hero keeps the main thread busy.
+ */
+const base =
+  "group/btn relative isolate inline-flex w-fit items-center justify-center gap-2.5 overflow-hidden rounded-full font-medium whitespace-nowrap [transform:translateZ(0)] disabled:cursor-not-allowed disabled:opacity-40";
+
+const variants: Record<Variant, string> = {
+  primary: "bg-fg text-bg",
+  secondary: "border border-line text-fg",
+  ghost: "text-muted",
+};
+
+const hoverLayer: Record<Variant, string> = {
+  primary: "bg-accent",
+  secondary: "bg-fg/10",
+  ghost: "bg-fg/10",
+};
+
+const sizes: Record<Size, string> = {
+  normal: "text-sm md:text-base h-12 px-7",
+  small: "text-sm h-9 px-4",
+};
+
+export default function Button({
   type = "button",
   href = "#",
+  variant = "primary",
   size = "normal",
-  theme = "light",
-  border = "default",
-  className,
+  className = "",
   children,
   onClick,
   disabled,
-}: ButtonProps) => {
-  const normalSize = "text-sm md:text-base py-3.5 px-8";
-  const mediumSize = "text-sm py-2.5 px-6";
-  const smallSize = "text-xs md:text-sm py-1.5 px-4";
+  external,
+  ...aria
+}: ButtonProps) {
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const content = (
+    <>
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 transition-opacity duration-300 ease-out group-hover/btn:opacity-100 group-focus-visible/btn:opacity-100 group-disabled/btn:!opacity-0 ${hoverLayer[variant]}`}
+      />
+      {children}
+    </>
+  );
 
-  const lightTheme = {
-    background: "#d2d2d2",
-    borderColor: "#d2d2d2",
-    color: "black",
-    transition: { duration: 0.25 },
-  };
-  const darkTheme = {
-    background: "#303030",
-    borderColor: "#303030",
-    color: "white",
-    transition: { duration: 0.25 },
-  };
-  const lightThemeHover = {
-    background: "#b0b0b0",
-    borderColor: "#b0b0b0",
-    color: "black",
-    transition: { duration: 0.25 },
-  };
-  const darkThemeHover = {
-    background: "#181818",
-    borderColor: "#181818",
-    color: "white",
-    transition: { duration: 0.25 },
-  };
-
-  const disabledStyle = {
-    background: "#e0e0e0",
-    borderColor: "#e0e0e0",
-    color: "#a0a0a0",
-    cursor: "not-allowed",
-    pointerEvents: "auto",
-    transition: "none",
-  };
-
-  const sizeClass =
-    size === "normal" ? normalSize : size === "medium" ? mediumSize : smallSize;
-  const defaultClasses = `flex gap-x-10 w-fit items-center rounded-full font-medium text-left cursor-pointer outline-0 ${sizeClass}`;
-  const borderClass = border === "none" ? "" : "border border-[--text]";
-  const propsButton = {
-    className: `${defaultClasses} ${borderClass} ${className}`,
-    onClick,
-    style:
-      border === "none"
-        ? theme === "dark"
-          ? { background: darkTheme.background, color: darkTheme.color }
-          : { background: lightTheme.background, color: lightTheme.color }
-        : undefined,
-    disabled,
-  };
-  const propsLink = {
-    className: `${defaultClasses} ${borderClass} ${className}`,
-    style:
-      border === "none"
-        ? theme === "dark"
-          ? { background: darkTheme.background, color: darkTheme.color }
-          : { background: lightTheme.background, color: lightTheme.color }
-        : undefined,
-  };
-
-  let component;
-
-  switch (type) {
-    case "button":
-      component =
-        border === "none" ? (
-          <motion.button
-            type="button"
-            {...propsButton}
-            style={disabled ? disabledStyle : propsButton.style}
-            whileHover={
-              disabled
-                ? undefined
-                : theme === "dark"
-                  ? darkThemeHover
-                  : lightThemeHover
-            }
-          >
-            {children}
-          </motion.button>
-        ) : (
-          <motion.button
-            whileHover={
-              disabled ? undefined : theme === "dark" ? darkTheme : lightTheme
-            }
-            type="button"
-            {...propsButton}
-            style={disabled ? disabledStyle : propsButton.style}
-          >
-            {children}
-          </motion.button>
-        );
-      break;
-    case "submit":
-      component =
-        border === "none" ? (
-          <motion.button
-            type="submit"
-            {...propsButton}
-            style={disabled ? disabledStyle : propsButton.style}
-            whileHover={
-              disabled
-                ? undefined
-                : theme === "dark"
-                  ? darkThemeHover
-                  : lightThemeHover
-            }
-          >
-            {children}
-          </motion.button>
-        ) : (
-          <motion.button
-            whileHover={
-              disabled ? undefined : theme === "dark" ? darkTheme : lightTheme
-            }
-            type="submit"
-            {...propsButton}
-            style={disabled ? disabledStyle : propsButton.style}
-          >
-            {children}
-          </motion.button>
-        );
-      break;
-    case "link":
-      component = (
-        <Link href={href} className="block w-fit">
-          {border === "none" ? (
-            <motion.div
-              {...propsLink}
-              whileHover={theme === "dark" ? darkThemeHover : lightThemeHover}
-            >
-              {children}
-            </motion.div>
-          ) : (
-            <motion.div
-              whileHover={theme === "dark" ? darkTheme : lightTheme}
-              {...propsLink}
-            >
-              {children}
-            </motion.div>
-          )}
-        </Link>
-      );
-      break;
-    case "div":
-      component =
-        border === "none" ? (
-          <motion.div
-            {...propsLink}
-            whileHover={theme === "dark" ? darkThemeHover : lightThemeHover}
-          >
-            {children}
-          </motion.div>
-        ) : (
-          <motion.div
-            whileHover={theme === "dark" ? darkTheme : lightTheme}
-            {...propsLink}
-          >
-            {children}
-          </motion.div>
-        );
-      break;
-    default:
-      component = null;
+  if (type === "link") {
+    return (
+      <Link
+        href={href}
+        className={classes}
+        onClick={onClick}
+        {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+        {...aria}
+      >
+        {content}
+      </Link>
+    );
   }
 
-  return component;
-};
-
-export default Button;
+  return (
+    <button
+      type={type}
+      className={classes}
+      onClick={onClick}
+      disabled={disabled}
+      {...aria}
+    >
+      {content}
+    </button>
+  );
+}

@@ -1,4 +1,4 @@
-import { ImageAsset, VideoAsset } from "./assetType";
+import { ImageAsset } from "./assetType";
 
 export interface ServicesPageData {
   title: string;
@@ -14,8 +14,7 @@ export interface ServicesListData {
   title: string;
   tech_list?: string[];
   introtext?: string;
-  bg_video?: VideoAsset;
-  bg_video_poster?: ImageAsset;
+  bg_image?: ImageAsset;
   content?: {
     title: string;
     blocks?: {

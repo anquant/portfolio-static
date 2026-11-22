@@ -10,11 +10,7 @@
     "JavaScript"
   ],
   "introtext": "Осуществляю полный цикл веб-разработки — от архитектуры до поддержки. Развиваю проекты с фокусом на долгосрочное сотрудничество и точное соответствие задачам клиента.",
-  "bg_video": {
-    "src": "/video/services/development.webm",
-    "type": "video/webm"
-  },
-  "bg_video_poster": {
+  "bg_image": {
     "src": "/images/services/development-poster.png",
     "width": 1920,
     "height": 1080

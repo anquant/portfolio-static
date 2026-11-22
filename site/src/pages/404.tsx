@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
-import { navigation } from "@/components/Header";
-import Link from "next/link";
+import Header, { navigation } from "@/components/Header";
+import Button from "@/components/Button";
 
 export default function Error404() {
   const seo = {
@@ -10,27 +10,28 @@ export default function Error404() {
 
   return (
     <Layout seo={seo}>
-      <section className="relative flex justify-center lg:items-center min-h-screen mx-auto max-w-7xl px-12 xl:px-0">
-        <div className="space-y-8 mt-20">
-          <div className="text-xl md:text-2xl font-semibold">
-            Ошибка 404. Такой страницы не существует.
+      <div className="container-page min-h-screen flex flex-col">
+        <Header />
+        <section className="flex-1 flex flex-col justify-center pb-24">
+          <div className="font-display text-[7rem] md:text-[12rem] font-bold leading-none text-surface-2 select-none">
+            404
           </div>
-          <div className="flex gap-6 mt-14">
-            <div className="text-[--gray-text]">открыть:</div>
-            <div className="space-y-3 md:space-y-2">
-              {navigation.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.slug}
-                  className="block font-medium whitespace-nowrap hover:text-[--link]"
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </div>
+          <h1 className="font-display text-2xl md:text-4xl font-semibold -mt-4 md:-mt-8">
+            Такой страницы не существует
+          </h1>
+          <p className="mt-4 text-muted">Возможно, она переехала. Попробуйте один из разделов:</p>
+          <div className="mt-8 flex flex-wrap gap-2">
+            <Button type="link" href="/">
+              На главную
+            </Button>
+            {navigation.slice(1).map((item) => (
+              <Button key={item.slug} type="link" href={item.slug} variant="secondary">
+                {item.title}
+              </Button>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </Layout>
   );
 }

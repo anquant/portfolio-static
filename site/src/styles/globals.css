@@ -2,38 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Design tokens — dark theme.
+ * Stored as RGB triplets so Tailwind can apply opacity: bg-surface/60, text-fg/80 …
+ *   bg        page background
+ *   surface   cards, raised blocks
+ *   surface-2 hover state of surface, chips
+ *   line      borders, dividers
+ *   fg        primary text            (≈16:1 on bg)
+ *   muted     secondary text          (≈7.6:1 on bg, passes AA)
+ *   accent    links, focus, highlights (≈7.4:1 on bg)
+ */
 :root {
-  --background: #f2f2f2;
-  --background-light: #e5e5e5;
-  --background-dark: #202020;
-  --text: #303030;
-  --gray-text: #909090;
-  --link: #3043df;
+  --bg: 12 12 14;
+  --surface: 21 21 24;
+  --surface-2: 30 30 35;
+  --line: 46 46 52;
+  --fg: 237 237 240;
+  --muted: 161 161 170;
+  --accent: 140 156 255;
+
+  color-scheme: dark;
 }
 
-body {
-  background: var(--background);
-  color: var(--text);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: rgb(var(--bg));
+    color: rgb(var(--fg));
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.35);
+    color: rgb(var(--fg));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
 }
 
-/* Next Ui */
+@layer components {
+  /* Shared page container: one width and gutter for every page */
+  .container-page {
+    @apply mx-auto w-full max-w-page px-5 md:px-10 xl:px-12;
+  }
 
-.border-default-200 {
-  border-color: var(--gray-text) !important;
-  border-bottom-width: 1.5px;
+  /* Small uppercase label above headings */
+  .eyebrow {
+    @apply text-xs md:text-sm uppercase tracking-[0.18em] text-muted;
+  }
+
+  .link {
+    @apply text-fg underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent;
+  }
+
+  /* Dark logos on transparent PNG → light, calm logos on dark background */
+  .logo-on-dark {
+    filter: invert(1) grayscale(1);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
 }
 
-.after\:content-\[\'\*\'\]::after {
-  color: var(--text) !important;
-}
-
-/* Content blocks */
+/* Content blocks (MDX, rich text from content) */
 
 .content-blocks h2 {
   margin-top: 2rem;
   margin-bottom: 0.8rem;
   font-size: 1.5rem;
   font-weight: 600;
+  color: rgb(var(--fg));
 }
 
 .content-blocks h3,
@@ -44,6 +88,7 @@ body {
   margin-bottom: 0.8rem;
   font-size: 1.25rem;
   font-weight: 600;
+  color: rgb(var(--fg));
 }
 
 @media (width >= 768px) {
@@ -64,30 +109,35 @@ body {
 }
 
 .content-blocks p {
-  margin-bottom: 0.8rem;
-  font-weight: 300;
+  margin-bottom: 0.9rem;
+  line-height: 1.7;
 }
 
-.content-blocks p a {
+.content-blocks a {
+  color: rgb(var(--fg));
   text-decoration: underline;
+  text-decoration-color: rgb(var(--line));
   text-underline-offset: 4px;
+  transition: color 0.2s;
 }
 
-.content-blocks p a:hover {
-  color: #3043df;
+.content-blocks a:hover {
+  color: rgb(var(--accent));
+  text-decoration-color: rgb(var(--accent));
 }
 
 .content-blocks strong,
 .content-blocks b {
   font-weight: 600;
+  color: rgb(var(--fg));
 }
 
 .content-blocks ul,
 .content-blocks ol {
   margin-bottom: 2rem;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
   list-style-position: outside;
-  font-weight: 300;
+  line-height: 1.7;
 }
 
 .content-blocks ul {
@@ -99,26 +149,26 @@ body {
 }
 
 .content-blocks li::marker {
-  font-weight: 600;
+  color: rgb(var(--accent));
 }
 
-.content-blocks blockquote {
-  font-weight: 300;
+.content-blocks code:not(pre code) {
+  padding: 0.1em 0.4em;
+  border-radius: 0.35rem;
+  background: rgb(var(--surface-2));
+  font-size: 0.9em;
 }
 
-/* Animation */
-
-@keyframes pulse {
-  50% {
-    opacity: 0.6;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-}
-.animate-pulse {
-  animation: pulse 2.5s cubic-bezier(0.5, 0, 0.7, 1) infinite;
-}
 
-/* Swiper */
-
-.swiper-button-disabled {
-  opacity: 0.2;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

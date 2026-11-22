@@ -1,4 +1,4 @@
-import { ImageAsset, VideoAsset } from "./assetType";
+import { ImageAsset } from "./assetType";
 
 export interface WorksData {
   sort: number;
@@ -10,8 +10,7 @@ export interface WorksData {
   color?: string;
   company: string;
   problem: string;
-  video?: VideoAsset;
-  video_poster?: { src: string };
+  cover?: ImageAsset;
   mockups_description?: string;
   mockups?: ImageAsset[];
   result: string;

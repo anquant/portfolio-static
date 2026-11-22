@@ -1,13 +1,18 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Onest } from "next/font/google";
-
-const onest = Onest({ subsets: ["cyrillic"] });
+import { onest, manrope } from "@/lib/fonts";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={onest.className}>
+    <>
+      {/* Fonts are set on :root so portals (mobile menu dialog) inherit them too */}
+      <style jsx global>{`
+        :root {
+          --font-sans: ${onest.style.fontFamily};
+          --font-display: ${manrope.style.fontFamily};
+        }
+      `}</style>
       <Component {...pageProps} />
-    </div>
+    </>
   );
 }

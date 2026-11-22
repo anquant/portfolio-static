@@ -1,93 +1,60 @@
 import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getAbout, getContacts } from "@/lib/content";
+import Button from "@/components/Button";
+import { getAbout } from "@/lib/content";
 import { GetStaticProps } from "next";
 import { AboutData } from "@/lib/types/aboutType";
-import { ContactsData } from "@/lib/types/contactsType";
-import Link from "next/link";
-import { Manrope } from "next/font/google";
-
-const manrope = Manrope({
-  subsets: ["cyrillic"],
-});
 
 interface AboutProps {
   about: AboutData;
-  contacts: ContactsData;
 }
 
-export default function About({ about, contacts }: AboutProps) {
-  const {
-    title_part1,
-    title_part2,
-    content,
-    skills,
-    resume,
-    meta_title,
-    meta_description,
-  } = about;
+export default function About({ about }: AboutProps) {
+  const { title_part1, title_part2, content, skills, resume, meta_title, meta_description } =
+    about;
   const seo = { meta_title, meta_description };
 
   return (
     <Layout seo={seo}>
-      <div className="relative flex flex-col justify-between min-h-screen mx-auto max-w-7xl px-6 xl:px-0">
+      <div className="container-page">
+        <Header />
         <section>
-          <Header classes="mb-20 md:mb-40" />
-          <div className="md:px-20">
-            <h1
-              className={`${manrope.className} text-4xl md:text-6xl lg:text-7xl font-bold md:font-medium mb-10 md:mb-16`}
-            >
-              {title_part1}
-              {title_part2 && (
-                <>
-                  <br />
-                  {title_part2}
-                </>
-              )}
-            </h1>
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-5xl">
+            {title_part1}
+            {title_part2 && (
+              <>
+                <br />
+                <span className="text-muted">{title_part2}</span>
+              </>
+            )}
+          </h1>
+          <div className="mt-14 md:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div
-              className="text-lg md:text-xl font-light space-y-7 max-w-4xl"
+              className="lg:col-span-7 text-lg md:text-xl leading-relaxed space-y-6 text-fg/90"
               dangerouslySetInnerHTML={{ __html: content }}
             />
-            <div className="text-lg space-y-8 md:space-y-11 mt-20 md:mt-32">
+            <aside className="lg:col-span-5 space-y-4">
               {skills && (
-                <div className="flex gap-8">
-                  <div className="w-20 md:w-28 font-bold">Навыки</div>
+                <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+                  <h2 className="eyebrow mb-5">Навыки</h2>
                   <div
-                    className="content-blocks flex-1 max-w-xl font-light space-y-4"
+                    className="content-blocks text-muted"
                     dangerouslySetInnerHTML={{ __html: skills }}
                   />
                 </div>
               )}
               {resume && (
-                <div className="flex gap-8">
-                  <div className="w-20 md:w-28 font-bold">Резюме</div>
-                  <div className="flex-1">
-                    <Link
-                      href={resume}
-                      className="hover:text-[--link] duration-300"
-                      target="__blank"
-                    >
-                      Открыть резюме
-                    </Link>
-                  </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button type="link" href={resume} external>
+                    Открыть резюме (PDF)
+                  </Button>
+                  <Button type="link" href="/contacts" variant="secondary">
+                    Контакты
+                  </Button>
                 </div>
               )}
-              {contacts.email && (
-                <div className="flex gap-8">
-                  <div className="w-20 md:w-28 font-bold">E-mail</div>
-                  <div className="flex-1">
-                    <Link
-                      href={`mailto:${contacts.email}`}
-                      className="hover:text-[--link] duration-300"
-                    >
-                      {contacts.email}
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
+            </aside>
           </div>
         </section>
         <Footer />
@@ -97,13 +64,5 @@ export default function About({ about, contacts }: AboutProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const about = getAbout();
-  const contacts = getContacts();
-
-  return {
-    props: {
-      about,
-      contacts,
-    },
-  };
+  return { props: { about: getAbout() } };
 };

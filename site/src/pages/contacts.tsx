@@ -6,13 +6,7 @@ import { getContacts } from "@/lib/content";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine } from "react-icons/ri";
-import { Manrope } from "next/font/google";
 import { encode, decode, maskPhone } from "@/helpers/obfuscate";
-
-const manrope = Manrope({
-  subsets: ["cyrillic"],
-  weight: "500",
-});
 
 interface ContactsProps {
   title: string;
@@ -22,6 +16,28 @@ interface ContactsProps {
   emailEncoded: string;
   phoneEncoded: string;
   maskedPhone: string;
+}
+
+function IconButton({
+  onClick,
+  label,
+  children,
+}: {
+  onClick: () => void;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="grid place-items-center size-9 rounded-full border border-line text-muted transition-colors hover:text-fg hover:bg-surface-2"
+    >
+      {children}
+    </button>
+  );
 }
 
 function CopyButton({ getValue }: { getValue: () => string }) {
@@ -36,14 +52,9 @@ function CopyButton({ getValue }: { getValue: () => string }) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className="text-[#909090] hover:text-[--text] duration-300"
-      aria-label="Скопировать"
-    >
-      {copied ? <RiCheckLine size={18} /> : <RiFileCopyLine size={18} />}
-    </button>
+    <IconButton onClick={handleCopy} label={copied ? "Скопировано" : "Скопировать"}>
+      {copied ? <RiCheckLine size={18} className="text-emerald-400" /> : <RiFileCopyLine size={18} />}
+    </IconButton>
   );
 }
 
@@ -71,77 +82,63 @@ export default function Contacts({
 
   return (
     <Layout seo={seo}>
-      <div className="relative flex flex-col justify-between min-h-screen mx-auto max-w-7xl px-6 xl:px-0">
-        <section>
-          <Header classes="mb-20 md:mb-40" />
-          <div className="md:px-20">
-            <h1
-              className={`${manrope.className} text-5xl lg:text-7xl mb-10 md:mb-16`}
-            >
+      <div className="container-page">
+        <Header />
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-6">
+            <h1 className="font-display text-5xl lg:text-7xl font-bold tracking-tight">
               {title}
             </h1>
-            <div className="flex flex-col md:flex-row gap-16 md:gap-8 min-h-80">
-              <div className="basis-6/12">
-                <div className="flex flex-col gap-10">
-                  {email && (
-                    <div className="space-y-1.5">
-                      <div className="text-[#909090] lowercase">E-mail:</div>
-                      <div className="flex items-center gap-2 w-fit">
-                        <Link
-                          href={`mailto:${email}`}
-                          className="text-lg font-medium hover:text-[--link] duration-300"
-                        >
-                          {email}
-                        </Link>
-                        <CopyButton getValue={() => email} />
-                      </div>
-                    </div>
-                  )}
-                  {maskedPhone && (
-                    <div className="space-y-1.5">
-                      <div className="text-[#909090] lowercase">Телефон:</div>
-                      <div className="flex items-center gap-2 w-fit">
-                        {phoneRevealed && phone ? (
-                          <Link
-                            href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                            className="text-lg font-medium hover:text-[--link] duration-300"
-                          >
-                            {phone}
-                          </Link>
-                        ) : (
-                          <span className="text-lg font-medium">
-                            {maskedPhone}
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setPhoneRevealed((v) => !v)}
-                          className="text-[#909090] hover:text-[--text] duration-300"
-                          aria-label={
-                            phoneRevealed ? "Скрыть номер" : "Показать номер"
-                          }
-                        >
-                          {phoneRevealed ? (
-                            <RiEyeOffLine size={20} />
-                          ) : (
-                            <RiEyeLine size={20} />
-                          )}
-                        </button>
-                        <CopyButton getValue={() => phone} />
-                      </div>
-                    </div>
-                  )}
+            {text && (
+              <p className="mt-8 text-lg text-muted max-w-md leading-relaxed">
+                {text}
+              </p>
+            )}
+          </div>
+          <div className="lg:col-span-6 space-y-3 min-h-64">
+            {email && (
+              <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+                <div className="eyebrow mb-3">E-mail</div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    href={`mailto:${email}`}
+                    className="text-xl md:text-2xl font-medium transition-colors hover:text-accent break-all"
+                  >
+                    {email}
+                  </Link>
+                  <CopyButton getValue={() => email} />
                 </div>
               </div>
-              {text && (
-                <div className="basis-6/12 md:mt-24 lg:mt-32">
-                  <p className="text-base text-[--gray-text] max-w-md">{text}</p>
+            )}
+            {maskedPhone && (
+              <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+                <div className="eyebrow mb-3">Телефон</div>
+                <div className="flex flex-wrap items-center gap-3">
+                  {phoneRevealed && phone ? (
+                    <Link
+                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                      className="text-xl md:text-2xl font-medium transition-colors hover:text-accent"
+                    >
+                      {phone}
+                    </Link>
+                  ) : (
+                    <span className="text-xl md:text-2xl font-medium tabular-nums">
+                      {maskedPhone}
+                    </span>
+                  )}
+                  <IconButton
+                    onClick={() => setPhoneRevealed((v) => !v)}
+                    label={phoneRevealed ? "Скрыть номер" : "Показать номер"}
+                  >
+                    {phoneRevealed ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
+                  </IconButton>
+                  <CopyButton getValue={() => phone} />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </section>
-        <Footer />
+        <Footer cta={false} />
       </div>
     </Layout>
   );

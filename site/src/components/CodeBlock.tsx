@@ -5,6 +5,14 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nord } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { IoMdCopy, IoMdCheckmark } from "react-icons/io";
 
+const codeStyle = {
+  borderRadius: "1rem",
+  padding: "1.25rem",
+  background: "rgb(21 21 24)",
+  border: "1px solid rgb(46 46 52)",
+  fontSize: "0.9rem",
+};
+
 type CodeBlockProps = {
   language?: string;
   value: string;
@@ -28,7 +36,8 @@ export default function CodeBlock({
     <div className={`relative group ${className}`}>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 bg-transparent text-lg p-1 rounded hover:bg-[--background] transition-opacity opacity-0 group-hover:opacity-100"
+        className="absolute top-2 right-2 z-10 text-lg p-1.5 rounded-md text-muted hover:text-fg hover:bg-surface-2 transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
+        aria-label={copied ? "Скопировано" : "Скопировать код"}
         title="Скопировать"
       >
         {copied ? <IoMdCheckmark /> : <IoMdCopy />}
@@ -37,14 +46,14 @@ export default function CodeBlock({
         <SyntaxHighlighter
           language={language}
           style={nord}
-          customStyle={{ borderRadius: "0.5rem", padding: "1rem" }}
+          customStyle={codeStyle}
         >
           {value}
         </SyntaxHighlighter>
       ) : (
         <SyntaxHighlighter
           style={nord}
-          customStyle={{ borderRadius: "0.5rem", padding: "1rem" }}
+          customStyle={codeStyle}
         >
           {value}
         </SyntaxHighlighter>
