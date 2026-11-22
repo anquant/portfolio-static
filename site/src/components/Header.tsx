@@ -7,7 +7,7 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
@@ -37,6 +37,15 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
   const path = router.pathname;
   const isHomePage = path === "/";
   const [open, setOpen] = useState(false);
+
+  // The dialog is only hidden by CSS on desktop; close it for real when the
+  // viewport crosses the breakpoint, or it keeps the page scroll-locked.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => mq.matches && setOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   const logo = (
     <span className="flex items-center gap-2.5 text-base md:text-lg font-semibold tracking-tight">

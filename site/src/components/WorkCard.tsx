@@ -1,6 +1,7 @@
 import ProjectMedia from "./ProjectMedia";
 import Link from "next/link";
 import Reveal from "./Reveal";
+import { displayHost } from "@/lib/url";
 import { WorksData } from "@/lib/types/worksType";
 import { FiArrowRight } from "react-icons/fi";
 
@@ -45,7 +46,7 @@ export default function WorkCard({ works }: WorkCardProps) {
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="h-px w-8 bg-line" />
-                {work.link && <span>{new URL(work.link).hostname}</span>}
+                {work.link && <span>{displayHost(work.link)}</span>}
               </div>
               <h3 className="t-card-lg mt-5 transition-colors group-hover:text-accent">
                 {work.title}

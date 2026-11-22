@@ -62,10 +62,6 @@
     @apply text-xs md:text-sm uppercase tracking-[0.18em] text-muted;
   }
 
-  .link {
-    @apply text-fg underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent;
-  }
-
   /* Type scale: three heading levels used on every page */
   .t-display {
     @apply font-display font-bold tracking-tight text-[2.75rem] leading-[1.04] md:text-7xl;
@@ -115,6 +111,15 @@
   }
 
   /*
+   * Light source behind page titles: fades in to its resting opacity.
+   * Separate from .reveal, whose end state (opacity 1, no filter) would
+   * override the glow's opacity and blur.
+   */
+  .glow-in {
+    animation: glow-in 1.4s var(--ease-out) both;
+  }
+
+  /*
    * Scroll reveal (see <Reveal/>): same gesture, triggered when the block
    * enters the viewport. Hidden only when JS runs and motion is allowed,
    * so content is never lost without JS.
@@ -152,6 +157,15 @@
     opacity: 1;
     transform: none;
     filter: none;
+  }
+}
+
+@keyframes glow-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.6;
   }
 }
 
@@ -253,7 +267,9 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 }

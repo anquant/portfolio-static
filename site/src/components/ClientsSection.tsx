@@ -11,8 +11,7 @@ interface ClientsSectionProps {
 
 /**
  * Static logo grid instead of an autoplaying carousel:
- * all clients are visible at once, nothing moves on its own,
- * and no swiper JS is shipped.
+ * all clients are visible at once and nothing moves on its own.
  */
 export default function ClientsSection({
   clients,

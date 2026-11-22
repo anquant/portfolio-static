@@ -12,6 +12,7 @@ import {
   RiEyeOffLine,
   RiFileCopyLine,
   RiCheckLine,
+  RiCloseLine,
 } from "react-icons/ri";
 import { encode, decode, maskPhone } from "@/helpers/obfuscate";
 
@@ -48,27 +49,50 @@ function IconButton({
 }
 
 function CopyButton({ getValue }: { getValue: () => string }) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
   const handleCopy = async () => {
     const value = getValue();
     if (!value) return;
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      // clipboard is unavailable without HTTPS or when permission is denied
+      await navigator.clipboard.writeText(value);
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+    setTimeout(() => setState("idle"), 1800);
   };
 
   return (
-    <IconButton
-      onClick={handleCopy}
-      label={copied ? "Скопировано" : "Скопировать"}
-    >
-      {copied ? (
-        <RiCheckLine size={18} className="text-emerald-400" />
-      ) : (
-        <RiFileCopyLine size={18} />
-      )}
-    </IconButton>
+    <>
+      <IconButton
+        onClick={handleCopy}
+        label={
+          state === "copied"
+            ? "Скопировано"
+            : state === "failed"
+              ? "Не удалось скопировать"
+              : "Скопировать"
+        }
+      >
+        {state === "copied" ? (
+          <RiCheckLine size={18} className="text-emerald-400" />
+        ) : state === "failed" ? (
+          <RiCloseLine size={18} className="text-red-400" />
+        ) : (
+          <RiFileCopyLine size={18} />
+        )}
+      </IconButton>
+      {/* announce the result to screen readers */}
+      <span role="status" className="sr-only">
+        {state === "copied"
+          ? "Скопировано"
+          : state === "failed"
+            ? "Не удалось скопировать"
+            : ""}
+      </span>
+    </>
   );
 }
 

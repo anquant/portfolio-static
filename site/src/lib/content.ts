@@ -15,10 +15,7 @@ import { AboutData } from "./types/aboutType";
 import { ContactsData } from "./types/contactsType";
 import { ClientsData } from "./types/clientsType";
 import { WorksData } from "./types/worksType";
-import {
-  ServicesPageData,
-  ServicesListData,
-} from "./types/servicesType";
+import { ServicesPageData, ServicesListData } from "./types/servicesType";
 import {
   BlogPageData,
   BlogCategoriesData,

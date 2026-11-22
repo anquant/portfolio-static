@@ -988,13 +988,21 @@ function Burst() {
 
 /* ------------------------------------------------------------------------ */
 
+/** Checked once per page load; the probe context is released right away */
+let webglSupport: boolean | undefined;
+
 function supportsWebGL() {
+  if (webglSupport !== undefined) return webglSupport;
   try {
     const canvas = document.createElement("canvas");
-    return !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+    const gl = (canvas.getContext("webgl2") ||
+      canvas.getContext("webgl")) as WebGLRenderingContext | null;
+    webglSupport = !!gl;
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
-    return false;
+    webglSupport = false;
   }
+  return webglSupport;
 }
 
 export type HeroVariant = "blob" | "ring" | "lattice" | "burst";
@@ -1051,7 +1059,8 @@ export default function HeroScene({
     >
       <Canvas
         dpr={[1, 1.5]}
-        frameloop={visible ? "always" : "never"}
+        // reduced motion: a still picture, redrawn only on resize
+        frameloop={speed === 0 ? "demand" : visible ? "always" : "never"}
         camera={{ position: [0, 1.4, 6.5], fov: 40 }}
         gl={{
           antialias: true,

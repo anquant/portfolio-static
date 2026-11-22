@@ -8,6 +8,7 @@ import ProjectMedia from "@/components/ProjectMedia";
 import CaseVideo from "@/components/CaseVideo";
 import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
+import { displayHost } from "@/lib/url";
 import Link from "next/link";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 
@@ -77,7 +78,7 @@ export default function Work({ work, next }: WorkProps) {
                     rel="nofollow noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
                   >
-                    {new URL(link).hostname}
+                    {displayHost(link)}
                     <FiArrowUpRight />
                   </a>
                 </div>

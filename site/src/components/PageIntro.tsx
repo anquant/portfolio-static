@@ -41,9 +41,8 @@ export default function PageIntro({
       {glow !== false && (
         <div
           aria-hidden
-          className="reveal pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[140vw] rounded-full blur-3xl opacity-60"
+          className="glow-in pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[140vw] rounded-full blur-3xl opacity-60"
           style={{
-            ...d(0),
             background: `radial-gradient(closest-side, ${
               glow
                 ? `color-mix(in srgb, ${glow} 40%, transparent)`
