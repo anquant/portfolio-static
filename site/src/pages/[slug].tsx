@@ -4,7 +4,8 @@ import { Footer } from "@/components/Footer";
 import { getWorks, getWorkBySlug } from "@/lib/content";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { WorksData } from "@/lib/types/worksType";
-import Image from "next/image";
+import ProjectMedia from "@/components/ProjectMedia";
+import CaseVideo from "@/components/CaseVideo";
 import Link from "next/link";
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -34,6 +35,7 @@ export default function Work({ work, next }: WorkProps) {
     color,
     company,
     problem,
+    video,
     cover,
     mockups_description,
     mockups,
@@ -88,17 +90,14 @@ export default function Work({ work, next }: WorkProps) {
             )}
           </div>
           {illustration && (
-            <div className="mt-12 md:mt-16 overflow-hidden rounded-3xl border border-line">
-              <Image
-                src={illustration.src}
-                width={illustration.width}
-                height={illustration.height}
-                alt={title}
-                priority
-                sizes="(min-width: 1280px) 80rem, 100vw"
-                className="w-full h-auto"
-              />
-            </div>
+            <ProjectMedia
+              {...illustration}
+              alt={title}
+              color={color}
+              priority
+              sizes="(min-width: 1280px) 80rem, 100vw"
+              className="mt-12 md:mt-16"
+            />
           )}
         </div>
       </section>
@@ -113,17 +112,17 @@ export default function Work({ work, next }: WorkProps) {
           </Row>
         </div>
 
-        {cover && (
-          <div className="overflow-hidden rounded-3xl border border-line">
-            <Image
-              src={cover.src}
-              width={cover.width}
-              height={cover.height}
+        {video ? (
+          <CaseVideo video={video} poster={cover} title={title} color={color} />
+        ) : (
+          cover && (
+            <ProjectMedia
+              {...cover}
               alt={`${title} — главный экран`}
+              color={color}
               sizes="(min-width: 1280px) 80rem, 100vw"
-              className="w-full h-auto"
             />
-          </div>
+          )
         )}
 
         {mockups_description && (
@@ -140,16 +139,13 @@ export default function Work({ work, next }: WorkProps) {
             }`}
           >
             {mockups.map((item, index) => (
-              <div key={index} className="overflow-hidden rounded-2xl border border-line">
-                <Image
-                  src={item.src}
-                  width={item.width}
-                  height={item.height}
-                  alt={`${title} — макет ${index + 1}`}
-                  sizes={mockups.length > 1 ? "(min-width: 768px) 50vw, 100vw" : "100vw"}
-                  className="w-full h-auto"
-                />
-              </div>
+              <ProjectMedia
+                key={index}
+                {...item}
+                alt={`${title} — макет ${index + 1}`}
+                color={color}
+                sizes={mockups.length > 1 ? "(min-width: 768px) 50vw, 100vw" : "100vw"}
+              />
             ))}
           </div>
         )}

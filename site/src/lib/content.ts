@@ -93,7 +93,7 @@ interface RawServiceJson {
   title: string;
   tech_list?: string[];
   introtext?: string;
-  bg_image?: ServicesListData["bg_image"];
+  scene?: ServicesListData["scene"];
   sections?: ServicesListData["content"];
   meta_title: string;
   meta_description?: string;
@@ -110,7 +110,7 @@ export function getServicesList(): ServicesListData[] {
         title: raw.title,
         tech_list: raw.tech_list,
         introtext: raw.introtext,
-        bg_image: raw.bg_image,
+        scene: raw.scene ?? "blob",
         content: raw.sections,
         meta_title: raw.meta_title,
         meta_description: raw.meta_description,

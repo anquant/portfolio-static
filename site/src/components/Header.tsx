@@ -91,7 +91,7 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
             size="small"
             className="hidden sm:inline-flex"
           >
-            Связаться
+            Контакты
           </Button>
           <Button
             variant="secondary"

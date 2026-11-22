@@ -3,3 +3,8 @@ export interface ImageAsset {
   width: number;
   height: number;
 }
+
+export interface VideoAsset {
+  src: string;
+  type: string;
+}

@@ -62,11 +62,33 @@
     @apply text-fg underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent;
   }
 
+  /*
+   * Hero text reveal: soft rise + un-blur, staggered with --d (delay).
+   * Lands together with the 3D intro so text and shape read as one gesture.
+   */
+  .reveal {
+    animation: reveal 1s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+
   /* Dark logos on transparent PNG → light, calm logos on dark background */
   .logo-on-dark {
     filter: invert(1) grayscale(1);
     opacity: 0.6;
     transition: opacity 0.3s;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 

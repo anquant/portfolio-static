@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ProjectMedia from "./ProjectMedia";
 import Link from "next/link";
 import { WorksData } from "@/lib/types/worksType";
 import { MdOutlineArrowOutward } from "react-icons/md";
@@ -20,16 +20,16 @@ export default function WorkCard({ works }: WorkCardProps) {
             href={`/${work.slug}`}
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-line bg-surface lg:col-span-7 lg:order-2">
-              <Image
-                src={work.illustration?.src ?? "/assets/images/default-image-portfolio.jpg"}
-                width={work.illustration?.width ?? 1800}
-                height={work.illustration?.height ?? 1200}
-                alt=""
-                sizes="(min-width: 1024px) 60vw, 100vw"
-                className="w-full h-auto transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              />
-            </div>
+            <ProjectMedia
+              src={work.illustration?.src ?? "/assets/images/default-image-portfolio.jpg"}
+              width={work.illustration?.width ?? 1800}
+              height={work.illustration?.height ?? 1200}
+              alt=""
+              color={work.color}
+              mode="hover"
+              sizes="(min-width: 1024px) 60vw, 100vw"
+              className="lg:col-span-7 lg:order-2"
+            />
             <div className="lg:col-span-5 lg:order-1 flex flex-col">
               <div className="flex items-center gap-3 text-sm text-muted">
                 <span className="font-display font-semibold text-fg">

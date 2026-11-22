@@ -1,5 +1,3 @@
-import { ImageAsset } from "./assetType";
-
 export interface ServicesPageData {
   title: string;
   introtext?: string;
@@ -14,7 +12,8 @@ export interface ServicesListData {
   title: string;
   tech_list?: string[];
   introtext?: string;
-  bg_image?: ImageAsset;
+  /** 3D centrepiece of the hero background */
+  scene?: "blob" | "ring" | "lattice" | "burst";
   content?: {
     title: string;
     blocks?: {

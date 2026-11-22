@@ -77,14 +77,14 @@ export default function Home({ home, works, clients }: HomeProps) {
           <Header />
           <div className="flex-1 flex items-start lg:items-center pb-24 md:pb-32">
             <div className="max-w-2xl lg:max-w-[46rem]">
-              <div className="eyebrow mb-6">UX/UI-дизайн · Разработка · SEO</div>
-              <h1 className="font-display text-[2.4rem] leading-[1.08] md:text-6xl lg:text-[4.2rem] font-bold tracking-tight">
+              <div className="reveal eyebrow mb-6" style={{ "--d": "150ms" } as React.CSSProperties}>UX/UI-дизайн · Разработка · SEO</div>
+              <h1 style={{ "--d": "300ms" } as React.CSSProperties} className="reveal font-display text-[2.4rem] leading-[1.08] md:text-6xl lg:text-[4.2rem] font-bold tracking-tight">
                 {title_h1}
               </h1>
-              <p className="mt-6 md:mt-8 max-w-xl text-lg md:text-xl text-muted">
+              <p style={{ "--d": "500ms" } as React.CSSProperties} className="reveal mt-6 md:mt-8 max-w-xl text-lg md:text-xl text-muted">
                 {introtext}
               </p>
-              <div className="mt-10 flex flex-wrap gap-3">
+              <div style={{ "--d": "700ms" } as React.CSSProperties} className="reveal mt-10 flex flex-wrap gap-3">
                 <Button type="link" href="#works">
                   Смотреть проекты <span aria-hidden>↓</span>
                 </Button>
