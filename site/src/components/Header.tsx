@@ -3,203 +3,196 @@
 import { useRouter } from "next/router";
 import {
   Dialog,
+  DialogPanel,
   Transition,
   TransitionChild,
-  DialogPanel,
 } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
-import Button from "./Button";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
-import { GoDotFill } from "react-icons/go";
+import { IoClose } from "react-icons/io5";
+import { FiArrowRight } from "react-icons/fi";
+import Button from "./Button";
 
 export const navigation = [
-  {
-    title: "Проекты",
-    slug: "/",
-    active: false,
-  },
-  {
-    title: "Услуги",
-    slug: "/services",
-    active: false,
-  },
-  {
-    title: "Обо мне",
-    slug: "/about",
-    active: false,
-  },
-  {
-    title: "Блог",
-    slug: "/blog",
-    active: false,
-  },
-  {
-    title: "Контакты",
-    slug: "/contacts",
-    active: false,
-  },
+  { title: "Проекты", slug: "/" },
+  { title: "Услуги", slug: "/services" },
+  { title: "Обо мне", slug: "/about" },
+  { title: "Блог", slug: "/blog" },
 ];
+
+export const siteName = "Павел Моисеев";
 
 type HeaderProps = {
   classes?: string;
 };
 
-export default function Header({ classes = "mb-28 md:mb-40" }: HeaderProps) {
-  const siteName = "Павел Моисеев";
+function isActive(path: string, slug: string) {
+  if (slug === "/") return path === "/" || path === "/[slug]";
+  return path === slug || path.startsWith(`${slug}/`);
+}
 
+export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
   const router = useRouter();
   const path = router.pathname;
-  navigation.forEach((item) => {
-    item.active = path === item.slug;
-  });
-
-  const isHomePage = router.pathname === "/";
-
+  const isHomePage = path === "/";
   const [open, setOpen] = useState(false);
 
+  // The dialog is only hidden by CSS on desktop; close it for real when the
+  // viewport crosses the breakpoint, or it keeps the page scroll-locked.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => mq.matches && setOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const logo = (
+    <span className="flex items-center gap-2.5 text-base md:text-lg font-semibold tracking-tight">
+      <span
+        aria-hidden
+        className="grid place-items-center size-8 rounded-full bg-fg text-bg font-display text-sm font-bold"
+      >
+        ПМ
+      </span>
+      {siteName}
+    </span>
+  );
+
   return (
-    <header className="relative">
-      {/* Pop-up menu */}
+    <header className={`relative z-20 ${classes}`}>
+      <div className="flex items-center justify-between gap-6 pt-6 md:pt-10">
+        {isHomePage ? (
+          <div className="cursor-default">{logo}</div>
+        ) : (
+          <Link href="/" className="transition-opacity hover:opacity-70">
+            {logo}
+          </Link>
+        )}
+
+        {/* Desktop navigation */}
+        <nav
+          aria-label="Основное меню"
+          className="hidden lg:flex items-center gap-1 rounded-full border border-line bg-surface/70 backdrop-blur p-1"
+        >
+          {navigation.map((item) => {
+            const active = isActive(path, item.slug);
+            return (
+              <Link
+                key={item.slug}
+                href={item.slug}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-full px-4 py-2 text-sm transition-colors ${
+                  active ? "bg-surface-2 text-fg" : "text-muted hover:text-fg"
+                }`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="link"
+            href="/contacts"
+            size="small"
+            className="hidden sm:inline-flex"
+          >
+            Контакты
+          </Button>
+          <Button
+            variant="secondary"
+            size="small"
+            className="lg:hidden !px-3"
+            onClick={() => setOpen(true)}
+            aria-label="Открыть меню"
+          >
+            <HiOutlineMenuAlt4 size={18} />
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
       <Transition show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-20" onClose={setOpen}>
+        <Dialog as="div" className="relative z-50 lg:hidden" onClose={setOpen}>
+          <TransitionChild
+            as={Fragment}
+            enter="transition-opacity duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-bg/95 backdrop-blur-sm" />
+          </TransitionChild>
           <div className="fixed inset-0 flex">
             <TransitionChild
               as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-y-full"
-              enterTo="translate-y-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-y-0"
-              leaveTo="-translate-y-full"
+              enter="transition duration-300 ease-out"
+              enterFrom="opacity-0 -translate-y-4"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition duration-200 ease-in"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 -translate-y-4"
             >
-              <div className="bg-[--background-dark] w-full">
-                <DialogPanel className="relative h-full overflow-y-auto mx-auto max-w-7xl px-6 xl:px-0">
-                  <div className="flex justify-between items-center pt-8 md:pt-16">
-                    {isHomePage ? (
-                      <div className="text-xl text-white/90 font-bold cursor-default">
-                        {siteName}
-                      </div>
-                    ) : (
+              <DialogPanel className="container-page flex flex-col h-full overflow-y-auto text-fg font-sans">
+                <div className="flex items-center justify-between pt-6 md:pt-10">
+                  {logo}
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    className="!px-3"
+                    onClick={() => setOpen(false)}
+                    aria-label="Закрыть меню"
+                  >
+                    <IoClose size={18} />
+                  </Button>
+                </div>
+                <nav aria-label="Основное меню" className="mt-16 flex flex-col">
+                  {[
+                    ...navigation,
+                    { title: "Контакты", slug: "/contacts" },
+                  ].map((item, i) => {
+                    const active = isActive(path, item.slug);
+                    return (
                       <Link
-                        href="/"
-                        className="block w-fit text-xl text-white/90 font-bold hover:text-white/40 duration-300"
+                        key={item.slug}
+                        href={item.slug}
                         onClick={() => setOpen(false)}
+                        aria-current={active ? "page" : undefined}
+                        style={
+                          { "--d": `${120 + i * 60}ms` } as React.CSSProperties
+                        }
+                        className={`reveal flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
+                          active ? "text-accent" : "text-fg hover:text-accent"
+                        }`}
                       >
-                        {siteName}
+                        {item.title}
+                        <FiArrowRight
+                          aria-hidden
+                          className="text-xl text-muted"
+                        />
                       </Link>
-                    )}
-                    <button
-                      type="button"
-                      className="relative outline-none group"
-                      onClick={() => setOpen(false)}
-                    >
-                      <svg
-                        className="stroke-white group-hover:stroke-white/40 duration-300"
-                        width="30"
-                        height="30"
-                        viewBox="0 0 30 30"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M7 23.0278L23.0278 7"
-                          strokeWidth="3"
-                          strokeLinecap="square"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M23.0277 23.0278L6.99996 7"
-                          strokeWidth="3"
-                          strokeLinecap="square"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="flex justify-center -ml-8 mt-32 px-8">
-                    <div className="space-y-4">
-                      {navigation.map((item, index) => (
-                        <div
-                          key={index}
-                          className="text-3xl md:text-4xl whitespace-nowrap"
-                        >
-                          {item.active ? (
-                            <span className="flex gap-1 items-center text-white/40 cursor-default">
-                              <GoDotFill />
-                              {item.title}
-                            </span>
-                          ) : (
-                            <Link
-                              href={item.slug}
-                              className="flex gap-1 items-center text-white/90 group"
-                            >
-                              <GoDotFill className="relative opacity-0 -top-3 group-hover:opacity-100 group-hover:top-0 duration-300" />
-                              {item.title}
-                            </Link>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </DialogPanel>
-              </div>
+                    );
+                  })}
+                </nav>
+                <div className="mt-auto pb-10 pt-10">
+                  <Button
+                    type="link"
+                    href="/contacts"
+                    className="w-full"
+                    onClick={() => setOpen(false)}
+                  >
+                    Обсудить проект
+                  </Button>
+                </div>
+              </DialogPanel>
             </TransitionChild>
           </div>
         </Dialog>
       </Transition>
-
-      {/* Menu */}
-      <div
-        className={`relative flex justify-between items-center pt-8 md:pt-16 ${classes}`}
-      >
-        {isHomePage ? (
-          <div className="text-lg md:text-xl font-bold cursor-default">
-            {siteName}
-          </div>
-        ) : (
-          <Link
-            href="/"
-            className="block w-fit text-lg md:text-xl font-bold hover:text-[--link] duration-300"
-          >
-            {siteName}
-          </Link>
-        )}
-        <div className="flex items-center gap-x-10 xl:gap-x-16">
-          <nav className="hidden lg:flex flex-wrap justify-end gap-x-6 gap-y-4">
-            {navigation.map((item, index) => (
-              <div key={index} className="text-lg whitespace-nowrap">
-                {item.active ? (
-                  <span className="flex gap-0.5 items-center cursor-default">
-                    <GoDotFill />
-                    {item.title}
-                  </span>
-                ) : (
-                  <Link
-                    href={item.slug}
-                    className="flex gap-0.5 items-center group"
-                  >
-                    <GoDotFill className="relative opacity-0 -top-3 group-hover:opacity-100 group-hover:top-0 duration-300" />
-                    {item.title}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </nav>
-          <div className="flex gap-1.5 items-center">
-            <Button
-              type="button"
-              theme="dark"
-              size="small"
-              className="lg:hidden"
-              onClick={() => setOpen(true)}
-            >
-              <HiOutlineMenuAlt4 size={18} />
-            </Button>
-          </div>
-        </div>
-      </div>
     </header>
   );
 }

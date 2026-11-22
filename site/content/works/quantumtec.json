@@ -16,8 +16,10 @@
     "src": "/video/works/quantumtec.mp4",
     "type": "video/mp4"
   },
-  "video_poster": {
-    "src": "/images/works/quantumtec-poster.jpg"
+  "cover": {
+    "src": "/images/works/quantumtec-poster.jpg",
+    "width": 2880,
+    "height": 1580
   },
   "mockups_description": "Дизайн разрабатывался с особым вниманием к деталям, чтобы создать интуитивно понятный интерфейс и визуальную идентичность, соответствующую бренду QuantumTec. Макеты сайта и личного кабинета прорабатывались с акцентом на удобство пользователей.",
   "mockups": [

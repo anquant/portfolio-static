@@ -15,10 +15,7 @@ import { AboutData } from "./types/aboutType";
 import { ContactsData } from "./types/contactsType";
 import { ClientsData } from "./types/clientsType";
 import { WorksData } from "./types/worksType";
-import {
-  ServicesPageData,
-  ServicesListData,
-} from "./types/servicesType";
+import { ServicesPageData, ServicesListData } from "./types/servicesType";
 import {
   BlogPageData,
   BlogCategoriesData,
@@ -93,8 +90,7 @@ interface RawServiceJson {
   title: string;
   tech_list?: string[];
   introtext?: string;
-  bg_video?: ServicesListData["bg_video"];
-  bg_video_poster?: ServicesListData["bg_video_poster"];
+  scene?: ServicesListData["scene"];
   sections?: ServicesListData["content"];
   meta_title: string;
   meta_description?: string;
@@ -111,8 +107,7 @@ export function getServicesList(): ServicesListData[] {
         title: raw.title,
         tech_list: raw.tech_list,
         introtext: raw.introtext,
-        bg_video: raw.bg_video,
-        bg_video_poster: raw.bg_video_poster,
+        scene: raw.scene ?? "blob",
         content: raw.sections,
         meta_title: raw.meta_title,
         meta_description: raw.meta_description,

@@ -6,19 +6,20 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { ServicesListData } from "@/lib/types/servicesType";
 import { WorksData } from "@/lib/types/worksType";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import WorkCard from "@/components/WorkCard";
+import Reveal from "@/components/Reveal";
+import SectionHeader from "@/components/SectionHeader";
+import PageIntro from "@/components/PageIntro";
+import { FiArrowRight } from "react-icons/fi";
 import Button from "@/components/Button";
-import { Manrope } from "next/font/google";
-import { useSafari } from "@/hooks/useSafari";
-import Image from "next/image";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import remarkGfm from "remark-gfm";
 import { mdxComponents } from "@/lib/mdx-components";
 
-const manrope = Manrope({
-  subsets: ["cyrillic"],
-  weight: "700",
+const HeroScene = dynamic(() => import("@/components/HeroScene"), {
+  ssr: false,
 });
 
 type SerializedBlock = {
@@ -33,161 +34,134 @@ type SerializedSection = {
 };
 
 interface CurrentServiceProps {
-  service: Omit<ServicesListData, "content"> & { sections: SerializedSection[] };
+  service: Omit<ServicesListData, "content"> & {
+    sections: SerializedSection[];
+  };
   works: WorksData[];
 }
 
-export default function CurrentService({ service, works }: CurrentServiceProps) {
-  const { title, tech_list, introtext, bg_video, bg_video_poster, sections, meta_title, meta_description } =
-    service;
+export default function CurrentService({
+  service,
+  works,
+}: CurrentServiceProps) {
+  const {
+    title,
+    tech_list,
+    introtext,
+    scene,
+    sections,
+    meta_title,
+    meta_description,
+  } = service;
   const seo = { meta_title, meta_description };
 
-  // Safari detection
-  const isSafari = useSafari();
-
   return (
-    <>
-      <style jsx global>{`
-        body {
-          background: #ffffff;
-        }
-      `}</style>
-      <Layout seo={seo}>
-        <div className="relative flex flex-col justify-between min-h-screen">
-          <div className="relative bg-[--background] md:bg-[#e5e5e5] overflow-hidden">
-            {bg_video?.src && (
-              <>
-                {!isSafari && (
-                  <video
-                    playsInline
-                    muted
-                    autoPlay
-                    loop
-                    {...(bg_video_poster && {
-                      poster: bg_video_poster.src,
-                    })}
-                    className="hidden md:block absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
-                  >
-                    <source src={bg_video.src} type={bg_video.type} />
-                  </video>
-                )}
-                {isSafari && bg_video_poster && (
-                  <Image
-                    src={bg_video_poster.src}
-                    alt={title}
-                    width={bg_video_poster.width}
-                    height={bg_video_poster.height}
-                    className="hidden md:block absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
-                  />
-                )}
-              </>
-            )}
-            <div className="relative z-10 pb-20 md:pb-40">
-              <div className="mx-auto w-full max-w-7xl px-6 xl:px-0">
-                <Header classes="mb-20 md:mb-36" />
-              </div>
-              <section className="mx-auto w-full max-w-6xl px-6 xl:px-0">
-                <div className="flex gap-2 mb-6">
-                  <Link href="/" className="hover:text-[--link] duration-300">
-                    Главная
-                  </Link>
-                  <span>/</span>
-                  <Link
-                    href="/services"
-                    className="hover:text-[--link] duration-300"
-                  >
-                    Услуги
-                  </Link>
-                </div>
-                <h1
-                  className={`${manrope.className} text-4xl lg:text-5xl max-w-3xl mb-8 md:mb-10 lg:mb-12`}
-                >
-                  {title}
-                </h1>
-                {tech_list && (
-                  <div className="flex flex-wrap gap-1 mb-28 md:mb-20">
-                    {tech_list.map((item, index) => (
-                      <div
-                        key={index}
-                        className="bg-white rounded-full py-2 px-3 md:px-6"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="flex justify-center">
-                  <p className="max-w-2xl">{introtext}</p>
-                </div>
-              </section>
-            </div>
-          </div>
-          {sections &&
-            sections.map((c, c_index) => (
-              <section
-                key={c_index}
-                className={
-                  c.color === "dark"
-                    ? "bg-[--background-dark]"
-                    : "bg-[--background-light]"
-                }
-              >
-                <div className="mx-auto w-full max-w-6xl py-16 md:py-32 px-6 xl:px-0">
-                  <h2
-                    className={`${manrope.className} ${c.color === "dark" ? "text-white" : ""} text-3xl lg:text-4xl font-semibold max-w-[90%] mb-14 md:mb-24`}
-                  >
-                    {c.title}
-                  </h2>
-                  {c.blocks && c.blocks.length > 0 && (
-                    <div className="space-y-12">
-                      {c.blocks.map((b, b_index) => (
-                        <div
-                          key={b_index}
-                          className="flex flex-col md:flex-row gap-3.5 md:gap-6"
-                        >
-                          <h3
-                            className={`md:basis-3/12 ${c.color === "dark" && "text-white"} text-lg md:text-xl font-semibold`}
-                          >
-                            {b.title}
-                          </h3>
-                          <div
-                            className={`md:basis-9/12 content-blocks ${c.color === "dark" ? "text-white/60" : "text-[--text]/60"}`}
-                          >
-                            <MDXRemote {...b.mdxSource} components={mdxComponents} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </section>
-            ))}
-          <section className="mx-auto w-full max-w-6xl py-16 px-6 xl:px-0">
-            <h2 className="text-xl md:text-2xl border-b-2 border-[--text] mb-14 md:mb-28 pb-3.5">
-              Реализованные проекты
-            </h2>
-            <WorkCard works={works} />
-            <div className="flex justify-center mt-28 md:mt-0">
-              <Button type="link" href="/?page=2#work-4" className="text-lg">
-                Все проекты
-              </Button>
-              <hr />
-            </div>
-          </section>
-          <div className="mx-auto w-full max-w-7xl px-6 xl:px-0">
-            <Footer />
-          </div>
+    <Layout seo={seo}>
+      {/* Hero: same interactive 3D background as the home page, own centrepiece per service */}
+      <section className="relative isolate overflow-hidden border-b border-line">
+        <div className="absolute inset-0 -z-10">
+          <HeroScene variant={scene ?? "blob"} />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-bg via-bg/70 to-transparent lg:via-bg/40"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-bg to-transparent"
+          />
         </div>
-      </Layout>
-    </>
+        <div className="container-page relative pb-20 md:pb-32 lg:min-h-[44rem]">
+          <Header />
+          <PageIntro
+            crumbs={[{ href: "/services", label: "Услуги" }]}
+            current={service.preview_title}
+            title={title}
+            size="title"
+            lead={introtext}
+            glow={false}
+          >
+            {tech_list && (
+              <ul className="flex flex-wrap gap-2 mb-10">
+                {tech_list.map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-full border border-line bg-surface/70 px-4 py-2 text-sm"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <Button type="link" href="/contacts">
+              Обсудить задачу <FiArrowRight aria-hidden />
+            </Button>
+          </PageIntro>
+        </div>
+      </section>
+
+      {sections.map((section, s_index) => (
+        <section
+          key={s_index}
+          className={
+            section.color === "dark"
+              ? "bg-surface border-b border-line"
+              : "border-b border-line"
+          }
+        >
+          <div className="container-page py-16 md:py-28">
+            <Reveal
+              as="h2"
+              className="t-section md:text-4xl max-w-3xl mb-12 md:mb-20"
+            >
+              {section.title}
+            </Reveal>
+            {section.blocks.length > 0 && (
+              <div className="divide-y divide-line">
+                {section.blocks.map((b, b_index) => (
+                  <Reveal
+                    key={b_index}
+                    delay={b_index * 80}
+                    className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-8 first:pt-0"
+                  >
+                    <h3 className="md:col-span-4 flex gap-4 text-lg md:text-xl font-semibold">
+                      <span className="font-display text-muted text-sm pt-1.5">
+                        {String(b_index + 1).padStart(2, "0")}
+                      </span>
+                      {b.title}
+                    </h3>
+                    <div className="md:col-span-8 content-blocks text-muted">
+                      <MDXRemote {...b.mdxSource} components={mdxComponents} />
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ))}
+
+      <div className="container-page">
+        <section className="section-gap">
+          <SectionHeader
+            title="Реализованные проекты"
+            aside={
+              <Link href="/#works" className="transition-colors hover:text-fg">
+                Все проекты{" "}
+                <FiArrowRight aria-hidden className="inline -mt-0.5" />
+              </Link>
+            }
+          />
+          <WorkCard works={works} />
+        </section>
+        <Footer />
+      </div>
+    </Layout>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = getServicesList().map((s) => ({ params: { slug: s.slug } }));
-
   return {
-    paths,
+    paths: getServicesList().map((s) => ({ params: { slug: s.slug } })),
     fallback: false,
   };
 };
@@ -195,10 +169,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   const service = getServiceBySlug(slug);
-
-  if (!service) {
-    return { notFound: true };
-  }
+  if (!service) return { notFound: true };
 
   const sections: SerializedSection[] = await Promise.all(
     (service.content ?? []).map(async (section) => ({
@@ -215,13 +186,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }))
   );
 
-  const works = getWorks().slice(0, 3);
   const { content: _content, ...serviceRest } = service;
 
   return {
     props: {
       service: { ...serviceRest, sections },
-      works,
+      works: getWorks().slice(0, 3),
     },
   };
 };

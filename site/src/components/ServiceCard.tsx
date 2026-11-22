@@ -1,68 +1,57 @@
-"use client";
-
 import Link from "next/link";
-import Image from "next/image";
 import { ServicesListData } from "@/lib/types/servicesType";
-import { useSafari } from "@/hooks/useSafari";
+import { FiArrowRight } from "react-icons/fi";
+import Reveal from "./Reveal";
 
 type ServiceCardProps = {
   services?: ServicesListData[];
 };
 
 export default function ServiceCard({ services }: ServiceCardProps) {
-  // Safari detection
-  const isSafari = useSafari();
+  if (!services || services.length === 0) {
+    return <div className="text-muted mt-10">Здесь пока нет услуг…</div>;
+  }
 
-  return services && services.length > 0 ? (
-    <div className="space-y-6 md:space-y-3 mt-10">
+  return (
+    <div className="mt-12 md:mt-16 grid grid-cols-1 gap-3">
       {services.map((service, index) => (
-        <article
-          key={index}
-          className="relative overflow-hidden flex flex-col md:flex-row gap-6 md:gap-12 bg-white/80 md:bg-white/35 md:hover:bg-white/90 duration-300"
-        >
-          <header className="space-y-3.5 md:space-y-2.5 p-8 md:p-10 z-[2]">
-            <h2 className="text-2xl lg:text-3xl font-medium md:font-normal">
-              {service.preview_title}
-            </h2>
-            <p className="text-base md:text-lg text-[--gray-text] duration-300 max-w-xl">
-              {service.preview_description}
-            </p>
-          </header>
-          {service.bg_video?.src && (
-            <picture className="pointer-events-none z-0">
-              {!isSafari && (
-                <video
-                  playsInline
-                  muted
-                  autoPlay
-                  loop
-                  {...(service.bg_video_poster && {
-                    poster: service.bg_video_poster.src,
-                  })}
-                  className="hidden lg:block absolute top-0 right-0 h-full object-cover"
-                >
-                  <source src={service.bg_video.src} type={service.bg_video.type} />
-                </video>
-              )}
-              {isSafari && service.bg_video_poster && (
-                <Image
-                  src={service.bg_video_poster.src}
-                  alt={service.title}
-                  width={service.bg_video_poster.width}
-                  height={service.bg_video_poster.height}
-                  className="hidden lg:block absolute top-0 right-0 h-full object-cover"
-                />
-              )}
-            </picture>
-          )}
+        <Reveal key={service.slug} delay={index * 90}>
           <Link
             href={`/services/${service.slug}`}
-            className="absolute top-0 left-0 w-full h-full z-[3]"
-          ></Link>
-        </article>
+            className="group relative grid grid-cols-[auto_1fr_auto] items-start md:items-center gap-5 md:gap-10 rounded-2xl border border-line bg-surface p-6 md:p-10 transition-colors hover:bg-surface-2 hover:border-fg/20"
+          >
+            <span className="font-display text-sm md:text-base font-semibold text-muted pt-1.5 md:pt-0">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <h2 className="t-card-lg transition-colors group-hover:text-accent">
+                {service.preview_title}
+              </h2>
+              <p className="mt-2 text-base md:text-lg text-muted max-w-xl">
+                {service.preview_description}
+              </p>
+              {service.tech_list && (
+                <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {service.tech_list.map((t) => (
+                    <li
+                      key={t}
+                      className="rounded-full border border-line px-3 py-1 text-xs md:text-sm text-muted"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <span
+              aria-hidden
+              className="grid place-items-center size-11 md:size-14 rounded-full border border-line text-xl transition-colors group-hover:bg-fg group-hover:text-bg group-hover:border-fg"
+            >
+              <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        </Reveal>
       ))}
     </div>
-  ) : (
-    <div className="text-[--gray-text] mt-10">Здесь пока нет услуг ...</div>
   );
 }

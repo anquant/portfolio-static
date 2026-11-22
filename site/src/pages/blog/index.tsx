@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import Button from "@/components/Button";
 import { getBlogPage, getBlogCategories, getBlogArticles } from "@/lib/content";
 import { GetStaticProps } from "next";
 import {
@@ -12,13 +11,8 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ArticleCard from "@/components/ArticleCard";
-import { Manrope } from "next/font/google";
+import PageIntro from "@/components/PageIntro";
 import { SITE_URL } from "@/lib/site";
-
-const manrope = Manrope({
-  subsets: ["cyrillic"],
-  weight: "500",
-});
 
 interface BlogProps {
   blog_page: BlogPageData;
@@ -93,69 +87,73 @@ export default function Blog({
     blog_articles.some((article) => article.category.slug === category.slug)
   );
 
+  const chip = (active: boolean) =>
+    `rounded-full border px-4 py-2 text-sm transition-colors ${
+      active
+        ? "border-fg bg-fg text-bg"
+        : "border-line text-muted hover:text-fg hover:border-fg/40"
+    }`;
+
   return (
     <Layout seo={seo} site_url={SITE_URL} canonical={true}>
-      <div className="relative flex flex-col justify-between min-h-screen mx-auto max-w-7xl px-6 xl:px-0">
-        <Header classes="mb-20 md:mb-40" />
-        <section className="md:px-20">
-          <h1
-            className={`${manrope.className} text-5xl lg:text-7xl mb-2.5 md:mb-6`}
-          >
-            {title}
-          </h1>
-          {categories_with_articles?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-10">
-              <Button
+      <div className="container-page">
+        <Header />
+        <PageIntro title={title}>
+          {categories_with_articles.length > 0 && (
+            <div
+              role="group"
+              aria-label="Категории"
+              className="flex flex-wrap gap-2"
+            >
+              <button
                 type="button"
-                size="small"
-                theme="dark"
+                aria-pressed={!activeCategory}
                 onClick={() => handleCategoryClick("")}
-                className={
-                  !activeCategory
-                    ? "pointer-events-none"
-                    : "opacity-40 hover:opacity-100 duration-100"
-                }
+                className={chip(!activeCategory)}
               >
                 Все
-              </Button>
+              </button>
               {categories_with_articles.map((category) => (
-                <Button
+                <button
                   key={category.slug}
                   type="button"
-                  size="small"
-                  theme="dark"
+                  aria-pressed={activeCategory === category.slug}
                   onClick={() => handleCategoryClick(category.slug)}
-                  className={
-                    activeCategory === category.slug
-                      ? "pointer-events-none"
-                      : "opacity-40 hover:opacity-100 duration-100"
-                  }
+                  className={chip(activeCategory === category.slug)}
                 >
                   {category.title}
-                </Button>
+                </button>
               ))}
-              <div className="flex-1 flex gap-1.5 items-center">
-                <hr className="flex-1 min-w-[50px] border-[#b8b8b8]" />
-                <div className="text-sm text-[--gray-text] lowercase">
-                  Категории
-                </div>
-              </div>
             </div>
           )}
-          <ArticleCard articles={paginatedArticles} />
-          {/* Pagination */}
+        </PageIntro>
+        <section>
+          {/* key: re-run the card reveal when the filter or page changes */}
+          <ArticleCard
+            key={`${activeCategory}-${currentPage}`}
+            articles={paginatedArticles}
+          />
           {totalPages > 1 && (
-            <div className="flex justify-center mt-10 gap-2">
+            <nav
+              aria-label="Страницы"
+              className="flex justify-center mt-12 gap-2"
+            >
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => handlePageChange(i + 1)}
-                  className={`min-w-[36px] px-3 py-1 border border-[--text] text-center ${currentPage === i + 1 ? "bg-[--text] text-white" : "hover:border-[--link] duration-300"}`}
+                  aria-current={currentPage === i + 1 ? "page" : undefined}
+                  className={`size-10 rounded-full border text-sm transition-colors ${
+                    currentPage === i + 1
+                      ? "border-fg bg-fg text-bg"
+                      : "border-line text-muted hover:text-fg"
+                  }`}
                 >
                   {i + 1}
                 </button>
               ))}
-            </div>
+            </nav>
           )}
         </section>
         <Footer />

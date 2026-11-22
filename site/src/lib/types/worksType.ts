@@ -11,7 +11,8 @@ export interface WorksData {
   company: string;
   problem: string;
   video?: VideoAsset;
-  video_poster?: { src: string };
+  /** Static image; also the poster of `video` */
+  cover?: ImageAsset;
   mockups_description?: string;
   mockups?: ImageAsset[];
   result: string;

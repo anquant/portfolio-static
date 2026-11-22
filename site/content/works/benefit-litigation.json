@@ -15,8 +15,10 @@
     "src": "/video/works/benefit-litigation.mp4",
     "type": "video/mp4"
   },
-  "video_poster": {
-    "src": "/images/works/benefit-litigation-poster.jpg"
+  "cover": {
+    "src": "/images/works/benefit-litigation-poster.jpg",
+    "width": 2880,
+    "height": 1580
   },
   "mockups_description": "Была проведена тщательная работа по анализу предыдущего опыта компании, что позволило разработать современную концепцию бренда. Представленные варианты сочетали тёмные и светлые оттенки. Также была разработана уникальная анимация и новая форма подачи информации.",
   "mockups": [
