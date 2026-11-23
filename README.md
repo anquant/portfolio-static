@@ -122,9 +122,12 @@ field. Commit and push to `main` to publish.
 
 ## License
 
-See [LICENSE](LICENSE) — split by material:
+All rights reserved — see [LICENSE](LICENSE). The source is published for
+viewing only, as a portfolio and a code sample:
 
-- **Code/interface** (`site/` excluding content/media) — free to use, provided
-  you keep a visible attribution link to [moiseevp.ru](https://moiseevp.ru/).
-- **Content** (`site/content/`, media in `site/public/`) — all rights
-  reserved, no reuse without permission.
+- **Code/interface** — may be read, but not copied, reused, or deployed
+  (including as a template) without written permission.
+- **Content** (`site/content/`, media in `site/public/`) — no reuse without
+  permission.
+- **Client logos, names, and screenshots** belong to their owners and are
+  shown only to present the work.
