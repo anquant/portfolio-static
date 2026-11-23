@@ -1,0 +1,5 @@
+# Open to every crawler, AI assistants included
+User-agent: *
+Allow: /
+
+Sitemap: https://moiseevp.ru/sitemap.xml

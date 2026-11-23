@@ -1,7 +1,37 @@
-/** @type {import('next-sitemap').IConfig} */
+/* eslint-disable @typescript-eslint/no-require-imports -- next-sitemap loads this file as CommonJS */
+const fs = require('fs');
+const path = require('path');
 
+const matter = require('gray-matter');
+
+/** Publication date of each blog post, from its front matter: "/blog/<slug>" → ISO date */
+function blogDates() {
+  const dir = path.join(__dirname, 'content/blog');
+
+  return Object.fromEntries(
+    fs
+      .readdirSync(dir)
+      .filter(file => file.endsWith('.mdx'))
+      .map(file => [`/blog/${file.replace(/\.mdx$/, '')}`, matter.read(path.join(dir, file)).data.pubdate]),
+  );
+}
+
+const dates = blogDates();
+
+/** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://moiseevp.ru/',
+  // straight into the export: `next build` copies public/ before this runs, so
+  // writing to public/ (the default) leaves the deployed site without a sitemap
+  outDir: 'out',
   generateIndexSitemap: false,
-  generateRobotsTxt: true,
+  // robots.txt is a static file in public/: next-sitemap would add the obsolete Host directive
+  generateRobotsTxt: false,
+  exclude: ['/404'],
+  autoLastmod: false,
+  // Only real dates: a build-time lastmod on every page tells crawlers that everything changes daily
+  transform: async (config, loc) => ({
+    loc,
+    ...(dates[loc] && { lastmod: new Date(dates[loc]).toISOString() }),
+  }),
 };
