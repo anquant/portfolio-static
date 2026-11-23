@@ -29,15 +29,17 @@ function signedVolume(geometry: THREE.BufferGeometry) {
 }
 
 /**
- * Every local transform in the graph, flattened — a fingerprint of the pose.
- * Matrices rather than quaternions: a full turn flips a quaternion's sign
- * (q and -q are the same rotation) but leaves the matrix identical.
+ * What the viewer sees, flattened — a fingerprint of the pose: visibility of
+ * every node plus the transform of visible ones (a hidden object may move
+ * freely). Matrices rather than quaternions: a full turn flips a quaternion's
+ * sign (q and -q are the same rotation) but leaves the matrix identical.
  */
 function pose(root: THREE.Object3D) {
   const out: number[] = [];
   root.traverse(o => {
+    out.push(o.visible ? 1 : 0);
     o.updateMatrix();
-    out.push(...o.matrix.elements);
+    out.push(...(o.visible ? o.matrix.elements : new Array<number>(16).fill(0)));
   });
 
   return out;
@@ -138,6 +140,20 @@ describe.each(SCENE_IDS)('scene %s', id => {
       expect(b).toHaveLength(a.length);
       const drift = Math.max(...b.map((x, i) => Math.abs(x - (a[i] ?? Infinity))));
       expect(drift).toBeLessThan(1e-6);
+    }
+  });
+
+  it('has no jump across a loop boundary', () => {
+    // Periodicity alone misses a pose that wraps from "still moving" straight
+    // back to the start; compare the instants just before and after each wrap.
+    const eps = 1e-4;
+    for (const boundary of [LOOP, 2 * LOOP]) {
+      scene.update(boundary - eps);
+      const before = pose(scene.root);
+      scene.update(boundary + eps);
+      const after = pose(scene.root);
+      const jump = Math.max(...after.map((x, i) => Math.abs(x - (before[i] ?? Infinity))));
+      expect(jump).toBeLessThan(1e-2);
     }
   });
 });

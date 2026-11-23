@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { V, mat, mesh } from '../../kit';
-import { FLOAT, clamp01, ease, keyframes, phase, wave } from '../../motion';
+import { FLOAT, ease, keyframes, phase, wave } from '../../motion';
 import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* Deploying Next.js — a cube of blocks assembling itself */
@@ -59,10 +59,11 @@ export function cubes(): SceneDef {
   return {
     root,
     update(t) {
-      const p = phase(t);
       for (const s of parts) {
         // scattered → fly in → hold together → drift apart again
-        const k = keyframes(clamp01(p - s.delay), [
+        // phase(), not clamp: the delay wraps around the loop, so the end of one
+        // cycle flows into the start of the next instead of snapping
+        const k = keyframes(phase(t, 1, -s.delay), [
           [0, 0],
           [0.12, 0],
           [0.45, 1, ease.inOut],

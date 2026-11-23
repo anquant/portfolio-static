@@ -41,6 +41,7 @@ export function laptop(): SceneDef {
   const origin = V(-0.85, 0, 0);
   const path = [origin, V(-0.3, 0.55, 0), V(0.1, 0.25, 0), V(0.85, 1.15, 0)];
   const R = 0.065;
+  const MIN_VISIBLE = 1e-3;
   const segGeo = new THREE.CylinderGeometry(R, R, 1, 24);
   segGeo.translate(0, 0.5, 0); // grows from its start point
   const up = V(0, 1, 0);
@@ -89,12 +90,13 @@ export function laptop(): SceneDef {
       segments.forEach((sg, i) => {
         const len = Math.min(sg.length, Math.max(0, left));
         sg.m.scale.y = Math.max(len, 1e-4);
-        sg.m.visible = len > 0;
+        const drawn = len > MIN_VISIBLE; // a sliver shorter than this is invisible anyway
+        sg.m.visible = drawn;
         const joint = joints[i - 1]; // the joint before this segment; none before the first
         if (joint) {
-          joint.visible = len > 0;
+          joint.visible = drawn;
         }
-        if (len > 0) {
+        if (drawn) {
           tip = sg.start.clone().addScaledVector(sg.dir, len);
           tipDir = sg.dir;
         }
