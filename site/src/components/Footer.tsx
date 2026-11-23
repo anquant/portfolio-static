@@ -1,8 +1,8 @@
-import Link from "next/link";
-import Button from "./Button";
-import Reveal from "./Reveal";
-import { FiArrowRight, FiArrowUp, FiArrowUpRight } from "react-icons/fi";
-import { navigation, siteName } from "./Header";
+import Link from 'next/link';
+import Button from './Button';
+import Reveal from './Reveal';
+import { FiArrowRight, FiArrowUp, FiArrowUpRight } from 'react-icons/fi';
+import { navigation, siteName } from './Header';
 
 type FooterProps = {
   /** Hide the "discuss a project" block (e.g. on the contacts page itself) */
@@ -24,9 +24,7 @@ export function Footer({ cta = true }: FooterProps) {
             <div>
               <div className="eyebrow mb-4">Есть задача?</div>
               <h2 className="t-title max-w-2xl">Обсудим ваш проект</h2>
-              <p className="mt-4 max-w-lg text-muted">
-                Расскажите о задаче — предложу решение, сроки и формат работы.
-              </p>
+              <p className="mt-4 max-w-lg text-muted">Расскажите о задаче — предложу решение, сроки и формат работы.</p>
             </div>
             <Button type="link" href="/contacts">
               Написать мне <FiArrowRight aria-hidden />
@@ -39,23 +37,13 @@ export function Footer({ cta = true }: FooterProps) {
         <div className="text-sm text-muted">
           © {currentYear} {siteName}
         </div>
-        <nav
-          aria-label="Навигация в подвале"
-          className="flex flex-wrap gap-x-6 gap-y-3 text-sm"
-        >
-          {navigation.map((item) => (
-            <Link
-              key={item.slug}
-              href={item.slug}
-              className="text-muted transition-colors hover:text-fg"
-            >
+        <nav aria-label="Навигация в подвале" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+          {navigation.map(item => (
+            <Link key={item.slug} href={item.slug} className="text-muted transition-colors hover:text-fg">
               {item.title}
             </Link>
           ))}
-          <Link
-            href="/contacts"
-            className="text-muted transition-colors hover:text-fg"
-          >
+          <Link href="/contacts" className="text-muted transition-colors hover:text-fg">
             Контакты
           </Link>
           <Link
@@ -67,10 +55,7 @@ export function Footer({ cta = true }: FooterProps) {
             Behance <FiArrowUpRight aria-hidden className="inline -mt-0.5" />
           </Link>
         </nav>
-        <a
-          href="#beginning"
-          className="text-sm text-muted transition-colors hover:text-fg"
-        >
+        <a href="#beginning" className="text-sm text-muted transition-colors hover:text-fg">
           Наверх <FiArrowUp aria-hidden className="inline -mt-0.5" />
         </a>
       </div>

@@ -3,18 +3,18 @@
  * content types and cards can reference them without pulling WebGL code.
  */
 export const SCENE_IDS = [
-  "containers",
-  "diamond",
-  "paper-plane",
-  "gavel",
-  "fractured-cube",
-  "temple",
-  "sputnik",
+  'containers',
+  'diamond',
+  'paper-plane',
+  'gavel',
+  'fractured-cube',
+  'temple',
+  'sputnik',
   // blog covers
-  "laptop",
-  "blocks",
-  "servers",
-  "cubes",
+  'laptop',
+  'blocks',
+  'servers',
+  'cubes',
 ] as const;
 
 export type SceneId = (typeof SCENE_IDS)[number];

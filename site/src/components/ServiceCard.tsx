@@ -1,7 +1,7 @@
-import Link from "next/link";
-import type { ServicesListData } from "@/lib/content/schemas";
-import { FiArrowRight } from "react-icons/fi";
-import Reveal from "./Reveal";
+import Link from 'next/link';
+import type { ServicesListData } from '@/lib/content/schemas';
+import { FiArrowRight } from 'react-icons/fi';
+import Reveal from './Reveal';
 
 type ServiceCardProps = {
   services?: ServicesListData[];
@@ -21,22 +21,15 @@ export default function ServiceCard({ services }: ServiceCardProps) {
             className="group relative grid grid-cols-[auto_1fr_auto] items-start md:items-center gap-5 md:gap-10 rounded-2xl border border-line bg-surface p-6 md:p-10 transition-colors hover:bg-surface-2 hover:border-fg/20"
           >
             <span className="font-display text-sm md:text-base font-semibold text-muted pt-1.5 md:pt-0">
-              {String(index + 1).padStart(2, "0")}
+              {String(index + 1).padStart(2, '0')}
             </span>
             <div>
-              <h2 className="t-card-lg transition-colors group-hover:text-accent">
-                {service.preview_title}
-              </h2>
-              <p className="mt-2 text-base md:text-lg text-muted max-w-xl">
-                {service.preview_description}
-              </p>
+              <h2 className="t-card-lg transition-colors group-hover:text-accent">{service.preview_title}</h2>
+              <p className="mt-2 text-base md:text-lg text-muted max-w-xl">{service.preview_description}</p>
               {service.tech_list && (
                 <ul className="mt-5 flex flex-wrap gap-1.5">
-                  {service.tech_list.map((t) => (
-                    <li
-                      key={t}
-                      className="rounded-full border border-line px-3 py-1 text-xs md:text-sm text-muted"
-                    >
+                  {service.tech_list.map(t => (
+                    <li key={t} className="rounded-full border border-line px-3 py-1 text-xs md:text-sm text-muted">
                       {t}
                     </li>
                   ))}

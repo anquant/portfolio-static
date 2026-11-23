@@ -1,21 +1,18 @@
-import BlogCover from "./BlogCover";
-import Scene3D from "./Scene3D";
-import Reveal from "./Reveal";
-import Link from "next/link";
-import type { ArticleCardData } from "@/lib/content/schemas";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import BlogCover from './BlogCover';
+import Scene3D from './Scene3D';
+import Reveal from './Reveal';
+import Link from 'next/link';
+import type { ArticleCardData } from '@/lib/content/schemas';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 type ArticleCardProps = {
   articles?: ArticleCardData[];
   /** h2 on the blog index (directly under the page h1), h3 under a section h2 */
-  headingAs?: "h2" | "h3";
+  headingAs?: 'h2' | 'h3';
 };
 
-export default function ArticleCard({
-  articles,
-  headingAs: Heading = "h2",
-}: ArticleCardProps) {
+export default function ArticleCard({ articles, headingAs: Heading = 'h2' }: ArticleCardProps) {
   if (!articles || articles.length === 0) {
     return <div className="text-muted mt-10">Здесь пока нет статей…</div>;
   }
@@ -37,11 +34,7 @@ export default function ArticleCard({
                 className="w-full"
               />
             ) : (
-              <BlogCover
-                image={article.image}
-                color={article.image_background_color}
-                className="w-full aspect-[5/3]"
-              />
+              <BlogCover image={article.image} color={article.image_background_color} className="w-full aspect-[5/3]" />
             )}
             <div className="flex flex-1 flex-col gap-3 p-6">
               <div className="flex items-center justify-between gap-4 text-xs md:text-sm text-muted">
@@ -49,18 +42,14 @@ export default function ArticleCard({
                   {article.category.title}
                 </span>
                 <time dateTime={article.pubdate}>
-                  {format(new Date(article.pubdate), "d MMMM yyyy", {
+                  {format(new Date(article.pubdate), 'd MMMM yyyy', {
                     locale: ru,
                   })}
                 </time>
               </div>
-              <Heading className="t-card transition-colors group-hover:text-accent">
-                {article.title}
-              </Heading>
+              <Heading className="t-card transition-colors group-hover:text-accent">{article.title}</Heading>
               {article.annotation && (
-                <p className="text-sm md:text-base text-muted line-clamp-3">
-                  {article.annotation}
-                </p>
+                <p className="text-sm md:text-base text-muted line-clamp-3">{article.annotation}</p>
               )}
             </div>
           </Link>

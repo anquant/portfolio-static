@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 /* ------------------------------------------------------------------------ */
 /* Motion state (one scene per page, so module-level state is fine)         */
@@ -25,10 +25,8 @@ export const motion = {
 
 export const ease = {
   outCubic: (t: number) => 1 - Math.pow(1 - t, 3),
-  inOutCubic: (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-  outBack: (t: number, s = 1.4) =>
-    1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
+  inOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+  outBack: (t: number, s = 1.4) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
   inOutBack: (t: number, s = 1.2) => {
     const c = s * 1.525;
     return t < 0.5
@@ -54,10 +52,7 @@ export function Driver({ speed }: { speed: number }) {
     const d = THREE.MathUtils.damp;
 
     motion.time += dt * speed;
-    motion.intro = Math.min(
-      1,
-      motion.intro + (dt / INTRO_DURATION) * (speed || 1e9)
-    );
+    motion.intro = Math.min(1, motion.intro + (dt / INTRO_DURATION) * (speed || 1e9));
 
     motion.x = d(motion.x, input.x, 4, dt);
     motion.y = d(motion.y, input.y, 4, dt);
@@ -65,17 +60,11 @@ export function Driver({ speed }: { speed: number }) {
     motion.scroll = d(motion.scroll, input.scroll, 6, dt);
 
     // Energy from cursor speed (screen heights per second): fast attack, slow release
-    const v =
-      Math.hypot(input.x - prev.x, input.y - prev.y) / Math.max(dt, 1e-3);
+    const v = Math.hypot(input.x - prev.x, input.y - prev.y) / Math.max(dt, 1e-3);
     prev.x = input.x;
     prev.y = input.y;
     const target = THREE.MathUtils.clamp(v / 4, 0, 1) * (input.active ? 1 : 0);
-    motion.energy = d(
-      motion.energy,
-      target,
-      target > motion.energy ? 5 : 1.2,
-      dt
-    );
+    motion.energy = d(motion.energy, target, target > motion.energy ? 5 : 1.2, dt);
   });
   return null;
 }
@@ -95,20 +84,16 @@ export function useInput(target: React.RefObject<HTMLElement | null>) {
       const el = target.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      input.scroll = THREE.MathUtils.clamp(
-        -r.top / Math.max(r.height, 1),
-        0,
-        1
-      );
+      input.scroll = THREE.MathUtils.clamp(-r.top / Math.max(r.height, 1), 0, 1);
     };
     onScroll();
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("pointerleave", onLeave);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
     return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('pointerleave', onLeave);
     };
   }, [target]);
 }

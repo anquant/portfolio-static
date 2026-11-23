@@ -1,13 +1,6 @@
-"use client";
+'use client';
 
-import {
-  type CSSProperties,
-  type ElementType,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type CSSProperties, type ElementType, type ReactNode, useEffect, useRef, useState } from 'react';
 
 type RevealProps = {
   children: ReactNode;
@@ -22,13 +15,7 @@ type RevealProps = {
  * Fades and lifts its content into place once it scrolls into view.
  * One shared gesture for every below-the-fold block (see .reveal-scroll).
  */
-export default function Reveal({
-  children,
-  as: Tag = "div",
-  delay = 0,
-  className = "",
-  id,
-}: RevealProps) {
+export default function Reveal({ children, as: Tag = 'div', delay = 0, className = '', id }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -42,7 +29,7 @@ export default function Reveal({
           io.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -52,8 +39,8 @@ export default function Reveal({
     <Tag
       ref={ref}
       id={id}
-      className={`reveal-scroll ${inView ? "is-in" : ""} ${className}`}
-      style={{ "--d": `${delay}ms` } as CSSProperties}
+      className={`reveal-scroll ${inView ? 'is-in' : ''} ${className}`}
+      style={{ '--d': `${delay}ms` } as CSSProperties}
     >
       {children}
     </Tag>

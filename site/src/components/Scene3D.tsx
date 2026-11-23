@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import type { SceneId } from "./scene3d/ids";
+import { useEffect, useRef } from 'react';
+import type { SceneId } from './scene3d/ids';
 
 type Scene3DProps = {
   scene: SceneId;
@@ -10,7 +10,7 @@ type Scene3DProps = {
   /** Frame proportions, as Tailwind aspect classes */
   aspectClassName?: string;
   /** "card": the glow lights up on parent `.group` hover */
-  mode?: "card" | "hero";
+  mode?: 'card' | 'hero';
   /** Own border + rounded corners; off when a parent card already frames it */
   framed?: boolean;
   className?: string;
@@ -24,10 +24,10 @@ type Scene3DProps = {
 export default function Scene3D({
   scene,
   label,
-  aspectClassName = "aspect-[3/2]",
-  mode = "card",
+  aspectClassName = 'aspect-[3/2]',
+  mode = 'card',
   framed = true,
-  className = "",
+  className = '',
 }: Scene3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -41,14 +41,13 @@ export default function Scene3D({
       ([entry]) => {
         if (!entry.isIntersecting) return;
         near.disconnect();
-        import("./scene3d/engine").then(({ mountScene }) => {
+        import('./scene3d/engine').then(({ mountScene }) => {
           if (cancelled) return;
-          const hoverTarget =
-            canvas.closest<HTMLElement>(".group") ?? canvas.parentElement!;
+          const hoverTarget = canvas.closest<HTMLElement>('.group') ?? canvas.parentElement!;
           unmount = mountScene(canvas, scene, hoverTarget);
         });
       },
-      { rootMargin: "600px 0px" }
+      { rootMargin: '600px 0px' },
     );
     near.observe(canvas);
 
@@ -59,32 +58,27 @@ export default function Scene3D({
     };
   }, [scene]);
 
-  const card = mode === "card";
+  const card = mode === 'card';
 
   return (
     <div
       role="img"
       aria-label={label}
       className={`relative isolate overflow-hidden ${
-        framed ? "rounded-2xl md:rounded-3xl border border-line" : ""
+        framed ? 'rounded-2xl md:rounded-3xl border border-line' : ''
       } ${aspectClassName} ${className}`}
       style={{
-        background:
-          "color-mix(in srgb, rgb(var(--accent)) 6%, rgb(var(--surface)))",
+        background: 'color-mix(in srgb, rgb(var(--accent)) 6%, rgb(var(--surface)))',
       }}
     >
       {/* accent glow behind the object */}
       <div
         aria-hidden
         className={`pointer-events-none absolute left-1/2 top-[55%] -z-10 aspect-square w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent blur-[90px] transition-opacity duration-700 ${
-          card ? "opacity-20 group-hover:opacity-30" : "opacity-25"
+          card ? 'opacity-20 group-hover:opacity-30' : 'opacity-25'
         }`}
       />
-      <canvas
-        ref={canvasRef}
-        aria-hidden
-        className="absolute inset-0 block h-full w-full"
-      />
+      <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import type * as THREE from "three";
-import { type Theme } from "./theme";
-import { motion } from "./motion";
+import { useEffect } from 'react';
+import type * as THREE from 'three';
+import { type Theme } from './theme';
+import { motion } from './motion';
 
 export function pointUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
   return {
@@ -25,8 +25,8 @@ export function syncChoreography(u: Record<string, THREE.IUniform>) {
 /** Disposes GPU resources when a shape unmounts */
 export function useDispose(...items: { dispose: () => void }[]) {
   useEffect(
-    () => () => items.forEach((i) => i.dispose()),
+    () => () => items.forEach(i => i.dispose()),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    items
+    items,
   );
 }

@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
-import { useTheme } from "../theme";
-import { MAX_DELTA, motion, ease } from "../motion";
-import { noiseGLSL, choreographyGLSL, pointFragment } from "../glsl";
-import { pointUniforms, syncChoreography, useDispose } from "../materials";
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useTheme } from '../theme';
+import { MAX_DELTA, motion, ease } from '../motion';
+import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
+import { pointUniforms, syncChoreography, useDispose } from '../materials';
 
 /* ------------------------------------------------------------------------ */
 /* Development: a lattice that snaps through 90° turns like a mechanism,    */
@@ -16,7 +16,7 @@ const STEP_DURATION = 1.1; // length of one turn
 
 export function Lattice() {
   const theme = useTheme();
-  const gl = useThree((s) => s.gl);
+  const gl = useThree(s => s.gl);
   const pts = useRef<THREE.Points>(null);
   const scan = useRef(0);
 
@@ -25,14 +25,9 @@ export function Lattice() {
     const pos: number[] = [];
     for (let x = 0; x < n; x++)
       for (let y = 0; y < n; y++)
-        for (let z = 0; z < n; z++)
-          pos.push(
-            (x / (n - 1)) * 2 - 1,
-            (y / (n - 1)) * 2 - 1,
-            (z / (n - 1)) * 2 - 1
-          );
+        for (let z = 0; z < n; z++) pos.push((x / (n - 1)) * 2 - 1, (y / (n - 1)) * 2 - 1, (z / (n - 1)) * 2 - 1);
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     return g;
   }, []);
 
@@ -77,7 +72,7 @@ export function Lattice() {
         `,
         fragmentShader: pointFragment,
       }),
-    [gl, theme]
+    [gl, theme],
   );
 
   useDispose(geometry, material);
@@ -88,17 +83,14 @@ export function Lattice() {
     const dt = Math.min(rawDelta, MAX_DELTA);
     const u = (p.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);
-    scan.current +=
-      dt * (0.12 + motion.energy * 0.5) * (motion.time === 0 ? 0 : 1);
+    scan.current += dt * (0.12 + motion.energy * 0.5) * (motion.time === 0 ? 0 : 1);
     u.uScan.value = scan.current;
 
     // Mechanical 90° turns, alternating Y and X axes, with a small overshoot.
     // The lattice is symmetric, so every resting pose looks "square".
     const t = motion.time;
     const n = Math.floor(t / STEP_PERIOD);
-    const phase = ease.inOutBack(
-      Math.min(1, (t - n * STEP_PERIOD) / STEP_DURATION)
-    );
+    const phase = ease.inOutBack(Math.min(1, (t - n * STEP_PERIOD) / STEP_DURATION));
     const yTurns = Math.ceil(n / 2) + (n % 2 === 0 ? phase : 0);
     const xTurns = Math.floor(n / 2) + (n % 2 === 1 ? phase : 0);
     p.rotation.set(xTurns * (Math.PI / 2), yTurns * (Math.PI / 2), 0);

@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { accentTint, mat, mesh } from "../../kit";
-import { ease, keyframes, phase } from "../../motion";
-import { type SceneDef, GROUND_Y, column } from "../../stage";
+import * as THREE from 'three';
+import { accentTint, mat, mesh } from '../../kit';
+import { ease, keyframes, phase } from '../../motion';
+import { type SceneDef, GROUND_Y, column } from '../../stage';
 
 /* MySQL for Directus — two server cabinets, a drawer slides out */
 function cabinet(body: THREE.Material, front: THREE.Material) {

@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { V, mat, mesh } from "../../kit";
-import { FLOAT, clamp01, ease, keyframes, phase, wave } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { V, mat, mesh } from '../../kit';
+import { FLOAT, clamp01, ease, keyframes, phase, wave } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* Deploying Next.js — a cube of blocks assembling itself */
 export function cubes(): SceneDef {
@@ -25,17 +25,12 @@ export function cubes(): SceneDef {
         if (rnd() < 0.22) continue; // gaps make it read as an assembly
         const home = V(x * STEP, y * STEP, z * STEP);
         const loose = rnd() < 0.4 && (x !== 0 || y !== 0 || z !== 0);
-        const m = mesh(
-          new THREE.BoxGeometry(S, S, S),
-          rnd() < 0.3 ? mid : light
-        );
+        const m = mesh(new THREE.BoxGeometry(S, S, S), rnd() < 0.3 ? mid : light);
         const dir = home.clone().normalize();
         parts.push({
           m,
           home,
-          away: loose
-            ? home.clone().addScaledVector(dir, 0.45 + rnd() * 0.4)
-            : home.clone(),
+          away: loose ? home.clone().addScaledVector(dir, 0.45 + rnd() * 0.4) : home.clone(),
           delay: rnd() * 0.12,
         });
         cluster.add(m);

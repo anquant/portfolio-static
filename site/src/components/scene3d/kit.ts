@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 /*
  * Shared building blocks for the work scenes: one material palette and the
@@ -10,11 +10,10 @@ import * as THREE from "three";
 /* ------------------------------------------------------------------------ */
 
 /** Site accent (--accent); set once by the engine before scenes are built */
-export const ACCENT = new THREE.Color("#8c9cff");
+export const ACCENT = new THREE.Color('#8c9cff');
 
 /** A lighter tint of the accent, for secondary accent parts */
-export const accentTint = (amount: number) =>
-  ACCENT.clone().lerp(new THREE.Color("#ffffff"), amount);
+export const accentTint = (amount: number) => ACCENT.clone().lerp(new THREE.Color('#ffffff'), amount);
 
 const standard = (p: THREE.MeshStandardMaterialParameters) =>
   new THREE.MeshStandardMaterial({ metalness: 0, envMapIntensity: 0.5, ...p });
@@ -47,18 +46,16 @@ export function mesh(geo: THREE.BufferGeometry, m: THREE.Material) {
 /* Geometry                                                                 */
 /* ------------------------------------------------------------------------ */
 
-export const V = (x: number, y: number, z: number) =>
-  new THREE.Vector3(x, y, z);
+export const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
 type Tri = [THREE.Vector3, THREE.Vector3, THREE.Vector3];
 
 /** Non-indexed triangles → flat facets */
 export function trianglesGeometry(tris: Tri[]) {
   const pos: number[] = [];
-  for (const [a, b, c] of tris)
-    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+  for (const [a, b, c] of tris) pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
   const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.computeVertexNormals();
   return g;
 }
@@ -80,7 +77,7 @@ export function facetGeometry(tris: Tri[], center = new THREE.Vector3()) {
         .multiplyScalar(1 / 3)
         .sub(center);
       return n.dot(c) < 0 ? [a, d, b] : [a, b, d];
-    })
+    }),
   );
 }
 
@@ -88,7 +85,7 @@ export function facetGeometry(tris: Tri[], center = new THREE.Vector3()) {
 export const lathe = (pts: [number, number][], segments = 72) =>
   new THREE.LatheGeometry(
     pts.map(([r, y]) => new THREE.Vector2(r, y)),
-    segments
+    segments,
   );
 
 /** Low-poly rock: an icosahedron with deterministic per-vertex jitter */
@@ -99,9 +96,7 @@ export function rockGeometry(r: number, seed: number, sx = 1, sy = 1, sz = 1) {
   for (let i = 0; i < p.count; i++) {
     v.fromBufferAttribute(p, i);
     // hash of the position, so shared corners move together and stay closed
-    const h =
-      Math.sin(v.x * 12.9898 + v.y * 78.233 + v.z * 37.719 + seed * 4.1) *
-      43758.5453;
+    const h = Math.sin(v.x * 12.9898 + v.y * 78.233 + v.z * 37.719 + seed * 4.1) * 43758.5453;
     const k = 1 + (h - Math.floor(h) - 0.5) * 0.38;
     p.setXYZ(i, v.x * k * sx, v.y * k * sy, v.z * k * sz);
   }
@@ -130,8 +125,7 @@ export function diamondGeometry() {
     const g2 = girdle[(2 * i + 2) % 16];
     tris.push([t0, g0, g1], [t0, g1, t1], [t1, g1, g2]);
   }
-  for (let i = 0; i < 16; i++)
-    tris.push([apex, girdle[i], girdle[(i + 1) % 16]]);
+  for (let i = 0; i < 16; i++) tris.push([apex, girdle[i], girdle[(i + 1) % 16]]);
   return facetGeometry(tris);
 }
 
@@ -155,7 +149,7 @@ export function paperPlaneGeometry() {
       [nose, crease, tipBack], // outer wing
       [nose, tipBack, tipFront], // clipped tip
       [noseSide, keelNose, root], // keel wall
-      [keelNose, wallBottom, root]
+      [keelNose, wallBottom, root],
     );
   }
   // fold along the bottom of the keel
@@ -192,14 +186,11 @@ function clipConvex(faces: Poly[], n: THREE.Vector3, d: number) {
     if (poly.length >= 3) out.push(poly);
   }
   if (cut.length >= 3) {
-    const c = cut
-      .reduce((s, p) => s.add(p), new THREE.Vector3())
-      .multiplyScalar(1 / cut.length);
+    const c = cut.reduce((s, p) => s.add(p), new THREE.Vector3()).multiplyScalar(1 / cut.length);
     const u = new THREE.Vector3().subVectors(cut[0], c).normalize();
     const w = new THREE.Vector3().crossVectors(n, u);
     const cap: Poly = [];
-    for (const p of cut)
-      if (!cap.some((q) => q.distanceToSquared(p) < 1e-10)) cap.push(p);
+    for (const p of cut) if (!cap.some(q => q.distanceToSquared(p) < 1e-10)) cap.push(p);
     const angle = (p: THREE.Vector3) => {
       const dp = p.clone().sub(c);
       return Math.atan2(dp.dot(w), dp.dot(u));
@@ -211,19 +202,13 @@ function clipConvex(faces: Poly[], n: THREE.Vector3, d: number) {
 }
 
 /** A cube split into Voronoi cells with uniform cracks; geometry centred on each cell */
-export function fracturedCube(
-  half: number,
-  count: number,
-  gap: number,
-  seed: number
-) {
+export function fracturedCube(half: number, count: number, gap: number, seed: number) {
   let s = seed;
   const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
   const sites = Array.from({ length: count }, () =>
-    V((rnd() * 2 - 1) * half, (rnd() * 2 - 1) * half, (rnd() * 2 - 1) * half)
+    V((rnd() * 2 - 1) * half, (rnd() * 2 - 1) * half, (rnd() * 2 - 1) * half),
   );
-  const C = (x: number, y: number, z: number) =>
-    V(x * half, y * half, z * half);
+  const C = (x: number, y: number, z: number) => V(x * half, y * half, z * half);
   const box: Poly[] = [
     [C(-1, -1, -1), C(1, -1, -1), C(1, 1, -1), C(-1, 1, -1)],
     [C(-1, -1, 1), C(1, -1, 1), C(1, 1, 1), C(-1, 1, 1)],
@@ -234,7 +219,7 @@ export function fracturedCube(
   ];
   const cells: { geometry: THREE.BufferGeometry; center: THREE.Vector3 }[] = [];
   sites.forEach((si, i) => {
-    let faces = box.map((f) => f.map((p) => p.clone()));
+    let faces = box.map(f => f.map(p => p.clone()));
     sites.forEach((sj, j) => {
       if (i === j || !faces.length) return;
       const n = new THREE.Vector3().subVectors(sj, si).normalize();
@@ -243,17 +228,11 @@ export function fracturedCube(
     });
     if (faces.length < 4) return;
     const pts = faces.flat();
-    const center = pts
-      .reduce((a, p) => a.add(p), new THREE.Vector3())
-      .multiplyScalar(1 / pts.length);
+    const center = pts.reduce((a, p) => a.add(p), new THREE.Vector3()).multiplyScalar(1 / pts.length);
     const tris: Tri[] = [];
     for (const f of faces)
       for (let k = 1; k < f.length - 1; k++)
-        tris.push([
-          f[0].clone().sub(center),
-          f[k].clone().sub(center),
-          f[k + 1].clone().sub(center),
-        ]);
+        tris.push([f[0].clone().sub(center), f[k].clone().sub(center), f[k + 1].clone().sub(center)]);
     cells.push({ geometry: facetGeometry(tris), center });
   });
   return cells;

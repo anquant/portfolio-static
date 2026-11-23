@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
-import { useTheme } from "../theme";
-import { MAX_DELTA, motion, ease, TAU } from "../motion";
-import { noiseGLSL, choreographyGLSL, pointFragment } from "../glsl";
-import { pointUniforms, syncChoreography, useDispose } from "../materials";
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useTheme } from '../theme';
+import { MAX_DELTA, motion, ease, TAU } from '../motion';
+import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
+import { pointUniforms, syncChoreography, useDispose } from '../materials';
 
 /* ------------------------------------------------------------------------ */
 /* Design: a circle drawn by a glowing pen, then precessing like a gyroscope */
@@ -12,7 +12,7 @@ import { pointUniforms, syncChoreography, useDispose } from "../materials";
 
 export function Ring() {
   const theme = useTheme();
-  const gl = useThree((s) => s.gl);
+  const gl = useThree(s => s.gl);
   const group = useRef<THREE.Group>(null);
   const pts = useRef<THREE.Points>(null);
   const pen = useRef(0);
@@ -35,8 +35,8 @@ export function Ring() {
       }
     }
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-    g.setAttribute("aAngle", new THREE.Float32BufferAttribute(angle, 1));
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('aAngle', new THREE.Float32BufferAttribute(angle, 1));
     return g;
   }, []);
 
@@ -87,7 +87,7 @@ export function Ring() {
         `,
         fragmentShader: pointFragment,
       }),
-    [gl, theme]
+    [gl, theme],
   );
 
   useDispose(geometry, material);

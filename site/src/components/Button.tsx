@@ -1,11 +1,11 @@
-import { type ReactNode, type MouseEvent } from "react";
-import Link from "next/link";
+import { type ReactNode, type MouseEvent } from 'react';
+import Link from 'next/link';
 
-type Variant = "primary" | "secondary" | "ghost";
-type Size = "normal" | "small";
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'normal' | 'small';
 
 interface ButtonProps {
-  type?: "button" | "submit" | "link";
+  type?: 'button' | 'submit' | 'link';
   href?: string;
   variant?: Variant;
   size?: Size;
@@ -14,8 +14,8 @@ interface ButtonProps {
   onClick?: (event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   disabled?: boolean;
   external?: boolean;
-  "aria-label"?: string;
-  "aria-pressed"?: boolean;
+  'aria-label'?: string;
+  'aria-pressed'?: boolean;
 }
 
 /*
@@ -24,31 +24,31 @@ interface ButtonProps {
  * the WebGL hero keeps the main thread busy.
  */
 const base =
-  "group/btn relative isolate inline-flex w-fit items-center justify-center gap-2.5 overflow-hidden rounded-full font-medium whitespace-nowrap [transform:translateZ(0)] disabled:cursor-not-allowed disabled:opacity-40";
+  'group/btn relative isolate inline-flex w-fit items-center justify-center gap-2.5 overflow-hidden rounded-full font-medium whitespace-nowrap [transform:translateZ(0)] disabled:cursor-not-allowed disabled:opacity-40';
 
 const variants: Record<Variant, string> = {
-  primary: "bg-fg text-bg",
-  secondary: "border border-line text-fg",
-  ghost: "text-muted",
+  primary: 'bg-fg text-bg',
+  secondary: 'border border-line text-fg',
+  ghost: 'text-muted',
 };
 
 const hoverLayer: Record<Variant, string> = {
-  primary: "bg-accent",
-  secondary: "bg-fg/10",
-  ghost: "bg-fg/10",
+  primary: 'bg-accent',
+  secondary: 'bg-fg/10',
+  ghost: 'bg-fg/10',
 };
 
 const sizes: Record<Size, string> = {
-  normal: "text-sm md:text-base h-12 px-7",
-  small: "text-sm h-9 px-4",
+  normal: 'text-sm md:text-base h-12 px-7',
+  small: 'text-sm h-9 px-4',
 };
 
 export default function Button({
-  type = "button",
-  href = "#",
-  variant = "primary",
-  size = "normal",
-  className = "",
+  type = 'button',
+  href = '#',
+  variant = 'primary',
+  size = 'normal',
+  className = '',
   children,
   onClick,
   disabled,
@@ -66,13 +66,13 @@ export default function Button({
     </>
   );
 
-  if (type === "link") {
+  if (type === 'link') {
     return (
       <Link
         href={href}
         className={classes}
         onClick={onClick}
-        {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+        {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
         {...aria}
       >
         {content}
@@ -81,13 +81,7 @@ export default function Button({
   }
 
   return (
-    <button
-      type={type}
-      className={classes}
-      onClick={onClick}
-      disabled={disabled}
-      {...aria}
-    >
+    <button type={type} className={classes} onClick={onClick} disabled={disabled} {...aria}>
       {content}
     </button>
   );

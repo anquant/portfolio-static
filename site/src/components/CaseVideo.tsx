@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { IoPause, IoPlay } from "react-icons/io5";
-import type { ImageAsset, VideoAsset } from "@/lib/content/schemas";
-import ProjectMedia from "./ProjectMedia";
+import { useEffect, useRef, useState } from 'react';
+import { IoPause, IoPlay } from 'react-icons/io5';
+import type { ImageAsset, VideoAsset } from '@/lib/content/schemas';
+import ProjectMedia from './ProjectMedia';
 
 type CaseVideoProps = {
   video: VideoAsset;
@@ -16,12 +16,7 @@ type CaseVideoProps = {
  * Case-study screen recording, presented on the same dark stage as images.
  * Plays only while on screen; user can pause; no autoplay with reduced motion.
  */
-export default function CaseVideo({
-  video,
-  poster,
-  title,
-  color,
-}: CaseVideoProps) {
+export default function CaseVideo({ video, poster, title, color }: CaseVideoProps) {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   // null = no explicit choice yet: follow visibility (and reduced-motion preference)
@@ -30,9 +25,7 @@ export default function CaseVideo({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const io = new IntersectionObserver(
       ([entry]) => {
         const wants = userWants ?? !reduced;
@@ -42,7 +35,7 @@ export default function CaseVideo({
           el.pause();
         }
       },
-      { threshold: 0.35 }
+      { threshold: 0.35 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -62,7 +55,7 @@ export default function CaseVideo({
 
   return (
     <ProjectMedia
-      src={poster?.src ?? ""}
+      src={poster?.src ?? ''}
       width={poster?.width ?? 1920}
       height={poster?.height ?? 1080}
       alt=""
@@ -87,16 +80,10 @@ export default function CaseVideo({
       <button
         type="button"
         onClick={toggle}
-        aria-label={
-          playing ? "Поставить видео на паузу" : "Воспроизвести видео"
-        }
+        aria-label={playing ? 'Поставить видео на паузу' : 'Воспроизвести видео'}
         className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-10 grid place-items-center size-10 md:size-12 rounded-full bg-bg/70 text-fg backdrop-blur ring-1 ring-white/15 transition-colors hover:bg-bg/90"
       >
-        {playing ? (
-          <IoPause size={18} />
-        ) : (
-          <IoPlay size={18} className="translate-x-px" />
-        )}
+        {playing ? <IoPause size={18} /> : <IoPlay size={18} className="translate-x-px" />}
       </button>
     </ProjectMedia>
   );

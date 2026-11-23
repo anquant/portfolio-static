@@ -1,9 +1,9 @@
-import * as THREE from "three";
-import { describe, expect, it } from "vitest";
-import { SCENE_IDS } from "./ids";
-import { diamondGeometry, fracturedCube } from "./kit";
-import { LOOP, keyframes, phase, tri, wave } from "./motion";
-import { SCENES } from "./scenes";
+import * as THREE from 'three';
+import { describe, expect, it } from 'vitest';
+import { SCENE_IDS } from './ids';
+import { diamondGeometry, fracturedCube } from './kit';
+import { LOOP, keyframes, phase, tri, wave } from './motion';
+import { SCENES } from './scenes';
 
 /*
  * Scenes are plain three.js object graphs with pure `update(t)` functions,
@@ -33,15 +33,15 @@ function signedVolume(geometry: THREE.BufferGeometry) {
  */
 function pose(root: THREE.Object3D) {
   const out: number[] = [];
-  root.traverse((o) => {
+  root.traverse(o => {
     o.updateMatrix();
     out.push(...o.matrix.elements);
   });
   return out;
 }
 
-describe("motion", () => {
-  it("phase stays in 0..1, also for negative offsets", () => {
+describe('motion', () => {
+  it('phase stays in 0..1, also for negative offsets', () => {
     for (const t of [0, 1.3, LOOP, 37.2])
       for (const off of [-0.4, 0, 0.7]) {
         const p = phase(t, 1, off);
@@ -50,20 +50,20 @@ describe("motion", () => {
       }
   });
 
-  it("wave and phase repeat every LOOP", () => {
+  it('wave and phase repeat every LOOP', () => {
     for (const t of [0.4, 2.9, 6.1]) {
       expect(wave(t + LOOP, 2, 0.25)).toBeCloseTo(wave(t, 2, 0.25), 9);
       expect(phase(t + LOOP)).toBeCloseTo(phase(t), 9);
     }
   });
 
-  it("tri peaks in the middle of the phase", () => {
+  it('tri peaks in the middle of the phase', () => {
     expect(tri(0)).toBe(0);
     expect(tri(0.5)).toBe(1);
     expect(tri(1)).toBe(0);
   });
 
-  it("keyframes hit their keys and clamp outside them", () => {
+  it('keyframes hit their keys and clamp outside them', () => {
     const keys: [number, number][] = [
       [0.2, 1],
       [0.6, 3],
@@ -76,8 +76,8 @@ describe("motion", () => {
   });
 });
 
-describe("geometry", () => {
-  it("cuts a cube into closed, outward-facing Voronoi cells that fill it", () => {
+describe('geometry', () => {
+  it('cuts a cube into closed, outward-facing Voronoi cells that fill it', () => {
     const half = 1;
     const cells = fracturedCube(half, 14, 0.05, 11);
     expect(cells.length).toBeGreaterThan(4);
@@ -93,36 +93,36 @@ describe("geometry", () => {
     expect(volume).toBeGreaterThan(cube * 0.85);
   });
 
-  it("is deterministic for a seed", () => {
-    const a = fracturedCube(1, 10, 0.05, 3).map((c) => c.center.toArray());
-    const b = fracturedCube(1, 10, 0.05, 3).map((c) => c.center.toArray());
+  it('is deterministic for a seed', () => {
+    const a = fracturedCube(1, 10, 0.05, 3).map(c => c.center.toArray());
+    const b = fracturedCube(1, 10, 0.05, 3).map(c => c.center.toArray());
     expect(a).toEqual(b);
   });
 
-  it("builds the diamond as a closed solid with outward facets", () => {
+  it('builds the diamond as a closed solid with outward facets', () => {
     expect(signedVolume(diamondGeometry())).toBeGreaterThan(0);
   });
 });
 
-describe.each(SCENE_IDS)("scene %s", (id) => {
+describe.each(SCENE_IDS)('scene %s', id => {
   const scene = SCENES[id]();
 
-  it("builds a non-empty graph", () => {
+  it('builds a non-empty graph', () => {
     let meshes = 0;
-    scene.root.traverse((o) => {
+    scene.root.traverse(o => {
       if (o instanceof THREE.Mesh) meshes++;
     });
     expect(meshes).toBeGreaterThan(0);
   });
 
-  it("produces finite transforms over a whole loop", () => {
+  it('produces finite transforms over a whole loop', () => {
     for (let t = 0; t <= 2 * LOOP; t += 0.37) {
       scene.update(t);
       expect(pose(scene.root).every(Number.isFinite)).toBe(true);
     }
   });
 
-  it("loops seamlessly (pose at t equals pose at t + 2·LOOP)", () => {
+  it('loops seamlessly (pose at t equals pose at t + 2·LOOP)', () => {
     // 2·LOOP covers motions that run at half speed (one turn per 16 s)
     for (const t of [0.5, 3.3, 7.9]) {
       scene.update(t);

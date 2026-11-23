@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { V, mesh } from "./kit";
+import * as THREE from 'three';
+import { V, mesh } from './kit';
 
 /*
  * The common stage every scene is composed for: one camera placement and

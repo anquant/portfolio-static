@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { V, diamondGeometry, mat, mesh, rockGeometry } from "../../kit";
-import { FLOAT, LOOP, TAU, ease, phase, tri, wave } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { V, diamondGeometry, mat, mesh, rockGeometry } from '../../kit';
+import { FLOAT, LOOP, TAU, ease, phase, tri, wave } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* ИГЕМ РАН — geology: a diamond revealed in split rock */
 
@@ -18,7 +18,7 @@ export function diamond(): SceneDef {
       metalness: 0.15,
       emissiveIntensity: 0.06,
       envMapIntensity: 0.9,
-    })
+    }),
   );
   gem.scale.setScalar(0.95);
   const holder = new THREE.Group();
@@ -58,10 +58,7 @@ export function diamond(): SceneDef {
     { r: 0.18, s: [1, 0.8, 1], p: [-1.2, 1.0, -0.9], rot: [0.6, 0.4, -0.3] },
   ];
   const parts = shards.map((d, i) => {
-    const m = mesh(
-      rockGeometry(d.r, i + 2, ...d.s),
-      rockMats[i % rockMats.length]
-    );
+    const m = mesh(rockGeometry(d.r, i + 2, ...d.s), rockMats[i % rockMats.length]);
     m.position.set(...d.p);
     m.rotation.set(...d.rot);
     root.add(m);

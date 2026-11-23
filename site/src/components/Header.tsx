@@ -1,50 +1,45 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/router";
-import {
-  Dialog,
-  DialogPanel,
-  Transition,
-  TransitionChild,
-} from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
-import Link from "next/link";
-import { HiOutlineMenuAlt4 } from "react-icons/hi";
-import { IoClose } from "react-icons/io5";
-import { FiArrowRight } from "react-icons/fi";
-import Button from "./Button";
+import { useRouter } from 'next/router';
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Fragment, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { HiOutlineMenuAlt4 } from 'react-icons/hi';
+import { IoClose } from 'react-icons/io5';
+import { FiArrowRight } from 'react-icons/fi';
+import Button from './Button';
 
 export const navigation = [
-  { title: "Проекты", slug: "/" },
-  { title: "Услуги", slug: "/services" },
-  { title: "Обо мне", slug: "/about" },
-  { title: "Блог", slug: "/blog" },
+  { title: 'Проекты', slug: '/' },
+  { title: 'Услуги', slug: '/services' },
+  { title: 'Обо мне', slug: '/about' },
+  { title: 'Блог', slug: '/blog' },
 ];
 
-export const siteName = "Павел Моисеев";
+export const siteName = 'Павел Моисеев';
 
 type HeaderProps = {
   classes?: string;
 };
 
 function isActive(path: string, slug: string) {
-  if (slug === "/") return path === "/" || path === "/[slug]";
+  if (slug === '/') return path === '/' || path === '/[slug]';
   return path === slug || path.startsWith(`${slug}/`);
 }
 
-export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
+export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
   const router = useRouter();
   const path = router.pathname;
-  const isHomePage = path === "/";
+  const isHomePage = path === '/';
   const [open, setOpen] = useState(false);
 
   // The dialog is only hidden by CSS on desktop; close it for real when the
   // viewport crosses the breakpoint, or it keeps the page scroll-locked.
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
+    const mq = window.matchMedia('(min-width: 1024px)');
     const onChange = () => mq.matches && setOpen(false);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   const logo = (
@@ -75,15 +70,15 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
           aria-label="Основное меню"
           className="hidden lg:flex items-center gap-1 rounded-full border border-line bg-surface/70 backdrop-blur p-1"
         >
-          {navigation.map((item) => {
+          {navigation.map(item => {
             const active = isActive(path, item.slug);
             return (
               <Link
                 key={item.slug}
                 href={item.slug}
-                aria-current={active ? "page" : undefined}
+                aria-current={active ? 'page' : undefined}
                 className={`rounded-full px-4 py-2 text-sm transition-colors ${
-                  active ? "bg-surface-2 text-fg" : "text-muted hover:text-fg"
+                  active ? 'bg-surface-2 text-fg' : 'text-muted hover:text-fg'
                 }`}
               >
                 {item.title}
@@ -93,12 +88,7 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button
-            type="link"
-            href="/contacts"
-            size="small"
-            className="hidden sm:inline-flex"
-          >
+          <Button type="link" href="/contacts" size="small" className="hidden sm:inline-flex">
             Контакты
           </Button>
           <Button
@@ -151,40 +141,27 @@ export default function Header({ classes = "mb-16 md:mb-28" }: HeaderProps) {
                   </Button>
                 </div>
                 <nav aria-label="Основное меню" className="mt-16 flex flex-col">
-                  {[
-                    ...navigation,
-                    { title: "Контакты", slug: "/contacts" },
-                  ].map((item, i) => {
+                  {[...navigation, { title: 'Контакты', slug: '/contacts' }].map((item, i) => {
                     const active = isActive(path, item.slug);
                     return (
                       <Link
                         key={item.slug}
                         href={item.slug}
                         onClick={() => setOpen(false)}
-                        aria-current={active ? "page" : undefined}
-                        style={
-                          { "--d": `${120 + i * 60}ms` } as React.CSSProperties
-                        }
+                        aria-current={active ? 'page' : undefined}
+                        style={{ '--d': `${120 + i * 60}ms` } as React.CSSProperties}
                         className={`reveal flex items-center justify-between border-b border-line py-5 font-display text-3xl font-semibold transition-colors ${
-                          active ? "text-accent" : "text-fg hover:text-accent"
+                          active ? 'text-accent' : 'text-fg hover:text-accent'
                         }`}
                       >
                         {item.title}
-                        <FiArrowRight
-                          aria-hidden
-                          className="text-xl text-muted"
-                        />
+                        <FiArrowRight aria-hidden className="text-xl text-muted" />
                       </Link>
                     );
                   })}
                 </nav>
                 <div className="mt-auto pb-10 pt-10">
-                  <Button
-                    type="link"
-                    href="/contacts"
-                    className="w-full"
-                    onClick={() => setOpen(false)}
-                  >
+                  <Button type="link" href="/contacts" className="w-full" onClick={() => setOpen(false)}>
                     Обсудить проект
                   </Button>
                 </div>

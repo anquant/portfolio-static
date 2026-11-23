@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import { useTheme } from "../theme";
-import { motion, ease } from "../motion";
-import { noiseGLSL } from "../glsl";
-import { useDispose } from "../materials";
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useTheme } from '../theme';
+import { motion, ease } from '../motion';
+import { noiseGLSL } from '../glsl';
+import { useDispose } from '../materials';
 
 /* ------------------------------------------------------------------------ */
 /* Home: morphing blob with theme-coloured iridescent rim                   */
@@ -85,7 +85,7 @@ export function Blob() {
           }
         `,
       }),
-    [theme]
+    [theme],
   );
 
   useDispose(geometry, material);
@@ -98,8 +98,7 @@ export function Blob() {
     u.uEnergy.value = motion.energy;
     u.uIntro.value = ease.outCubic(motion.intro);
     // spins in during the intro, then turns slowly
-    m.rotation.y =
-      motion.time * 0.12 + (1 - ease.outCubic(motion.intro)) * -2.2;
+    m.rotation.y = motion.time * 0.12 + (1 - ease.outCubic(motion.intro)) * -2.2;
   });
 
   return <mesh ref={mesh} geometry={geometry} material={material} />;

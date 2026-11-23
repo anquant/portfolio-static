@@ -1,20 +1,14 @@
-import { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import PageIntro from "@/components/PageIntro";
-import Reveal from "@/components/Reveal";
-import { getContacts } from "@/lib/content";
-import { type GetStaticProps } from "next";
-import Link from "next/link";
-import {
-  RiEyeLine,
-  RiEyeOffLine,
-  RiFileCopyLine,
-  RiCheckLine,
-  RiCloseLine,
-} from "react-icons/ri";
-import { encode, decode, maskPhone } from "@/lib/obfuscate";
+import { useEffect, useState } from 'react';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import PageIntro from '@/components/PageIntro';
+import Reveal from '@/components/Reveal';
+import { getContacts } from '@/lib/content';
+import { type GetStaticProps } from 'next';
+import Link from 'next/link';
+import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
+import { encode, decode, maskPhone } from '@/lib/obfuscate';
 
 interface ContactsProps {
   title: string;
@@ -26,15 +20,7 @@ interface ContactsProps {
   maskedPhone: string;
 }
 
-function IconButton({
-  onClick,
-  label,
-  children,
-}: {
-  onClick: () => void;
-  label: string;
-  children: React.ReactNode;
-}) {
+function IconButton({ onClick, label, children }: { onClick: () => void; label: string; children: React.ReactNode }) {
   return (
     <button
       type="button"
@@ -49,7 +35,7 @@ function IconButton({
 }
 
 function CopyButton({ getValue }: { getValue: () => string }) {
-  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const handleCopy = async () => {
     const value = getValue();
@@ -57,28 +43,22 @@ function CopyButton({ getValue }: { getValue: () => string }) {
     try {
       // clipboard is unavailable without HTTPS or when permission is denied
       await navigator.clipboard.writeText(value);
-      setState("copied");
+      setState('copied');
     } catch {
-      setState("failed");
+      setState('failed');
     }
-    setTimeout(() => setState("idle"), 1800);
+    setTimeout(() => setState('idle'), 1800);
   };
 
   return (
     <>
       <IconButton
         onClick={handleCopy}
-        label={
-          state === "copied"
-            ? "Скопировано"
-            : state === "failed"
-              ? "Не удалось скопировать"
-              : "Скопировать"
-        }
+        label={state === 'copied' ? 'Скопировано' : state === 'failed' ? 'Не удалось скопировать' : 'Скопировать'}
       >
-        {state === "copied" ? (
+        {state === 'copied' ? (
           <RiCheckLine size={18} className="text-emerald-400" />
-        ) : state === "failed" ? (
+        ) : state === 'failed' ? (
           <RiCloseLine size={18} className="text-red-400" />
         ) : (
           <RiFileCopyLine size={18} />
@@ -86,11 +66,7 @@ function CopyButton({ getValue }: { getValue: () => string }) {
       </IconButton>
       {/* announce the result to screen readers */}
       <span role="status" className="sr-only">
-        {state === "copied"
-          ? "Скопировано"
-          : state === "failed"
-            ? "Не удалось скопировать"
-            : ""}
+        {state === 'copied' ? 'Скопировано' : state === 'failed' ? 'Не удалось скопировать' : ''}
       </span>
     </>
   );
@@ -108,8 +84,8 @@ export default function Contacts({
   const seo = { meta_title, meta_description };
 
   const [phoneRevealed, setPhoneRevealed] = useState(false);
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
   // Decoded only on the client, after mount, so the prerendered static
   // HTML never contains the plain email/phone for simple scrapers to read.
@@ -127,10 +103,7 @@ export default function Contacts({
           <PageIntro title={title} lead={text} className="lg:col-span-6" />
           <div className="lg:col-span-6 space-y-3 min-h-64 lg:pt-4">
             {email && (
-              <Reveal
-                delay={350}
-                className="rounded-2xl border border-line bg-surface p-6 md:p-8"
-              >
+              <Reveal delay={350} className="rounded-2xl border border-line bg-surface p-6 md:p-8">
                 <div className="eyebrow mb-3">E-mail</div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Link
@@ -144,33 +117,24 @@ export default function Contacts({
               </Reveal>
             )}
             {maskedPhone && (
-              <Reveal
-                delay={450}
-                className="rounded-2xl border border-line bg-surface p-6 md:p-8"
-              >
+              <Reveal delay={450} className="rounded-2xl border border-line bg-surface p-6 md:p-8">
                 <div className="eyebrow mb-3">Телефон</div>
                 <div className="flex flex-wrap items-center gap-3">
                   {phoneRevealed && phone ? (
                     <Link
-                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                      href={`tel:${phone.replace(/[^\d+]/g, '')}`}
                       className="text-xl md:text-2xl font-medium transition-colors hover:text-accent"
                     >
                       {phone}
                     </Link>
                   ) : (
-                    <span className="text-xl md:text-2xl font-medium tabular-nums">
-                      {maskedPhone}
-                    </span>
+                    <span className="text-xl md:text-2xl font-medium tabular-nums">{maskedPhone}</span>
                   )}
                   <IconButton
-                    onClick={() => setPhoneRevealed((v) => !v)}
-                    label={phoneRevealed ? "Скрыть номер" : "Показать номер"}
+                    onClick={() => setPhoneRevealed(v => !v)}
+                    label={phoneRevealed ? 'Скрыть номер' : 'Показать номер'}
                   >
-                    {phoneRevealed ? (
-                      <RiEyeOffLine size={18} />
-                    ) : (
-                      <RiEyeLine size={18} />
-                    )}
+                    {phoneRevealed ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
                   </IconButton>
                   <CopyButton getValue={() => phone} />
                 </div>
@@ -193,9 +157,9 @@ export const getStaticProps: GetStaticProps = async () => {
       text: contacts.text ?? null,
       meta_title: contacts.meta_title,
       meta_description: contacts.meta_description ?? null,
-      emailEncoded: encode(contacts.email ?? ""),
-      phoneEncoded: encode(contacts.phone ?? ""),
-      maskedPhone: contacts.phone ? maskPhone(contacts.phone) : "",
+      emailEncoded: encode(contacts.email ?? ''),
+      phoneEncoded: encode(contacts.phone ?? ''),
+      maskedPhone: contacts.phone ? maskPhone(contacts.phone) : '',
     },
   };
 };

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { type ReactNode } from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
+import { type ReactNode } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 type SeoData = {
   meta_title: string;
@@ -16,15 +16,10 @@ interface LayoutProps {
   canonical?: boolean;
 }
 
-const Layout = ({
-  seo,
-  children,
-  site_url,
-  canonical = false,
-}: LayoutProps) => {
+const Layout = ({ seo, children, site_url, canonical = false }: LayoutProps) => {
   const router = useRouter();
-  const base_url = (site_url || "").replace(/\/$/, "");
-  const canonical_url = `${base_url}${router.asPath.split("?")[0]}`;
+  const base_url = (site_url || '').replace(/\/$/, '');
+  const canonical_url = `${base_url}${router.asPath.split('?')[0]}`;
 
   return (
     <>

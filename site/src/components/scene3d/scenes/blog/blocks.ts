@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { mat } from "../../kit";
-import { ease, phase, tri } from "../../motion";
-import { type SceneDef, GROUND_Y, column } from "../../stage";
+import * as THREE from 'three';
+import { mat } from '../../kit';
+import { ease, phase, tri } from '../../motion';
+import { type SceneDef, GROUND_Y, column } from '../../stage';
 
 /* SSR & SEO — three blocks of different heights, the tallest in accent */
 export function blocks(): SceneDef {

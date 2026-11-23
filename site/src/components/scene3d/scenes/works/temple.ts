@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { mat, mesh } from "../../kit";
-import { TAU, ease, wave } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { mat, mesh } from '../../kit';
+import { TAU, ease, wave } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* VESTA — the round Temple of Vesta */
 
@@ -22,10 +22,7 @@ export function temple(): SceneDef {
     y += h;
   }
   const colH = 1.55;
-  const cella = mesh(
-    new THREE.CylinderGeometry(0.82, 0.82, colH, 72),
-    mat.mid()
-  );
+  const cella = mesh(new THREE.CylinderGeometry(0.82, 0.82, colH, 72), mat.mid());
   cella.position.y = y + colH / 2;
   const door = mesh(new THREE.BoxGeometry(0.34, 0.9, 0.1), mat.dark());
   door.position.set(0.8 * Math.sin(0.71), y + 0.45, 0.8 * Math.cos(0.71)); // faces the camera
@@ -52,23 +49,14 @@ export function temple(): SceneDef {
     tholos.add(base, shaft, capital);
   }
   y += colH;
-  const entablature = mesh(
-    new THREE.CylinderGeometry(1.3, 1.3, 0.2, 96),
-    mat.light()
-  );
+  const entablature = mesh(new THREE.CylinderGeometry(1.3, 1.3, 0.2, 96), mat.light());
   entablature.position.y = y + 0.1;
-  const cornice = mesh(
-    new THREE.CylinderGeometry(1.38, 1.34, 0.07, 96),
-    mat.mid()
-  );
+  const cornice = mesh(new THREE.CylinderGeometry(1.38, 1.34, 0.07, 96), mat.mid());
   cornice.position.y = y + 0.235;
   tholos.add(entablature, cornice);
   y += 0.27;
   const domeMat = mat.accent();
-  const dome = mesh(
-    new THREE.SphereGeometry(1.18, 72, 24, 0, TAU, 0, Math.PI / 2),
-    domeMat
-  );
+  const dome = mesh(new THREE.SphereGeometry(1.18, 72, 24, 0, TAU, 0, Math.PI / 2), domeMat);
   dome.scale.y = 0.5;
   dome.position.y = y;
   const finial = mesh(new THREE.SphereGeometry(0.09, 24, 12), domeMat);
@@ -83,8 +71,7 @@ export function temple(): SceneDef {
     update(t) {
       tholos.rotation.y = 0.16 * wave(t, 1);
       // the dome breathes like the hearth fire Vesta guards
-      domeMat.emissiveIntensity =
-        0.06 + 0.1 * ease.inOut(0.5 + 0.5 * wave(t, 2));
+      domeMat.emissiveIntensity = 0.06 + 0.1 * ease.inOut(0.5 + 0.5 * wave(t, 2));
     },
   };
 }

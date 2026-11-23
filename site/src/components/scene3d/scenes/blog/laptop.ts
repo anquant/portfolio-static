@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { V, accentTint, mat, mesh } from "../../kit";
-import { FLOAT, ease, keyframes, phase, wave } from "../../motion";
-import { type SceneDef, CAMERA_POSITION, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { V, accentTint, mat, mesh } from '../../kit';
+import { FLOAT, ease, keyframes, phase, wave } from '../../motion';
+import { type SceneDef, CAMERA_POSITION, GROUND_Y } from '../../stage';
 
 /* Next.js for business — an open laptop with a growth arrow drawn out of its screen */
 export function laptop(): SceneDef {
@@ -26,7 +26,7 @@ export function laptop(): SceneDef {
       color: accentTint(0.55),
       emissiveIntensity: 0.35,
       roughness: 0.3,
-    })
+    }),
   );
   screen.position.set(0, 0.79, 0.04);
   hinge.add(lid, screen);
@@ -37,12 +37,7 @@ export function laptop(): SceneDef {
   root.add(device);
   // growth arrow drawn up out of the screen, in a plane facing the viewer
   const arrowMat = mat.accent();
-  const path = [
-    V(-0.85, 0, 0),
-    V(-0.3, 0.55, 0),
-    V(0.1, 0.25, 0),
-    V(0.85, 1.15, 0),
-  ];
+  const path = [V(-0.85, 0, 0), V(-0.3, 0.55, 0), V(0.1, 0.25, 0), V(0.85, 1.15, 0)];
   const R = 0.065;
   const segGeo = new THREE.CylinderGeometry(R, R, 1, 24);
   segGeo.translate(0, 0.5, 0); // grows from its start point
@@ -56,14 +51,14 @@ export function laptop(): SceneDef {
     m.quaternion.setFromUnitVectors(up, dir.normalize());
     return { m, start, dir, length };
   });
-  const joints = path.slice(1, -1).map((p) => {
+  const joints = path.slice(1, -1).map(p => {
     const j = mesh(new THREE.SphereGeometry(R, 24, 12), arrowMat);
     j.position.copy(p);
     return j;
   });
   const head = mesh(new THREE.ConeGeometry(0.19, 0.36, 32), arrowMat);
   const arrow = new THREE.Group();
-  arrow.add(...segments.map((s) => s.m), ...joints, head);
+  arrow.add(...segments.map(s => s.m), ...joints, head);
   const total = segments.reduce((sum, s) => sum + s.length, 0);
   // place it just in front of the screen, rising above the lid
   const arrowHolder = new THREE.Group();

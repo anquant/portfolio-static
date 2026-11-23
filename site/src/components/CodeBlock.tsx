@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { nord } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { IoMdCopy, IoMdCheckmark } from "react-icons/io";
+import { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { nord } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { IoMdCopy, IoMdCheckmark } from 'react-icons/io';
 
 const codeStyle = {
-  borderRadius: "1rem",
-  padding: "1.25rem",
-  background: "rgb(var(--surface))",
-  border: "1px solid rgb(var(--line))",
-  fontSize: "0.9rem",
+  borderRadius: '1rem',
+  padding: '1.25rem',
+  background: 'rgb(var(--surface))',
+  border: '1px solid rgb(var(--line))',
+  fontSize: '0.9rem',
 };
 
 type CodeBlockProps = {
@@ -19,11 +19,7 @@ type CodeBlockProps = {
   className?: string;
 };
 
-export default function CodeBlock({
-  language,
-  value,
-  className,
-}: CodeBlockProps) {
+export default function CodeBlock({ language, value, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -37,17 +33,13 @@ export default function CodeBlock({
       <button
         onClick={handleCopy}
         className="absolute top-2 right-2 z-10 text-lg p-1.5 rounded-md text-muted hover:text-fg hover:bg-surface-2 transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
-        aria-label={copied ? "Скопировано" : "Скопировать код"}
+        aria-label={copied ? 'Скопировано' : 'Скопировать код'}
         title="Скопировать"
       >
         {copied ? <IoMdCheckmark /> : <IoMdCopy />}
       </button>
       {language ? (
-        <SyntaxHighlighter
-          language={language}
-          style={nord}
-          customStyle={codeStyle}
-        >
+        <SyntaxHighlighter language={language} style={nord} customStyle={codeStyle}>
           {value}
         </SyntaxHighlighter>
       ) : (

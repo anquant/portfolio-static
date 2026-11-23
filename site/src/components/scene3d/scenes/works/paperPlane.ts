@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { mat, mesh, paperPlaneGeometry } from "../../kit";
-import { LOOP, TAU } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { mat, mesh, paperPlaneGeometry } from '../../kit';
+import { LOOP, TAU } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* Сириус — messaging: a paper plane */
 
@@ -15,14 +15,14 @@ export function paperPlane(): SceneDef {
       emissiveIntensity: 0.04,
       envMapIntensity: 0.35,
       side: THREE.DoubleSide,
-    })
+    }),
   );
   const bank = new THREE.Group();
   bank.add(plane);
   const flight = new THREE.Group();
   flight.add(bank);
   // rear three-quarter view, heading right and slightly away
-  flight.rotation.order = "YXZ";
+  flight.rotation.order = 'YXZ';
   flight.rotation.set(-0.1, 3.0, 0);
   flight.scale.setScalar(1.4);
   flight.position.set(0, 1.9, 0);

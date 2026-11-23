@@ -1,16 +1,11 @@
-import * as THREE from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { readRgbToken } from "@/lib/design-tokens";
-import type { SceneId } from "./ids";
-import { ACCENT } from "./kit";
-import { clamp01, ease } from "./motion";
-import { SCENES } from "./scenes";
-import {
-  CAMERA_POSITION,
-  CAMERA_TARGET,
-  GROUND_Y,
-  type SceneDef,
-} from "./stage";
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { readRgbToken } from '@/lib/design-tokens';
+import type { SceneId } from './ids';
+import { ACCENT } from './kit';
+import { clamp01, ease } from './motion';
+import { SCENES } from './scenes';
+import { CAMERA_POSITION, CAMERA_TARGET, GROUND_Y, type SceneDef } from './stage';
 
 /*
  * Renders every 3D scene on the page (work previews, blog covers) with ONE
@@ -55,8 +50,7 @@ let last = 0;
 const t0 = performance.now() / 1000;
 
 const reducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function getRenderer() {
   if (renderer || unavailable) return renderer;
@@ -75,7 +69,7 @@ function getRenderer() {
 
   // Lit materials are colour-managed: the CSS (sRGB) accent must be converted,
   // otherwise three.js would read it as linear and wash it out
-  const accent = readRgbToken("--accent");
+  const accent = readRgbToken('--accent');
   if (accent) ACCENT.setRGB(...accent, THREE.SRGBColorSpace);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -105,10 +99,7 @@ function buildStage(work: SceneDef) {
   rim.position.set(3, 3, -6);
   scene.add(key, rim, new THREE.HemisphereLight(0xffffff, 0x101014, 0.35));
 
-  const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(40, 40),
-    new THREE.ShadowMaterial({ opacity: 0.32 })
-  );
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.32 }));
   ground.rotation.x = -Math.PI / 2;
   ground.position.y = GROUND_Y;
   ground.receiveShadow = true;
@@ -121,23 +112,17 @@ function buildStage(work: SceneDef) {
 }
 
 function dispose(scene: THREE.Scene) {
-  scene.traverse((o) => {
+  scene.traverse(o => {
     if (o instanceof THREE.Mesh) {
       o.geometry.dispose();
       const m = o.material as THREE.Material | THREE.Material[];
-      (Array.isArray(m) ? m : [m]).forEach((x) => x.dispose());
+      (Array.isArray(m) ? m : [m]).forEach(x => x.dispose());
     }
     if (o instanceof THREE.DirectionalLight) o.shadow.map?.dispose();
   });
 }
 
-function renderView(
-  gl: THREE.WebGLRenderer,
-  v: View,
-  now: number,
-  dt: number,
-  t: number
-) {
+function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t: number) {
   const { canvas, camera } = v;
   const w = canvas.width;
   const h = canvas.height;
@@ -149,8 +134,7 @@ function renderView(
 
   const reduce = reducedMotion();
   // intro: rise + settle + fade, same curve as the site's reveal
-  const ip =
-    reduce || v.introStart === null ? 1 : clamp01((now - v.introStart) / INTRO);
+  const ip = reduce || v.introStart === null ? 1 : clamp01((now - v.introStart) / INTRO);
   const e = ease.outQuart(ip);
   v.stage.position.y = -0.5 * (1 - e);
   v.stage.scale.setScalar(0.94 + 0.06 * e);
@@ -167,7 +151,7 @@ function renderView(
   camera.position.set(
     (CAMERA_POSITION.x + p.x) * dolly,
     (CAMERA_POSITION.y - p.y * 0.7) * dolly,
-    CAMERA_POSITION.z * dolly
+    CAMERA_POSITION.z * dolly,
   );
   camera.lookAt(CAMERA_TARGET);
 
@@ -201,20 +185,19 @@ function wake() {
 }
 
 const observer =
-  typeof window !== "undefined"
+  typeof window !== 'undefined'
     ? new IntersectionObserver(
-        (entries) => {
+        entries => {
           for (const entry of entries) {
             for (const v of views) {
               if (v.canvas !== entry.target) continue;
               v.visible = entry.isIntersecting;
-              if (v.visible && v.introStart === null)
-                v.introStart = performance.now() / 1000;
+              if (v.visible && v.introStart === null) v.introStart = performance.now() / 1000;
             }
           }
           wake();
         },
-        { threshold: 0.15 }
+        { threshold: 0.15 },
       )
     : null;
 
@@ -223,13 +206,9 @@ const observer =
  * hover drives the dolly (the whole card); parallax follows the pointer over
  * the canvas itself. Returns a cleanup function, or null without WebGL.
  */
-export function mountScene(
-  canvas: HTMLCanvasElement,
-  sceneId: SceneId,
-  hoverTarget: HTMLElement
-): (() => void) | null {
+export function mountScene(canvas: HTMLCanvasElement, sceneId: SceneId, hoverTarget: HTMLElement): (() => void) | null {
   const gl = getRenderer();
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   const build = SCENES[sceneId];
   if (!gl || !ctx || !build) return null;
 
@@ -265,9 +244,9 @@ export function mountScene(
     view.pointer.tx = clamp01((e.clientX - r.left) / r.width) - 0.5;
     view.pointer.ty = clamp01((e.clientY - r.top) / r.height) - 0.5;
   };
-  hoverTarget.addEventListener("pointerenter", onEnter);
-  hoverTarget.addEventListener("pointerleave", onLeave);
-  hoverTarget.addEventListener("pointermove", onMove);
+  hoverTarget.addEventListener('pointerenter', onEnter);
+  hoverTarget.addEventListener('pointerleave', onLeave);
+  hoverTarget.addEventListener('pointermove', onMove);
 
   const view: View = {
     canvas,
@@ -284,15 +263,15 @@ export function mountScene(
     cleanup: () => {
       observer?.unobserve(canvas);
       resize.disconnect();
-      hoverTarget.removeEventListener("pointerenter", onEnter);
-      hoverTarget.removeEventListener("pointerleave", onLeave);
-      hoverTarget.removeEventListener("pointermove", onMove);
+      hoverTarget.removeEventListener('pointerenter', onEnter);
+      hoverTarget.removeEventListener('pointerleave', onLeave);
+      hoverTarget.removeEventListener('pointermove', onMove);
       dispose(scene);
     },
   };
   views.add(view);
   observer?.observe(canvas);
-  canvas.style.opacity = reducedMotion() ? "1" : "0";
+  canvas.style.opacity = reducedMotion() ? '1' : '0';
 
   return () => {
     view.cleanup();

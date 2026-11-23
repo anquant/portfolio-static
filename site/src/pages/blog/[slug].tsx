@@ -1,22 +1,22 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { getBlogArticles, getArticleBySlug } from "@/lib/content";
-import { type GetStaticPaths, type GetStaticProps } from "next";
-import type { BlogArticlesData } from "@/lib/content/schemas";
-import BlogCover from "@/components/BlogCover";
-import Scene3D from "@/components/Scene3D";
-import PageIntro from "@/components/PageIntro";
-import SectionHeader from "@/components/SectionHeader";
-import Link from "next/link";
-import ArticleCard from "@/components/ArticleCard";
-import { FiArrowRight } from "react-icons/fi";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
-import remarkGfm from "remark-gfm";
-import { mdxComponents } from "@/lib/mdx-components";
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { getBlogArticles, getArticleBySlug } from '@/lib/content';
+import { type GetStaticPaths, type GetStaticProps } from 'next';
+import type { BlogArticlesData } from '@/lib/content/schemas';
+import BlogCover from '@/components/BlogCover';
+import Scene3D from '@/components/Scene3D';
+import PageIntro from '@/components/PageIntro';
+import SectionHeader from '@/components/SectionHeader';
+import Link from 'next/link';
+import ArticleCard from '@/components/ArticleCard';
+import { FiArrowRight } from 'react-icons/fi';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
+import remarkGfm from 'remark-gfm';
+import { mdxComponents } from '@/lib/mdx-components';
 
 interface ArticleProps {
   article: BlogArticlesData;
@@ -24,13 +24,8 @@ interface ArticleProps {
   mdxSource: MDXRemoteSerializeResult;
 }
 
-export default function Article({
-  article,
-  articles,
-  mdxSource,
-}: ArticleProps) {
-  const { title, image, image_background_color, meta_title, meta_description } =
-    article;
+export default function Article({ article, articles, mdxSource }: ArticleProps) {
+  const { title, image, image_background_color, meta_title, meta_description } = article;
   const seo = { meta_title, meta_description };
 
   return (
@@ -39,18 +34,15 @@ export default function Article({
         <Header />
         <article className="mx-auto max-w-3xl">
           <PageIntro
-            crumbs={[{ href: "/blog", label: "Блог" }]}
+            crumbs={[{ href: '/blog', label: 'Блог' }]}
             current={article.category.title}
             title={title}
             size="title"
             // 3D covers live in the accent palette; the old pastel tint would clash
             glow={article.scene ? undefined : image_background_color}
           >
-            <time
-              dateTime={article.pubdate}
-              className="block text-sm text-muted"
-            >
-              {format(new Date(article.pubdate), "d MMMM yyyy", { locale: ru })}
+            <time dateTime={article.pubdate} className="block text-sm text-muted">
+              {format(new Date(article.pubdate), 'd MMMM yyyy', { locale: ru })}
             </time>
           </PageIntro>
           {article.scene ? (
@@ -80,10 +72,7 @@ export default function Article({
               title="Другие статьи"
               className="!mb-0"
               aside={
-                <Link
-                  href="/blog"
-                  className="flex gap-2 items-center transition-colors hover:text-fg"
-                >
+                <Link href="/blog" className="flex gap-2 items-center transition-colors hover:text-fg">
                   Все статьи <FiArrowRight />
                 </Link>
               }
@@ -98,7 +87,7 @@ export default function Article({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = getBlogArticles().map((a) => ({ params: { slug: a.slug } }));
+  const paths = getBlogArticles().map(a => ({ params: { slug: a.slug } }));
 
   return {
     paths,
@@ -119,7 +108,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
 
   const articles = getBlogArticles()
-    .filter((a) => a.slug !== slug)
+    .filter(a => a.slug !== slug)
     .slice(0, 3);
 
   return {

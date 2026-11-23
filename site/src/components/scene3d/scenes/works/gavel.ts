@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { accentTint, lathe, mat, mesh } from "../../kit";
-import { ease, keyframes, phase } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { accentTint, lathe, mat, mesh } from '../../kit';
+import { ease, keyframes, phase } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* Benefit Litigation — law: a judge's gavel */
 
@@ -21,7 +21,7 @@ export function gavel(): SceneDef {
       [0.82, 0.48],
       [0, 0.48],
     ]),
-    mat.mid()
+    mat.mid(),
   );
   root.add(block);
 
@@ -56,11 +56,7 @@ export function gavel(): SceneDef {
   const capA = mesh(lathe(cap), wood);
   const capB = mesh(lathe(cap), wood);
   capB.rotation.x = Math.PI;
-  g.add(
-    capA,
-    capB,
-    mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.68, 72), band)
-  );
+  g.add(capA, capB, mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.68, 72), band));
   const handle = mesh(
     lathe(
       [
@@ -81,14 +77,14 @@ export function gavel(): SceneDef {
         [0.06, 2.3],
         [0, 2.31],
       ],
-      48
+      48,
     ),
-    wood
+    wood,
   );
   handle.rotation.z = -Math.PI / 2;
   handle.position.x = 0.38;
   g.add(handle);
-  g.rotation.order = "YXZ";
+  g.rotation.order = 'YXZ';
   g.rotation.set(0, 0.3, -0.32);
   g.position.set(-0.75, 1.85, 0.25);
   root.add(g);

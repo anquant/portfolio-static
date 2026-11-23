@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { HERO_SCENES } from "@/components/hero/variants";
-import { SCENE_IDS } from "@/components/scene3d/ids";
+import { z } from 'zod';
+import { HERO_SCENES } from '@/components/hero/variants';
+import { SCENE_IDS } from '@/components/scene3d/ids';
 
 /*
  * Content schemas — the single source of truth for every file under
@@ -14,13 +14,11 @@ import { SCENE_IDS } from "@/components/scene3d/ids";
 /* ------------------------------------------------------------------------ */
 
 /** Root-relative path to a file in `public/` */
-const publicPath = z.string().startsWith("/", "must be a /-rooted public path");
+const publicPath = z.string().startsWith('/', 'must be a /-rooted public path');
 
 const isoDate = z.iso.date();
 
-const hexColor = z
-  .string()
-  .regex(/^#[0-9a-f]{6}$/i, "must be a #rrggbb colour");
+const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'must be a #rrggbb colour');
 
 const seo = {
   meta_title: z.string().min(1),
@@ -57,12 +55,8 @@ export const aboutSchema = z.strictObject({
   title_part1: z.string(),
   title_part2: z.string().optional(),
   content: z.string(),
-  stats: z
-    .array(z.strictObject({ value: z.string(), label: z.string() }))
-    .optional(),
-  skills: z
-    .array(z.strictObject({ title: z.string(), items: z.array(z.string()) }))
-    .optional(),
+  stats: z.array(z.strictObject({ value: z.string(), label: z.string() })).optional(),
+  skills: z.array(z.strictObject({ title: z.string(), items: z.array(z.string()) })).optional(),
   resume: publicPath.optional(),
   ...seo,
 });
@@ -133,16 +127,14 @@ export const serviceFileSchema = z.strictObject({
   tech_list: z.array(z.string()).optional(),
   introtext: z.string().optional(),
   /** 3D centrepiece of the hero background */
-  scene: heroSceneSchema.default("blob"),
+  scene: heroSceneSchema.default('blob'),
   sections: z
     .array(
       z.strictObject({
         title: z.string(),
-        color: z.enum(["light", "dark"]),
-        blocks: z
-          .array(z.strictObject({ title: z.string(), content: z.string() }))
-          .optional(),
-      })
+        color: z.enum(['light', 'dark']),
+        blocks: z.array(z.strictObject({ title: z.string(), content: z.string() })).optional(),
+      }),
     )
     .optional(),
   ...seo,
@@ -183,8 +175,8 @@ export type ClientsData = z.infer<typeof clientSchema>;
 export type WorksData = z.infer<typeof workFileSchema> & { slug: string };
 
 type ServiceFile = z.output<typeof serviceFileSchema>;
-export type ServiceSection = NonNullable<ServiceFile["sections"]>[number];
-export type ServicesListData = Omit<ServiceFile, "sections"> & {
+export type ServiceSection = NonNullable<ServiceFile['sections']>[number];
+export type ServicesListData = Omit<ServiceFile, 'sections'> & {
   content?: ServiceSection[];
   slug: string;
 };
@@ -203,7 +195,4 @@ export type BlogArticlesData = {
 };
 
 /** What an article card needs — a subset of the article */
-export type ArticleCardData = Omit<
-  BlogArticlesData,
-  "meta_title" | "meta_description"
->;
+export type ArticleCardData = Omit<BlogArticlesData, 'meta_title' | 'meta_description'>;

@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { mat, mesh } from "../../kit";
-import { ease, phase, tri, wave } from "../../motion";
-import { type SceneDef } from "../../stage";
+import * as THREE from 'three';
+import { mat, mesh } from '../../kit';
+import { ease, phase, tri, wave } from '../../motion';
+import { type SceneDef } from '../../stage';
 
 /* MLS — container logistics: a crane lowers the accent container */
 
@@ -44,10 +44,7 @@ export function containers(): SceneDef {
   lift.add(container(mat.accent()));
   const cableMat = mat.light();
   for (const x of [-0.9, 0.9]) {
-    const cable = mesh(
-      new THREE.CylinderGeometry(0.012, 0.012, 3.2, 6),
-      cableMat
-    );
+    const cable = mesh(new THREE.CylinderGeometry(0.012, 0.012, 3.2, 6), cableMat);
     cable.position.set(x, 2.1, 0);
     cable.castShadow = false;
     lift.add(cable);

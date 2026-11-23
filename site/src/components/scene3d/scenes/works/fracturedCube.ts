@@ -1,13 +1,7 @@
-import * as THREE from "three";
-import { V, accentTint, fracturedCube, mat, mesh } from "../../kit";
-import { ease, phase, tri, wave } from "../../motion";
-import {
-  type SceneDef,
-  CAMERA_POSITION,
-  GROUND_Y,
-  SCREEN_RIGHT,
-  SCREEN_UP,
-} from "../../stage";
+import * as THREE from 'three';
+import { V, accentTint, fracturedCube, mat, mesh } from '../../kit';
+import { ease, phase, tri, wave } from '../../motion';
+import { type SceneDef, CAMERA_POSITION, GROUND_Y, SCREEN_RIGHT, SCREEN_UP } from '../../stage';
 
 /* ОцЭкс — damage assessment: a cracked cube under a lens */
 
@@ -16,14 +10,12 @@ export function fracturedCubeScene(): SceneDef {
   const cube = new THREE.Group();
   const light = mat.light();
   const mid = mat.mid();
-  const shards = fracturedCube(1.0, 14, 0.05, 11).map(
-    ({ geometry, center }, i) => {
-      const m = mesh(geometry, i % 5 === 0 ? mid : light);
-      m.position.copy(center);
-      cube.add(m);
-      return { m, home: center.clone(), dir: center.clone().normalize() };
-    }
-  );
+  const shards = fracturedCube(1.0, 14, 0.05, 11).map(({ geometry, center }, i) => {
+    const m = mesh(geometry, i % 5 === 0 ? mid : light);
+    m.position.copy(center);
+    cube.add(m);
+    return { m, home: center.clone(), dir: center.clone().normalize() };
+  });
   cube.rotation.y = 0.1;
   cube.position.set(-0.75, 1.0, 0);
   root.add(cube);
@@ -42,7 +34,7 @@ export function fracturedCubeScene(): SceneDef {
       envMapIntensity: 0.45,
       attenuationColor: accentTint(0.6),
       attenuationDistance: 3.5,
-    })
+    }),
   );
   glass.scale.z = 0.26;
   const lens = new THREE.Group();
@@ -61,12 +53,7 @@ export function fracturedCubeScene(): SceneDef {
     root,
     update(t) {
       shards.forEach((s, i) =>
-        s.m.position
-          .copy(s.home)
-          .addScaledVector(
-            s.dir,
-            0.012 + 0.045 * ease.inOut(tri(phase(t, 1, -i * 0.012)))
-          )
+        s.m.position.copy(s.home).addScaledVector(s.dir, 0.012 + 0.045 * ease.inOut(tri(phase(t, 1, -i * 0.012)))),
       );
       // the lens scans the cube along a figure-eight
       lens.position

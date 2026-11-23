@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
-import { useTheme } from "../theme";
-import { MAX_DELTA, motion, ease } from "../motion";
-import { noiseGLSL, choreographyGLSL, pointFragment } from "../glsl";
-import { pointUniforms, syncChoreography, useDispose } from "../materials";
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useTheme } from '../theme';
+import { MAX_DELTA, motion, ease } from '../motion';
+import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
+import { pointUniforms, syncChoreography, useDispose } from '../materials';
 
 /* ------------------------------------------------------------------------ */
 /* SEO: rays fired from a pulsing core in beats — reach, signal, growth     */
@@ -12,7 +12,7 @@ import { pointUniforms, syncChoreography, useDispose } from "../materials";
 
 export function Burst() {
   const theme = useTheme();
-  const gl = useThree((s) => s.gl);
+  const gl = useThree(s => s.gl);
   const pts = useRef<THREE.Points>(null);
   const core = useRef<THREE.Mesh>(null);
   const phase = useRef(0);
@@ -31,11 +31,7 @@ export function Burst() {
       const k = r + 0.5;
       const phi = Math.acos(1 - (2 * k) / rays);
       const theta = Math.PI * (1 + Math.sqrt(5)) * k;
-      const d = new THREE.Vector3(
-        Math.cos(theta) * Math.sin(phi),
-        Math.sin(theta) * Math.sin(phi),
-        Math.cos(phi)
-      );
+      const d = new THREE.Vector3(Math.cos(theta) * Math.sin(phi), Math.sin(theta) * Math.sin(phi), Math.cos(phi));
       const rayRate = 0.7 + rnd() * 0.6;
       for (let i = 0; i < perRay; i++) {
         dir.push(d.x, d.y, d.z);
@@ -44,9 +40,9 @@ export function Burst() {
       }
     }
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(dir, 3));
-    g.setAttribute("aOffset", new THREE.Float32BufferAttribute(offset, 1));
-    g.setAttribute("aRate", new THREE.Float32BufferAttribute(rate, 1));
+    g.setAttribute('position', new THREE.Float32BufferAttribute(dir, 3));
+    g.setAttribute('aOffset', new THREE.Float32BufferAttribute(offset, 1));
+    g.setAttribute('aRate', new THREE.Float32BufferAttribute(rate, 1));
     return g;
   }, []);
 
@@ -91,7 +87,7 @@ export function Burst() {
         `,
         fragmentShader: pointFragment,
       }),
-    [gl, theme]
+    [gl, theme],
   );
 
   // Glowing core: camera-facing quad with a radial falloff
@@ -132,7 +128,7 @@ export function Burst() {
           }
         `,
       }),
-    [theme]
+    [theme],
   );
 
   useDispose(geometry, material, coreGeometry, coreMaterial);
@@ -158,8 +154,7 @@ export function Burst() {
     const cu = (c.material as THREE.ShaderMaterial).uniforms;
     const appear = ease.outBack(Math.min(1, motion.intro * 1.6));
     cu.uSize.value = (0.55 + beat * 0.35 + motion.energy * 0.25) * appear;
-    cu.uGlow.value =
-      (0.45 + beat * 0.5 + motion.energy * 0.3) * (1 - motion.scroll);
+    cu.uGlow.value = (0.45 + beat * 0.5 + motion.energy * 0.3) * (1 - motion.scroll);
   });
 
   return (

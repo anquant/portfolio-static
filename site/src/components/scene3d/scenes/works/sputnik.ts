@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { V, mat, mesh } from "../../kit";
-import { FLOAT, LOOP, TAU, wave } from "../../motion";
-import { type SceneDef, GROUND_Y } from "../../stage";
+import * as THREE from 'three';
+import { V, mat, mesh } from '../../kit';
+import { FLOAT, LOOP, TAU, wave } from '../../motion';
+import { type SceneDef, GROUND_Y } from '../../stage';
 
 /* QuantumTec — messaging: Sputnik-1 */
 
@@ -17,8 +17,8 @@ export function sputnik(): SceneDef {
         metalness: 0.35,
         emissiveIntensity: 0.05,
         envMapIntensity: 1.0,
-      })
-    )
+      }),
+    ),
   );
   // seam between the two hemispheres, just ahead of the equator
   const seam = mesh(new THREE.TorusGeometry(R, 0.018, 12, 96), mat.light());
@@ -45,16 +45,10 @@ export function sputnik(): SceneDef {
       .addScaledVector(radial, Math.sin(0.95))
       .multiplyScalar(R);
     const dir = V(-1, 0, 0).addScaledVector(radial, 0.42).normalize();
-    const antenna = mesh(
-      new THREE.CylinderGeometry(0.01, 0.018, len, 8),
-      antennaMat
-    );
+    const antenna = mesh(new THREE.CylinderGeometry(0.01, 0.018, len, 8), antennaMat);
     antenna.quaternion.setFromUnitVectors(V(0, 1, 0), dir);
     antenna.position.copy(mount).addScaledVector(dir, len / 2);
-    const boot = mesh(
-      new THREE.CylinderGeometry(0.045, 0.045, 0.12, 16),
-      bootMat
-    );
+    const boot = mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.12, 16), bootMat);
     boot.quaternion.copy(antenna.quaternion);
     boot.position.copy(mount).addScaledVector(dir, 0.02);
     sat.add(antenna, boot);
@@ -62,7 +56,7 @@ export function sputnik(): SceneDef {
   const holder = new THREE.Group();
   holder.add(sat);
   // flying left → right, antennae trailing
-  holder.rotation.order = "YXZ";
+  holder.rotation.order = 'YXZ';
   holder.rotation.set(0, 0.35, 0.18);
   holder.scale.setScalar(1.15);
   holder.position.set(0.9, 1.9, -0.4);

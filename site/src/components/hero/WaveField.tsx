@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
-import { useTheme } from "./theme";
-import { motion } from "./motion";
-import { noiseGLSL, choreographyGLSL } from "./glsl";
-import { pointUniforms, syncChoreography, useDispose } from "./materials";
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useTheme } from './theme';
+import { motion } from './motion';
+import { noiseGLSL, choreographyGLSL } from './glsl';
+import { pointUniforms, syncChoreography, useDispose } from './materials';
 
 /* ------------------------------------------------------------------------ */
 /* Wave field: grid of points that ripples and rises under the cursor       */
@@ -23,8 +23,8 @@ const flat = new THREE.Vector3();
 
 export function WaveField() {
   const theme = useTheme();
-  const gl = useThree((s) => s.gl);
-  const camera = useThree((s) => s.camera);
+  const gl = useThree(s => s.gl);
+  const camera = useThree(s => s.camera);
   const points = useRef<THREE.Points>(null);
 
   const geometry = useMemo(() => {
@@ -42,7 +42,7 @@ export function WaveField() {
       }
     }
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     return g;
   }, []);
 
@@ -109,7 +109,7 @@ export function WaveField() {
           }
         `,
       }),
-    [gl, theme]
+    [gl, theme],
   );
 
   useDispose(geometry, material);
@@ -136,12 +136,5 @@ export function WaveField() {
     u.uMouseStrength.value = motion.strength;
   });
 
-  return (
-    <points
-      ref={points}
-      geometry={geometry}
-      material={material}
-      position={[0, FIELD_Y, 0]}
-    />
-  );
+  return <points ref={points} geometry={geometry} material={material} position={[0, FIELD_Y, 0]} />;
 }
