@@ -29,3 +29,53 @@ export function pageTitle(metaTitle: string): string {
 
   return metaTitle.includes(AUTHOR_NAME) || withAuthor.length > TITLE_LIMIT ? metaTitle : withAuthor;
 }
+
+type JsonLd = Record<string, unknown>;
+
+const PERSON_ID = `${BASE}/#person`;
+const WEBSITE_ID = `${BASE}/#website`;
+
+/** Reference to the person node, for author/creator/provider fields */
+export const personRef: JsonLd = { '@id': PERSON_ID };
+
+export function personLd(knowsAbout: string[] = []): JsonLd {
+  return {
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: AUTHOR_NAME,
+    jobTitle: AUTHOR_JOB,
+    url: `${BASE}/`,
+    sameAs: AUTHOR_PROFILES,
+    ...(knowsAbout.length > 0 && { knowsAbout }),
+  };
+}
+
+export function websiteLd(description?: string): JsonLd {
+  return {
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    url: `${BASE}/`,
+    name: AUTHOR_NAME,
+    ...(description && { description }),
+    inLanguage: 'ru-RU',
+    publisher: personRef,
+  };
+}
+
+/** Breadcrumbs from the home page down to the current page */
+export function breadcrumbLd(items: { name: string; path: string }[]): JsonLd {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ name: 'Главная', path: '/' }, ...items].map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: absUrl(item.path),
+    })),
+  };
+}
+
+/** Wraps nodes into one JSON-LD document */
+export function ldGraph(nodes: JsonLd[]): JsonLd {
+  return { '@context': 'https://schema.org', '@graph': nodes };
+}

@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { type ReactNode } from 'react';
 
-import { AUTHOR_NAME, DEFAULT_OG_IMAGE, absUrl, pageTitle } from '@/lib/seo';
+import { AUTHOR_NAME, DEFAULT_OG_IMAGE, absUrl, ldGraph, pageTitle } from '@/lib/seo';
 
 type OgImage = { src: string; width?: number; height?: number; alt?: string };
 
@@ -21,10 +21,12 @@ type SeoData = {
 
 interface LayoutProps {
   seo: SeoData;
+  /** schema.org nodes for this page; wrapped into one JSON-LD graph */
+  jsonLd?: Record<string, unknown>[];
   children: ReactNode;
 }
 
-const Layout = ({ seo, children }: LayoutProps) => {
+const Layout = ({ seo, jsonLd, children }: LayoutProps) => {
   const router = useRouter();
   const url = absUrl(router.asPath);
   const title = pageTitle(seo.meta_title);
@@ -50,6 +52,14 @@ const Layout = ({ seo, children }: LayoutProps) => {
         {image.height && <meta property="og:image:height" content={String(image.height)} />}
         {image.alt && <meta property="og:image:alt" content={image.alt} />}
         <meta name="twitter:card" content="summary_large_image" />
+
+        {jsonLd && jsonLd.length > 0 && (
+          <script
+            type="application/ld+json"
+            // "<" escaped so text in the data can never close the script tag
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(ldGraph(jsonLd)).replace(/</g, '\\u003c') }}
+          />
+        )}
       </Head>
       <main id="beginning">{children}</main>
     </>

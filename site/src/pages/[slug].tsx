@@ -12,6 +12,7 @@ import Reveal from '@/components/Reveal';
 import Scene3D from '@/components/Scene3D';
 import { getWorks, getWorkBySlug } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
+import { absUrl, breadcrumbLd, personRef } from '@/lib/seo';
 import { displayHost } from '@/lib/url';
 
 interface WorkProps {
@@ -85,9 +86,25 @@ export default function Work({ work, next }: WorkProps) {
     type: 'article' as const,
     image: image && { ...image, alt: title },
   };
+  const jsonLd = [
+    {
+      '@type': 'CreativeWork',
+      name: meta_title,
+      headline: title,
+      description: meta_description ?? description,
+      ...(image && { image: absUrl(image.src) }),
+      creator: personRef,
+      // the client who commissioned the work
+      funder: { '@type': 'Organization', name: title, ...(link && { url: link }) },
+      ...(scope && { keywords: scope.join(', ') }),
+      inLanguage: 'ru-RU',
+    },
+    // the home page is the projects list, so the case sits right under it
+    breadcrumbLd([{ name: title, path: `/${work.slug}` }]),
+  ];
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={jsonLd}>
       {/* Project colour is used as a soft glow, not as a light page background */}
       <section className="relative">
         <div className="container-page relative">

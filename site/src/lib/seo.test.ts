@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { absUrl, pageTitle } from './seo';
+import { absUrl, breadcrumbLd, ldGraph, pageTitle } from './seo';
 
 describe('absUrl', () => {
   it.each([
@@ -30,5 +30,26 @@ describe('pageTitle', () => {
     const long = 'Ваш сайт не продаёт? Почему бизнес переходит на Next.js — скорость, SEO';
 
     expect(pageTitle(long)).toBe(long);
+  });
+});
+
+describe('breadcrumbLd', () => {
+  it('starts at the home page and numbers the items', () => {
+    expect(breadcrumbLd([{ name: 'Блог', path: '/blog' }])).toEqual({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://moiseevp.ru/' },
+        { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://moiseevp.ru/blog' },
+      ],
+    });
+  });
+});
+
+describe('ldGraph', () => {
+  it('wraps nodes into one schema.org document', () => {
+    expect(ldGraph([{ '@type': 'WebSite' }])).toEqual({
+      '@context': 'https://schema.org',
+      '@graph': [{ '@type': 'WebSite' }],
+    });
   });
 });

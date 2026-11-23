@@ -10,6 +10,7 @@ import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import { getContacts } from '@/lib/content';
 import { encode, decode, maskPhone } from '@/lib/obfuscate';
+import { breadcrumbLd, personRef } from '@/lib/seo';
 
 interface ContactsProps {
   title: string;
@@ -98,7 +99,10 @@ export default function Contacts({
   }, [emailEncoded, phoneEncoded]);
 
   return (
-    <Layout seo={seo}>
+    <Layout
+      seo={seo}
+      jsonLd={[{ '@type': 'ContactPage', about: personRef }, breadcrumbLd([{ name: meta_title, path: '/contacts' }])]}
+    >
       {/* short page: keep the footer on the bottom edge, like the 404 page */}
       <div className="container-page min-h-screen flex flex-col">
         <Header />

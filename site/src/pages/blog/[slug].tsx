@@ -18,6 +18,7 @@ import SectionHeader from '@/components/SectionHeader';
 import { getBlogArticles, getArticleBySlug } from '@/lib/content';
 import type { BlogArticlesData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
+import { absUrl, breadcrumbLd, personRef } from '@/lib/seo';
 
 interface ArticleProps {
   article: BlogArticlesData;
@@ -28,9 +29,26 @@ interface ArticleProps {
 export default function Article({ article, articles, mdxSource }: ArticleProps) {
   const { title, image, image_background_color, meta_title, meta_description } = article;
   const seo = { meta_title, meta_description, type: 'article' as const, image: image && { ...image, alt: title } };
+  const jsonLd = [
+    {
+      '@type': 'BlogPosting',
+      headline: title,
+      ...(meta_description && { description: meta_description }),
+      datePublished: article.pubdate,
+      ...(image && { image: absUrl(image.src) }),
+      author: personRef,
+      publisher: personRef,
+      articleSection: article.category.title,
+      inLanguage: 'ru-RU',
+    },
+    breadcrumbLd([
+      { name: 'Блог', path: '/blog' },
+      { name: title, path: `/blog/${article.slug}` },
+    ]),
+  ];
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={jsonLd}>
       <div className="container-page">
         <Header />
         <article className="mx-auto max-w-3xl">
