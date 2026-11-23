@@ -7,6 +7,7 @@ import PageIntro from '@/components/PageIntro';
 import ServiceCard from '@/components/ServiceCard';
 import { getServicesPage, getServicesList } from '@/lib/content';
 import type { ServicesPageData, ServicesListData } from '@/lib/content/schemas';
+import { breadcrumbLd } from '@/lib/seo';
 
 interface ServicesProps {
   services_page: ServicesPageData;
@@ -18,7 +19,7 @@ export default function Services({ services_page, services_list }: ServicesProps
   const seo = { meta_title, meta_description };
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={[breadcrumbLd([{ name: title, path: '/services' }])]}>
       <div className="container-page">
         <Header />
         <PageIntro title={title} lead={introtext} />

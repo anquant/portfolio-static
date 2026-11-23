@@ -10,6 +10,7 @@ import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
 import { getAbout } from '@/lib/content';
 import type { AboutData } from '@/lib/content/schemas';
+import { breadcrumbLd, personLd } from '@/lib/seo';
 
 interface AboutProps {
   about: AboutData;
@@ -17,16 +18,20 @@ interface AboutProps {
 
 export default function About({ about }: AboutProps) {
   const { title_part1, title_part2, content, stats, skills, resume, meta_title, meta_description } = about;
-  const seo = { meta_title, meta_description };
+  const seo = { meta_title, meta_description, type: 'profile' as const };
+  const jsonLd = [
+    { '@type': 'ProfilePage', mainEntity: personLd((skills ?? []).flatMap(group => group.items)) },
+    breadcrumbLd([{ name: meta_title, path: '/about' }]),
+  ];
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={jsonLd}>
       <div className="container-page">
         <Header />
         <PageIntro
           title={
             <>
-              {title_part1}
+              {title_part1}{' '}
               {title_part2 && (
                 <>
                   <br />

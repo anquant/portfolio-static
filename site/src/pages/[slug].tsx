@@ -12,6 +12,7 @@ import Reveal from '@/components/Reveal';
 import Scene3D from '@/components/Scene3D';
 import { getWorks, getWorkBySlug } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
+import { absUrl, breadcrumbLd, personRef } from '@/lib/seo';
 import { displayHost } from '@/lib/url';
 
 interface WorkProps {
@@ -19,12 +20,42 @@ interface WorkProps {
   next: { slug: string; title: string } | null;
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * A chapter of the case story. Numbered and set in the display face so it
+ * reads as narrative, unlike the small-caps reference facts in the hero.
+ */
+function Row({ index, label, children }: { index: number; label: string; children: React.ReactNode }) {
   return (
     <Reveal className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 border-t border-line pt-8">
-      <h2 className="md:col-span-3 eyebrow pt-1">{label}</h2>
+      <h2 className="md:col-span-3 flex items-baseline gap-3 font-display font-semibold text-xl md:text-2xl">
+        <span className="text-sm text-muted tabular-nums">{String(index).padStart(2, '0')}</span>
+        {label}
+      </h2>
       <div className="md:col-span-9 text-lg md:text-xl leading-relaxed text-fg/90">{children}</div>
     </Reveal>
+  );
+}
+
+/** One cell of the hero grid: a hairline, a small label, the fact */
+function Cell({
+  label,
+  className = '',
+  delay,
+  children,
+}: {
+  label: string;
+  className?: string;
+  delay: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`reveal border-t border-line pt-4 ${className}`}
+      style={{ '--d': `${delay}ms` } as React.CSSProperties}
+    >
+      <div className="eyebrow mb-3">{label}</div>
+      {children}
+    </div>
   );
 }
 
@@ -33,6 +64,7 @@ export default function Work({ work, next }: WorkProps) {
     title,
     description,
     infotext,
+    scope,
     link,
     illustration,
     scene,
@@ -47,64 +79,110 @@ export default function Work({ work, next }: WorkProps) {
     meta_title,
     meta_description,
   } = work;
-  const seo = { meta_title, meta_description };
+  const image = illustration ?? cover;
+  const seo = {
+    meta_title,
+    meta_description,
+    type: 'article' as const,
+    image: image && { ...image, alt: title },
+  };
+  const jsonLd = [
+    {
+      '@type': 'CreativeWork',
+      name: meta_title,
+      headline: title,
+      description: meta_description ?? description,
+      ...(image && { image: absUrl(image.src) }),
+      creator: personRef,
+      // the client who commissioned the work
+      funder: { '@type': 'Organization', name: title, ...(link && { url: link }) },
+      ...(scope && { keywords: scope.join(', ') }),
+      inLanguage: 'ru-RU',
+    },
+    // the home page is the projects list, so the case sits right under it
+    breadcrumbLd([{ name: title, path: `/${work.slug}` }]),
+  ];
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={jsonLd}>
       {/* Project colour is used as a soft glow, not as a light page background */}
       <section className="relative">
         <div className="container-page relative">
           <Header />
-          <PageIntro crumbs={[{ href: '/', label: 'Проекты' }]} title={title} glow={color}>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:items-end">
-              <div className="md:col-span-7 space-y-3">
-                <p className="text-lg md:text-xl">{description}</p>
-                <p className="text-muted">{infotext}</p>
-              </div>
+          {/*
+            Desktop: two halves of one block. Title + lead read as one thought on
+            the left, the facts sit on the 3D frame's bottom edge, so the whole
+            opening fits the first screen. On phones everything stacks.
+          */}
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 lg:grid-rows-[auto_1fr]">
+            <PageIntro
+              crumbs={[{ href: '/', label: 'Проекты' }]}
+              title={title}
+              lead={<span className="text-fg/85">{description}</span>}
+              glow={color}
+              className="lg:col-span-2"
+            >
+              {scope && (
+                <ul aria-label="Что сделано" className="flex flex-wrap gap-1.5">
+                  {scope.map(item => (
+                    <li key={item} className="rounded-full border border-line px-3 py-1 text-[13px] text-fg/80">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </PageIntro>
+            <div className="lg:col-span-2 lg:col-start-3 lg:row-span-2 lg:row-start-1">
+              {scene ? (
+                <Scene3D
+                  scene={scene}
+                  label={title}
+                  mode="hero"
+                  aspectClassName="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[26rem]"
+                  className="reveal [--d:600ms]"
+                />
+              ) : (
+                illustration && (
+                  <ProjectMedia
+                    {...illustration}
+                    alt={title}
+                    color={color}
+                    priority
+                    sizes="(min-width: 1280px) 40rem, (min-width: 1024px) 50vw, 100vw"
+                    className="reveal [--d:600ms]"
+                  />
+                )
+              )}
+            </div>
+            {/* the facts sit on the media's bottom edge (desktop), after it on phones */}
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:self-end">
+              <Cell label="Стек" delay={500} className={link ? '' : 'sm:col-span-2'}>
+                <p className="text-muted leading-relaxed">{infotext}</p>
+              </Cell>
               {link && (
-                <div className="md:col-span-5 md:justify-self-end">
+                <Cell label="Сайт" delay={600}>
                   <a
                     href={link}
                     target="_blank"
                     rel="nofollow noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
+                    className="inline-flex items-center gap-2 text-lg transition-colors hover:text-accent"
                   >
                     {displayHost(link)}
                     <FiArrowUpRight />
                   </a>
-                </div>
+                </Cell>
               )}
             </div>
-          </PageIntro>
-          {scene ? (
-            <Scene3D
-              scene={scene}
-              label={title}
-              mode="hero"
-              aspectClassName="aspect-[4/3] md:aspect-[21/9]"
-              className="reveal mt-12 md:mt-16 [--d:600ms]"
-            />
-          ) : (
-            illustration && (
-              <ProjectMedia
-                {...illustration}
-                alt={title}
-                color={color}
-                priority
-                sizes="(min-width: 1280px) 80rem, 100vw"
-                className="reveal mt-12 md:mt-16 [--d:600ms]"
-              />
-            )
-          )}
+          </div>
         </div>
       </section>
 
       <div className="container-page">
-        <div className="space-y-12 my-20 md:my-32 max-w-5xl">
-          <Row label="О компании">
+        <div className="space-y-12 mt-28 mb-20 md:mt-48 md:mb-32 max-w-5xl">
+          <Row index={1} label="Заказчик">
             <div dangerouslySetInnerHTML={{ __html: company }} />
           </Row>
-          <Row label="Задача">
+          <Row index={2} label="Задача">
             <div dangerouslySetInnerHTML={{ __html: problem }} />
           </Row>
         </div>
@@ -125,9 +203,11 @@ export default function Work({ work, next }: WorkProps) {
         </Reveal>
 
         {mockups_description && (
-          <Reveal className="max-w-4xl section-gap text-xl md:text-2xl leading-snug">
-            <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
-          </Reveal>
+          <div className="section-gap max-w-5xl">
+            <Row index={3} label="Решение">
+              <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
+            </Row>
+          </div>
         )}
 
         {mockups && mockups.length > 0 && (
@@ -148,7 +228,7 @@ export default function Work({ work, next }: WorkProps) {
         )}
 
         <div className="section-gap max-w-5xl">
-          <Row label="Результат">
+          <Row index={mockups_description ? 4 : 3} label="Результат">
             <div dangerouslySetInnerHTML={{ __html: result }} />
           </Row>
         </div>

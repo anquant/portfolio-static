@@ -2,7 +2,9 @@ import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
   return (
-    <Html lang="ru" className="bg-bg">
+    // data-scroll-behavior: page changes jump to the top instantly; the CSS smooth
+    // scroll stays for in-page anchors (Next 16 no longer does this by default)
+    <Html lang="ru" className="bg-bg" data-scroll-behavior="smooth">
       <Head>
         <meta name="theme-color" content="#0c0c0e" />
         <meta name="color-scheme" content="dark" />

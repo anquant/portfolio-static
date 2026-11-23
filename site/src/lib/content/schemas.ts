@@ -103,6 +103,8 @@ export const workFileSchema = z.strictObject({
   title: z.string(),
   description: z.string(),
   infotext: z.string(),
+  /** What was done on the project, a few short items ("Логотип", "Разработка") */
+  scope: z.array(z.string().min(1)).min(1).optional(),
   link: z.string().optional(),
   illustration: imageAssetSchema.optional(),
   /** Animated 3D preview; takes the place of `illustration` when set */

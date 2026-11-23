@@ -37,7 +37,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# robots and sitemap
-/public/robots.txt
-/public/sitemap.xml

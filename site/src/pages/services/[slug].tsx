@@ -18,6 +18,7 @@ import { getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ServicesListData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
+import { breadcrumbLd, personRef } from '@/lib/seo';
 
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
@@ -44,9 +45,23 @@ interface CurrentServiceProps {
 export default function CurrentService({ service, works }: CurrentServiceProps) {
   const { title, tech_list, introtext, scene, sections, meta_title, meta_description } = service;
   const seo = { meta_title, meta_description };
+  const jsonLd = [
+    {
+      '@type': 'Service',
+      name: service.preview_title,
+      ...(meta_description && { description: meta_description }),
+      provider: personRef,
+      areaServed: { '@type': 'Country', name: 'Россия' },
+      inLanguage: 'ru-RU',
+    },
+    breadcrumbLd([
+      { name: 'Услуги', path: '/services' },
+      { name: service.preview_title, path: `/services/${service.slug}` },
+    ]),
+  ];
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={seo} jsonLd={jsonLd}>
       {/* Hero: same interactive 3D background as the home page, own centrepiece per service */}
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="absolute inset-0 -z-10">
