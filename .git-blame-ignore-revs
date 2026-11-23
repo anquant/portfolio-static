@@ -1,0 +1,5 @@
+# Mass-formatting commits, skipped by `git blame` and GitHub blame.
+# Local setup: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: adopt the team Prettier style
+e6720cba192b33a636af9aa9a15973b266c45b17
