@@ -3,3 +3,6 @@
 
 # style: adopt the team Prettier style
 e6720cba192b33a636af9aa9a15973b266c45b17
+
+# style(lint): import order, braces and return spacing rules
+123a0bdbdf32fbc171eb8a82a491e5f676753b4e
