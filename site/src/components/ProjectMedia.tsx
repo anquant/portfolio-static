@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { CSSProperties, ReactNode } from "react";
+import Image from 'next/image';
+import { type CSSProperties, type ReactNode } from 'react';
 
 type ProjectMediaProps = {
   src: string;
@@ -14,7 +14,7 @@ type ProjectMediaProps = {
    * "hover": the image "lights up" when a parent `.group` is hovered (cards).
    * "static": always shown at full brightness (case page, where it is the content).
    */
-  mode?: "hover" | "static";
+  mode?: 'hover' | 'static';
   className?: string;
   /** Replaces the image inside the stage (e.g. a video); src/size still set the frame */
   children?: ReactNode;
@@ -30,14 +30,14 @@ export default function ProjectMedia({
   width,
   height,
   alt,
-  color = "rgb(var(--accent))",
+  color = 'rgb(var(--accent))',
   sizes,
   priority,
-  mode = "static",
-  className = "",
+  mode = 'static',
+  className = '',
   children,
 }: ProjectMediaProps) {
-  const hover = mode === "hover";
+  const hover = mode === 'hover';
 
   return (
     <div
@@ -53,7 +53,7 @@ export default function ProjectMedia({
       <div
         aria-hidden
         className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${
-          hover ? "opacity-50 group-hover:opacity-90" : "opacity-70"
+          hover ? 'opacity-50 group-hover:opacity-90' : 'opacity-70'
         }`}
         style={{
           background: `radial-gradient(70% 60% at 50% 100%, color-mix(in srgb, ${color} 45%, transparent), transparent 70%)`,
@@ -70,8 +70,8 @@ export default function ProjectMedia({
             priority={priority}
             className={`block w-full h-auto transition-[filter,transform] duration-700 ease-out ${
               hover
-                ? "brightness-[.82] saturate-[.9] group-hover:brightness-100 group-hover:saturate-100 group-hover:scale-[1.02]"
-                : "brightness-[.94]"
+                ? 'brightness-[.82] saturate-[.9] group-hover:brightness-100 group-hover:saturate-100 group-hover:scale-[1.02]'
+                : 'brightness-[.94]'
             }`}
           />
         )}
@@ -79,7 +79,7 @@ export default function ProjectMedia({
         <div
           aria-hidden
           className={`pointer-events-none absolute inset-0 transition-opacity duration-700 shadow-[inset_0_0_90px_20px_rgba(12,12,14,0.55)] ${
-            hover ? "opacity-100 group-hover:opacity-30" : "opacity-60"
+            hover ? 'opacity-100 group-hover:opacity-30' : 'opacity-60'
           }`}
         />
       </div>

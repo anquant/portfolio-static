@@ -1,21 +1,19 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { getServicesPage, getServicesList } from "@/lib/content";
-import { GetStaticProps } from "next";
-import { ServicesPageData, ServicesListData } from "@/lib/types/servicesType";
-import ServiceCard from "@/components/ServiceCard";
-import PageIntro from "@/components/PageIntro";
+import { type GetStaticProps } from 'next';
+
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import ServiceCard from '@/components/ServiceCard';
+import { getServicesPage, getServicesList } from '@/lib/content';
+import type { ServicesPageData, ServicesListData } from '@/lib/content/schemas';
 
 interface ServicesProps {
   services_page: ServicesPageData;
   services_list: ServicesListData[];
 }
 
-export default function Services({
-  services_page,
-  services_list,
-}: ServicesProps) {
+export default function Services({ services_page, services_list }: ServicesProps) {
   const { title, introtext, meta_title, meta_description } = services_page;
   const seo = { meta_title, meta_description };
 

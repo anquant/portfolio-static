@@ -1,24 +1,25 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { getServicesList, getServiceBySlug, getWorks } from "@/lib/content";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { ServicesListData } from "@/lib/types/servicesType";
-import { WorksData } from "@/lib/types/worksType";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-import WorkCard from "@/components/WorkCard";
-import Reveal from "@/components/Reveal";
-import SectionHeader from "@/components/SectionHeader";
-import PageIntro from "@/components/PageIntro";
-import { FiArrowRight } from "react-icons/fi";
-import Button from "@/components/Button";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
-import remarkGfm from "remark-gfm";
-import { mdxComponents } from "@/lib/mdx-components";
+import { type GetStaticPaths, type GetStaticProps } from 'next';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
+import { FiArrowRight } from 'react-icons/fi';
+import remarkGfm from 'remark-gfm';
 
-const HeroScene = dynamic(() => import("@/components/HeroScene"), {
+import Button from '@/components/Button';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import Reveal from '@/components/Reveal';
+import SectionHeader from '@/components/SectionHeader';
+import WorkCard from '@/components/WorkCard';
+import { getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
+import type { WorksData } from '@/lib/content/schemas';
+import type { ServicesListData } from '@/lib/content/schemas';
+import { mdxComponents } from '@/lib/mdx-components';
+
+const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
 });
 
@@ -29,30 +30,19 @@ type SerializedBlock = {
 
 type SerializedSection = {
   title: string;
-  color: "light" | "dark";
+  color: 'light' | 'dark';
   blocks: SerializedBlock[];
 };
 
 interface CurrentServiceProps {
-  service: Omit<ServicesListData, "content"> & {
+  service: Omit<ServicesListData, 'content'> & {
     sections: SerializedSection[];
   };
   works: WorksData[];
 }
 
-export default function CurrentService({
-  service,
-  works,
-}: CurrentServiceProps) {
-  const {
-    title,
-    tech_list,
-    introtext,
-    scene,
-    sections,
-    meta_title,
-    meta_description,
-  } = service;
+export default function CurrentService({ service, works }: CurrentServiceProps) {
+  const { title, tech_list, introtext, scene, sections, meta_title, meta_description } = service;
   const seo = { meta_title, meta_description };
 
   return (
@@ -60,7 +50,7 @@ export default function CurrentService({
       {/* Hero: same interactive 3D background as the home page, own centrepiece per service */}
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="absolute inset-0 -z-10">
-          <HeroScene variant={scene ?? "blob"} />
+          <HeroScene variant={scene ?? 'blob'} />
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-gradient-to-r from-bg via-bg/70 to-transparent lg:via-bg/40"
@@ -73,7 +63,7 @@ export default function CurrentService({
         <div className="container-page relative pb-20 md:pb-32 lg:min-h-[44rem]">
           <Header />
           <PageIntro
-            crumbs={[{ href: "/services", label: "Услуги" }]}
+            crumbs={[{ href: '/services', label: 'Услуги' }]}
             current={service.preview_title}
             title={title}
             size="title"
@@ -82,11 +72,8 @@ export default function CurrentService({
           >
             {tech_list && (
               <ul className="flex flex-wrap gap-2 mb-10">
-                {tech_list.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border border-line bg-surface/70 px-4 py-2 text-sm"
-                  >
+                {tech_list.map(item => (
+                  <li key={item} className="rounded-full border border-line bg-surface/70 px-4 py-2 text-sm">
                     {item}
                   </li>
                 ))}
@@ -102,17 +89,10 @@ export default function CurrentService({
       {sections.map((section, s_index) => (
         <section
           key={s_index}
-          className={
-            section.color === "dark"
-              ? "bg-surface border-b border-line"
-              : "border-b border-line"
-          }
+          className={section.color === 'dark' ? 'bg-surface border-b border-line' : 'border-b border-line'}
         >
           <div className="container-page py-16 md:py-28">
-            <Reveal
-              as="h2"
-              className="t-section md:text-4xl max-w-3xl mb-12 md:mb-20"
-            >
+            <Reveal as="h2" className="t-section md:text-4xl max-w-3xl mb-12 md:mb-20">
               {section.title}
             </Reveal>
             {section.blocks.length > 0 && (
@@ -125,7 +105,7 @@ export default function CurrentService({
                   >
                     <h3 className="md:col-span-4 flex gap-4 text-lg md:text-xl font-semibold">
                       <span className="font-display text-muted text-sm pt-1.5">
-                        {String(b_index + 1).padStart(2, "0")}
+                        {String(b_index + 1).padStart(2, '0')}
                       </span>
                       {b.title}
                     </h3>
@@ -146,8 +126,7 @@ export default function CurrentService({
             title="Реализованные проекты"
             aside={
               <Link href="/#works" className="transition-colors hover:text-fg">
-                Все проекты{" "}
-                <FiArrowRight aria-hidden className="inline -mt-0.5" />
+                Все проекты <FiArrowRight aria-hidden className="inline -mt-0.5" />
               </Link>
             }
           />
@@ -161,7 +140,7 @@ export default function CurrentService({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: getServicesList().map((s) => ({ params: { slug: s.slug } })),
+    paths: getServicesList().map(s => ({ params: { slug: s.slug } })),
     fallback: false,
   };
 };
@@ -169,21 +148,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   const service = getServiceBySlug(slug);
-  if (!service) return { notFound: true };
+  if (!service) {
+    return { notFound: true };
+  }
 
   const sections: SerializedSection[] = await Promise.all(
-    (service.content ?? []).map(async (section) => ({
+    (service.content ?? []).map(async section => ({
       title: section.title,
       color: section.color,
       blocks: await Promise.all(
-        (section.blocks ?? []).map(async (block) => ({
+        (section.blocks ?? []).map(async block => ({
           title: block.title,
           mdxSource: await serialize(block.content, {
             mdxOptions: { remarkPlugins: [remarkGfm] },
           }),
-        }))
+        })),
       ),
-    }))
+    })),
   );
 
   const { content: _content, ...serviceRest } = service;

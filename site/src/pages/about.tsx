@@ -1,30 +1,22 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import Button from "@/components/Button";
-import PageIntro from "@/components/PageIntro";
-import Reveal from "@/components/Reveal";
-import SectionHeader from "@/components/SectionHeader";
-import { getAbout } from "@/lib/content";
-import { GetStaticProps } from "next";
-import { AboutData } from "@/lib/types/aboutType";
-import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
+import { type GetStaticProps } from 'next';
+import { FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
+
+import Button from '@/components/Button';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import Reveal from '@/components/Reveal';
+import SectionHeader from '@/components/SectionHeader';
+import { getAbout } from '@/lib/content';
+import type { AboutData } from '@/lib/content/schemas';
 
 interface AboutProps {
   about: AboutData;
 }
 
 export default function About({ about }: AboutProps) {
-  const {
-    title_part1,
-    title_part2,
-    content,
-    stats,
-    skills,
-    resume,
-    meta_title,
-    meta_description,
-  } = about;
+  const { title_part1, title_part2, content, stats, skills, resume, meta_title, meta_description } = about;
   const seo = { meta_title, meta_description };
 
   return (
@@ -67,16 +59,10 @@ export default function About({ about }: AboutProps) {
           <section aria-label="В цифрах" className="section-gap">
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line">
               {stats.map((s, i) => (
-                <Reveal
-                  key={s.label}
-                  delay={i * 100}
-                  className="bg-bg px-8 py-10 md:px-12 md:py-14"
-                >
+                <Reveal key={s.label} delay={i * 100} className="bg-bg px-8 py-10 md:px-12 md:py-14">
                   <dt className="sr-only">{s.label}</dt>
                   <dd>
-                    <span className="block font-display text-6xl md:text-7xl font-bold tracking-tight">
-                      {s.value}
-                    </span>
+                    <span className="block font-display text-6xl md:text-7xl font-bold tracking-tight">{s.value}</span>
                     <span aria-hidden className="mt-3 block text-muted">
                       {s.label}
                     </span>
@@ -96,7 +82,7 @@ export default function About({ about }: AboutProps) {
                 <Reveal key={group.title} delay={i * 100}>
                   <h3 className="eyebrow mb-5">{group.title}</h3>
                   <ul className="flex flex-wrap gap-2">
-                    {group.items.map((item) => (
+                    {group.items.map(item => (
                       <li
                         key={item}
                         className="rounded-full border border-line bg-surface px-4 py-2 text-sm md:text-base"

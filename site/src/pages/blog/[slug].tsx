@@ -1,21 +1,23 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { getBlogArticles, getArticleBySlug } from "@/lib/content";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { BlogArticlesData } from "@/lib/types/blogType";
-import BlogCover from "@/components/BlogCover";
-import PageIntro from "@/components/PageIntro";
-import SectionHeader from "@/components/SectionHeader";
-import Link from "next/link";
-import ArticleCard from "@/components/ArticleCard";
-import { FiArrowRight } from "react-icons/fi";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
-import remarkGfm from "remark-gfm";
-import { mdxComponents } from "@/lib/mdx-components";
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { type GetStaticPaths, type GetStaticProps } from 'next';
+import Link from 'next/link';
+import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
+import { FiArrowRight } from 'react-icons/fi';
+import remarkGfm from 'remark-gfm';
+
+import ArticleCard from '@/components/ArticleCard';
+import BlogCover from '@/components/BlogCover';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import Scene3D from '@/components/Scene3D';
+import SectionHeader from '@/components/SectionHeader';
+import { getBlogArticles, getArticleBySlug } from '@/lib/content';
+import type { BlogArticlesData } from '@/lib/content/schemas';
+import { mdxComponents } from '@/lib/mdx-components';
 
 interface ArticleProps {
   article: BlogArticlesData;
@@ -23,13 +25,8 @@ interface ArticleProps {
   mdxSource: MDXRemoteSerializeResult;
 }
 
-export default function Article({
-  article,
-  articles,
-  mdxSource,
-}: ArticleProps) {
-  const { title, image, image_background_color, meta_title, meta_description } =
-    article;
+export default function Article({ article, articles, mdxSource }: ArticleProps) {
+  const { title, image, image_background_color, meta_title, meta_description } = article;
   const seo = { meta_title, meta_description };
 
   return (
@@ -38,26 +35,34 @@ export default function Article({
         <Header />
         <article className="mx-auto max-w-3xl">
           <PageIntro
-            crumbs={[{ href: "/blog", label: "Блог" }]}
+            crumbs={[{ href: '/blog', label: 'Блог' }]}
             current={article.category.title}
             title={title}
             size="title"
-            glow={image_background_color}
+            // 3D covers live in the accent palette; the old pastel tint would clash
+            glow={article.scene ? undefined : image_background_color}
           >
-            <time
-              dateTime={article.pubdate}
-              className="block text-sm text-muted"
-            >
-              {format(new Date(article.pubdate), "d MMMM yyyy", { locale: ru })}
+            <time dateTime={article.pubdate} className="block text-sm text-muted">
+              {format(new Date(article.pubdate), 'd MMMM yyyy', { locale: ru })}
             </time>
           </PageIntro>
-          <BlogCover
-            image={image}
-            color={image_background_color}
-            mode="hero"
-            priority
-            className="reveal mt-10 aspect-[2/1] rounded-3xl border border-line [--d:500ms]"
-          />
+          {article.scene ? (
+            <Scene3D
+              scene={article.scene}
+              label={article.title}
+              mode="hero"
+              aspectClassName="aspect-[4/3] md:aspect-[2/1]"
+              className="reveal mt-10 [--d:500ms]"
+            />
+          ) : (
+            <BlogCover
+              image={image}
+              color={image_background_color}
+              mode="hero"
+              priority
+              className="reveal mt-10 aspect-[2/1] rounded-3xl border border-line [--d:500ms]"
+            />
+          )}
           <div className="content-blocks mt-12 text-lg text-fg/90">
             <MDXRemote {...mdxSource} components={mdxComponents} />
           </div>
@@ -68,10 +73,7 @@ export default function Article({
               title="Другие статьи"
               className="!mb-0"
               aside={
-                <Link
-                  href="/blog"
-                  className="flex gap-2 items-center transition-colors hover:text-fg"
-                >
+                <Link href="/blog" className="flex gap-2 items-center transition-colors hover:text-fg">
                   Все статьи <FiArrowRight />
                 </Link>
               }
@@ -86,7 +88,7 @@ export default function Article({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = getBlogArticles().map((a) => ({ params: { slug: a.slug } }));
+  const paths = getBlogArticles().map(a => ({ params: { slug: a.slug } }));
 
   return {
     paths,
@@ -107,7 +109,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
 
   const articles = getBlogArticles()
-    .filter((a) => a.slug !== slug)
+    .filter(a => a.slug !== slug)
     .slice(0, 3);
 
   return {

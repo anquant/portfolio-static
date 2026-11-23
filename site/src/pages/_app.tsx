@@ -1,6 +1,7 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import { onest, manrope } from "@/lib/fonts";
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+
+import { onest, manrope } from '@/lib/fonts';
 
 export default function App({ Component, pageProps, router }: AppProps) {
   // Remount the page when moving between items of the same dynamic route
@@ -9,7 +10,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   // reveals stay "already shown" and the 3D intro doesn't replay.
   // Query changes (?page, ?category) are intentionally not part of the key.
   const slug = router.query.slug;
-  const pageKey = `${router.pathname}:${Array.isArray(slug) ? slug.join("/") : (slug ?? "")}`;
+  const pageKey = `${router.pathname}:${Array.isArray(slug) ? slug.join('/') : (slug ?? '')}`;
 
   return (
     <>

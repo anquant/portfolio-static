@@ -1,23 +1,25 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import Button from "@/components/Button";
-import ClientsSection from "@/components/ClientsSection";
-import WorkCard from "@/components/WorkCard";
-import SectionHeader from "@/components/SectionHeader";
-import { FiArrowDown } from "react-icons/fi";
-import { getHome, getWorks, getClients } from "@/lib/content";
-import { GetStaticProps } from "next";
-import { HomeData } from "@/lib/types/homeType";
-import { WorksData } from "@/lib/types/worksType";
-import { ClientsData } from "@/lib/types/clientsType";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { SITE_URL } from "@/lib/site";
-import dynamic from "next/dynamic";
+import { type GetStaticProps } from 'next';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { FiArrowDown } from 'react-icons/fi';
+
+import Button from '@/components/Button';
+import ClientsSection from '@/components/ClientsSection';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import SectionHeader from '@/components/SectionHeader';
+import WorkCard from '@/components/WorkCard';
+import { getHome, getWorks, getClients } from '@/lib/content';
+import type { HomeData } from '@/lib/content/schemas';
+import type { WorksData } from '@/lib/content/schemas';
+import type { ClientsData } from '@/lib/content/schemas';
+import { pageFromQuery } from '@/lib/pagination';
+import { SITE_URL } from '@/lib/site';
 
 // three.js is loaded only in the browser and after the page is interactive
-const HeroScene = dynamic(() => import("@/components/HeroScene"), {
+const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
 });
 
@@ -40,20 +42,24 @@ export default function Home({ home, works, clients }: HomeProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    if (page === undefined) return setCurrentPage(1);
-    const n = Number(page) || 1;
-    if (n <= 1) {
-      router.replace("/", undefined, { shallow: true });
+    if (page === undefined) {
+      return setCurrentPage(1);
+    }
+    const n = pageFromQuery(page, totalPages);
+    if (n === 1) {
+      router.replace('/', undefined, { shallow: true });
     } else {
-      setCurrentPage(Math.min(n, totalPages));
+      setCurrentPage(n);
     }
   }, [page, router, totalPages]);
 
   const handleClickLoadMore = () => {
     const nextPage = currentPage + 1;
-    if (nextPage > totalPages) return;
+    if (nextPage > totalPages) {
+      return;
+    }
     setCurrentPage(nextPage);
-    router.push({ pathname: "/", query: { page: nextPage } }, undefined, {
+    router.push({ pathname: '/', query: { page: nextPage } }, undefined, {
       shallow: true,
       scroll: false,
     });
@@ -81,28 +87,19 @@ export default function Home({ home, works, clients }: HomeProps) {
           <Header />
           <div className="flex-1 flex items-start lg:items-center pb-24 md:pb-32">
             <div className="max-w-2xl lg:max-w-[46rem]">
-              <div
-                className="reveal eyebrow mb-6"
-                style={{ "--d": "150ms" } as React.CSSProperties}
-              >
+              <div className="reveal eyebrow mb-6" style={{ '--d': '150ms' } as React.CSSProperties}>
                 UX/UI-дизайн · Разработка · SEO
               </div>
-              <h1
-                style={{ "--d": "300ms" } as React.CSSProperties}
-                className="reveal t-hero"
-              >
+              <h1 style={{ '--d': '300ms' } as React.CSSProperties} className="reveal t-hero">
                 {title_h1}
               </h1>
               <p
-                style={{ "--d": "500ms" } as React.CSSProperties}
+                style={{ '--d': '500ms' } as React.CSSProperties}
                 className="reveal mt-6 md:mt-8 max-w-xl text-lg md:text-xl text-muted"
               >
                 {introtext}
               </p>
-              <div
-                style={{ "--d": "700ms" } as React.CSSProperties}
-                className="reveal mt-10 flex flex-wrap gap-3"
-              >
+              <div style={{ '--d': '700ms' } as React.CSSProperties} className="reveal mt-10 flex flex-wrap gap-3">
                 <Button type="link" href="#works">
                   Смотреть проекты <FiArrowDown aria-hidden />
                 </Button>
@@ -121,8 +118,7 @@ export default function Home({ home, works, clients }: HomeProps) {
           title={title_h2}
           aside={
             <span className="tabular-nums">
-              <span className="text-fg">{paginatedWorks.length}</span> /{" "}
-              {works.length}
+              <span className="text-fg">{paginatedWorks.length}</span> / {works.length}
             </span>
           }
         />
@@ -130,8 +126,7 @@ export default function Home({ home, works, clients }: HomeProps) {
         {works.length > paginatedWorks.length && (
           <div className="flex justify-center mt-16 md:mt-24">
             <Button variant="secondary" onClick={handleClickLoadMore}>
-              Показать ещё{" "}
-              {Math.min(ITEMS_PER_PAGE, works.length - paginatedWorks.length)}
+              Показать ещё {Math.min(ITEMS_PER_PAGE, works.length - paginatedWorks.length)}
             </Button>
           </div>
         )}

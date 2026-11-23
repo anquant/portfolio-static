@@ -1,35 +1,29 @@
-import Layout from "@/components/Layout";
-import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { getWorks, getWorkBySlug } from "@/lib/content";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { WorksData } from "@/lib/types/worksType";
-import ProjectMedia from "@/components/ProjectMedia";
-import CaseVideo from "@/components/CaseVideo";
-import PageIntro from "@/components/PageIntro";
-import Reveal from "@/components/Reveal";
-import { displayHost } from "@/lib/url";
-import Link from "next/link";
-import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
+import { type GetStaticPaths, type GetStaticProps } from 'next';
+import Link from 'next/link';
+import { FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
+
+import CaseVideo from '@/components/CaseVideo';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import ProjectMedia from '@/components/ProjectMedia';
+import Reveal from '@/components/Reveal';
+import Scene3D from '@/components/Scene3D';
+import { getWorks, getWorkBySlug } from '@/lib/content';
+import type { WorksData } from '@/lib/content/schemas';
+import { displayHost } from '@/lib/url';
 
 interface WorkProps {
   work: WorksData;
   next: { slug: string; title: string } | null;
 }
 
-function Row({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <Reveal className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 border-t border-line pt-8">
       <h2 className="md:col-span-3 eyebrow pt-1">{label}</h2>
-      <div className="md:col-span-9 text-lg md:text-xl leading-relaxed text-fg/90">
-        {children}
-      </div>
+      <div className="md:col-span-9 text-lg md:text-xl leading-relaxed text-fg/90">{children}</div>
     </Reveal>
   );
 }
@@ -41,6 +35,7 @@ export default function Work({ work, next }: WorkProps) {
     infotext,
     link,
     illustration,
+    scene,
     color,
     company,
     problem,
@@ -60,11 +55,7 @@ export default function Work({ work, next }: WorkProps) {
       <section className="relative">
         <div className="container-page relative">
           <Header />
-          <PageIntro
-            crumbs={[{ href: "/", label: "Проекты" }]}
-            title={title}
-            glow={color}
-          >
+          <PageIntro crumbs={[{ href: '/', label: 'Проекты' }]} title={title} glow={color}>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:items-end">
               <div className="md:col-span-7 space-y-3">
                 <p className="text-lg md:text-xl">{description}</p>
@@ -85,15 +76,25 @@ export default function Work({ work, next }: WorkProps) {
               )}
             </div>
           </PageIntro>
-          {illustration && (
-            <ProjectMedia
-              {...illustration}
-              alt={title}
-              color={color}
-              priority
-              sizes="(min-width: 1280px) 80rem, 100vw"
+          {scene ? (
+            <Scene3D
+              scene={scene}
+              label={title}
+              mode="hero"
+              aspectClassName="aspect-[4/3] md:aspect-[21/9]"
               className="reveal mt-12 md:mt-16 [--d:600ms]"
             />
+          ) : (
+            illustration && (
+              <ProjectMedia
+                {...illustration}
+                alt={title}
+                color={color}
+                priority
+                sizes="(min-width: 1280px) 80rem, 100vw"
+                className="reveal mt-12 md:mt-16 [--d:600ms]"
+              />
+            )
           )}
         </div>
       </section>
@@ -110,13 +111,7 @@ export default function Work({ work, next }: WorkProps) {
 
         <Reveal>
           {video ? (
-            <CaseVideo
-              key={video.src}
-              video={video}
-              poster={cover}
-              title={title}
-              color={color}
-            />
+            <CaseVideo key={video.src} video={video} poster={cover} title={title} color={color} />
           ) : (
             cover && (
               <ProjectMedia
@@ -137,9 +132,7 @@ export default function Work({ work, next }: WorkProps) {
 
         {mockups && mockups.length > 0 && (
           <div
-            className={`mt-12 md:mt-20 grid grid-cols-1 gap-4 md:gap-6 ${
-              mockups.length > 1 ? "md:grid-cols-2" : ""
-            }`}
+            className={`mt-12 md:mt-20 grid grid-cols-1 gap-4 md:gap-6 ${mockups.length > 1 ? 'md:grid-cols-2' : ''}`}
           >
             {mockups.map((item, index) => (
               <Reveal key={index} delay={(index % 2) * 120}>
@@ -147,11 +140,7 @@ export default function Work({ work, next }: WorkProps) {
                   {...item}
                   alt={`${title} — макет ${index + 1}`}
                   color={color}
-                  sizes={
-                    mockups.length > 1
-                      ? "(min-width: 768px) 50vw, 100vw"
-                      : "100vw"
-                  }
+                  sizes={mockups.length > 1 ? '(min-width: 768px) 50vw, 100vw' : '100vw'}
                 />
               </Reveal>
             ))}
@@ -172,9 +161,7 @@ export default function Work({ work, next }: WorkProps) {
             >
               <div>
                 <div className="eyebrow mb-3">Следующий проект</div>
-                <div className="t-card-lg md:text-5xl transition-colors group-hover:text-accent">
-                  {next.title}
-                </div>
+                <div className="t-card-lg md:text-5xl transition-colors group-hover:text-accent">{next.title}</div>
               </div>
               <span
                 aria-hidden
@@ -194,7 +181,7 @@ export default function Work({ work, next }: WorkProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: getWorks().map((w) => ({ params: { slug: w.slug } })),
+    paths: getWorks().map(w => ({ params: { slug: w.slug } })),
     fallback: false,
   };
 };
@@ -202,10 +189,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   const work = getWorkBySlug(slug);
-  if (!work) return { notFound: true };
+  if (!work) {
+    return { notFound: true };
+  }
 
   const works = getWorks();
-  const i = works.findIndex((w) => w.slug === slug);
+  const i = works.findIndex(w => w.slug === slug);
   const n = works[(i + 1) % works.length];
   const next = n && n.slug !== slug ? { slug: n.slug, title: n.title } : null;
 
