@@ -120,9 +120,10 @@ export default function Contacts({
 
   return (
     <Layout seo={seo}>
-      <div className="container-page">
+      {/* short page: keep the footer on the bottom edge, like the 404 page */}
+      <div className="container-page min-h-screen flex flex-col">
         <Header />
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        <section className="flex-1 grid content-start grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           <PageIntro title={title} lead={text} className="lg:col-span-6" />
           <div className="lg:col-span-6 space-y-3 min-h-64 lg:pt-4">
             {email && (

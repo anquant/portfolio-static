@@ -41,7 +41,9 @@ export default function PageIntro({
       {glow !== false && (
         <div
           aria-hidden
-          className="glow-in pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[140vw] rounded-full blur-3xl opacity-60"
+          // max width: starts 10rem left of the content, so 100vw + 8rem keeps the
+          // right edge inside the screen on phones (no sideways scroll)
+          className="glow-in pointer-events-none absolute -left-40 -top-72 -z-10 h-[34rem] w-[52rem] max-w-[calc(100vw+8rem)] rounded-full blur-3xl opacity-60"
           style={{
             background: `radial-gradient(closest-side, ${
               glow
