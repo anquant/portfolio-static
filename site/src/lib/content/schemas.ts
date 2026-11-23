@@ -142,20 +142,32 @@ export const serviceFileSchema = z.strictObject({
 });
 
 /** Frontmatter of blog/<slug>.mdx */
-export const articleFrontmatterSchema = z.strictObject({
-  pubdate: isoDate,
-  /** Slug of a category in blog-categories.json */
-  category: z.string(),
-  title: z.string(),
-  annotation: z.string().optional(),
-  image_background_color: hexColor.optional(),
-  image_src: publicPath.optional(),
-  image_width: z.number().int().positive().optional(),
-  image_height: z.number().int().positive().optional(),
-  /** Animated 3D cover; replaces the image when set */
-  scene: sceneIdSchema.optional(),
-  ...seo,
-});
+export const articleFrontmatterSchema = z
+  .strictObject({
+    pubdate: isoDate,
+    /** Slug of a category in blog-categories.json */
+    category: z.string(),
+    title: z.string(),
+    annotation: z.string().optional(),
+    image_background_color: hexColor.optional(),
+    image_src: publicPath.optional(),
+    image_width: z.number().int().positive().optional(),
+    image_height: z.number().int().positive().optional(),
+    /** Animated 3D cover; replaces the image when set */
+    scene: sceneIdSchema.optional(),
+    ...seo,
+  })
+  .refine(
+    fm => {
+      const set = [fm.image_src, fm.image_width, fm.image_height].filter(v => v !== undefined).length;
+
+      return set === 0 || set === 3;
+    },
+    {
+      message: 'image_src, image_width and image_height go together: set all three or none',
+      path: ['image_src'],
+    },
+  );
 
 /* ------------------------------------------------------------------------ */
 /* Types                                                                    */
@@ -174,8 +186,9 @@ export type BlogCategoriesData = z.infer<typeof blogCategorySchema>;
 export type ClientsData = z.infer<typeof clientSchema>;
 
 export type WorksData = z.infer<typeof workFileSchema> & { slug: string };
+export type ArticleFrontmatter = z.output<typeof articleFrontmatterSchema>;
 
-type ServiceFile = z.output<typeof serviceFileSchema>;
+export type ServiceFile = z.output<typeof serviceFileSchema>;
 export type ServiceSection = NonNullable<ServiceFile['sections']>[number];
 export type ServicesListData = Omit<ServiceFile, 'sections'> & {
   content?: ServiceSection[];

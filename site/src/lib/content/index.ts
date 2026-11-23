@@ -16,12 +16,14 @@ import {
   servicesPageSchema,
   workFileSchema,
   type AboutData,
+  type ArticleFrontmatter,
   type BlogArticlesData,
   type BlogCategoriesData,
   type BlogPageData,
   type ClientsData,
   type ContactsData,
   type HomeData,
+  type ServiceFile,
   type ServicesListData,
   type ServicesPageData,
   type WorksData,
@@ -109,13 +111,25 @@ export function getWorkBySlug(slug: string): WorksData | undefined {
 /* Services                                                                 */
 /* ------------------------------------------------------------------------ */
 
+/**
+ * getStaticProps props must be JSON: Next.js rejects `undefined`. Optional
+ * fields that are absent from a file are dropped instead of kept as
+ * `key: undefined`, so a valid file never fails later in serialisation.
+ */
+function withoutUndefined<T extends object>(value: T): T {
+  return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T;
+}
+
+/** services/<slug>.json → page data (`sections` is exposed as `content`) */
+export function toService(file: ServiceFile, slug: string): ServicesListData {
+  const { sections, ...service } = file;
+
+  return withoutUndefined({ ...service, content: sections, slug });
+}
+
 export function getServicesList(): ServicesListData[] {
   return slugsInDir('services')
-    .map(slug => {
-      const { sections, ...service } = readJson(serviceFileSchema, `services/${slug}.json`);
-
-      return { ...service, content: sections, slug };
-    })
+    .map(slug => toService(readJson(serviceFileSchema, `services/${slug}.json`), slug))
     .sort((a, b) => a.sort - b.sort);
 }
 
@@ -127,23 +141,26 @@ export function getServiceBySlug(slug: string): ServicesListData | undefined {
 /* Blog                                                                     */
 /* ------------------------------------------------------------------------ */
 
-function readArticle(slug: string) {
-  const file = `blog/${slug}.mdx`;
-  const { data, content } = matter(fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8'));
-  const fm = parseContent(articleFrontmatterSchema, data, file);
-
-  const category = getBlogCategories().find(c => c.slug === fm.category);
+/** Validated frontmatter → page data; `file` is only used in error messages */
+export function toArticle(
+  fm: ArticleFrontmatter,
+  slug: string,
+  categories: BlogCategoriesData[],
+  file = `blog/${slug}.mdx`,
+): BlogArticlesData {
+  const category = categories.find(c => c.slug === fm.category);
   if (!category) {
     throw new ContentError(file, `✖ unknown category "${fm.category}" — add it to blog-categories.json`);
   }
 
-  const article: BlogArticlesData = {
+  return withoutUndefined({
     pubdate: fm.pubdate,
     category,
     title: fm.title,
     annotation: fm.annotation,
     image_background_color: fm.image_background_color,
     ...(fm.scene && { scene: fm.scene }),
+    // the schema guarantees all three image fields or none
     ...(fm.image_src &&
       fm.image_width &&
       fm.image_height && {
@@ -156,9 +173,15 @@ function readArticle(slug: string) {
     meta_title: fm.meta_title,
     meta_description: fm.meta_description,
     slug,
-  };
+  });
+}
 
-  return { article, body: content };
+function readArticle(slug: string) {
+  const file = `blog/${slug}.mdx`;
+  const { data, content } = matter(fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8'));
+  const fm = parseContent(articleFrontmatterSchema, data, file);
+
+  return { article: toArticle(fm, slug, getBlogCategories(), file), body: content };
 }
 
 /** Newest first */

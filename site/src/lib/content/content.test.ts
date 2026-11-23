@@ -15,8 +15,10 @@ import {
   getWorks,
   parseContent,
   slugsInDir,
+  toArticle,
+  toService,
 } from '.';
-import { articleFrontmatterSchema, workFileSchema } from './schemas';
+import { articleFrontmatterSchema, serviceFileSchema, workFileSchema } from './schemas';
 
 /*
  * Runs the real content through the real loaders: the same checks the build
@@ -127,5 +129,55 @@ describe('validation errors', () => {
     })();
     expect(error).toMatch(/pubdate/);
     expect(error).toMatch(/image_src/);
+  });
+});
+
+describe('page data is JSON-safe for getStaticProps', () => {
+  /** Next.js rejects `undefined` anywhere in props */
+  const hasUndefined = (value: object) => Object.values(value).some(v => v === undefined);
+  const categories = [{ title: 'SEO', slug: 'seo' }];
+
+  it('drops optional article fields that are absent', () => {
+    const fm = parseContent(
+      articleFrontmatterSchema,
+      { pubdate: '2026-01-01', category: 'seo', title: 'T', meta_title: 'M' },
+      'blog/x.mdx',
+    );
+    const article = toArticle(fm, 'x', categories);
+    expect(hasUndefined(article)).toBe(false);
+    expect(article).not.toHaveProperty('image');
+  });
+
+  it('drops a service without sections', () => {
+    const file = parseContent(
+      serviceFileSchema,
+      { sort: 1, preview_title: 'P', preview_description: 'D', title: 'T', meta_title: 'M' },
+      'services/x.json',
+    );
+    expect(hasUndefined(toService(file, 'x'))).toBe(false);
+  });
+
+  it('names the file when the category does not exist', () => {
+    const fm = parseContent(
+      articleFrontmatterSchema,
+      { pubdate: '2026-01-01', category: 'nope', title: 'T', meta_title: 'M' },
+      'blog/x.mdx',
+    );
+    expect(() => toArticle(fm, 'x', categories)).toThrow(/content\/blog\/x\.mdx[\s\S]*nope/);
+  });
+});
+
+describe('article image fields', () => {
+  const base = { pubdate: '2026-01-01', category: 'seo', title: 'T', meta_title: 'M' };
+  const image = { image_src: '/images/a.png', image_width: 600, image_height: 600 };
+
+  it('accept all three or none', () => {
+    expect(() => parseContent(articleFrontmatterSchema, base, 'blog/x.mdx')).not.toThrow();
+    expect(() => parseContent(articleFrontmatterSchema, { ...base, ...image }, 'blog/x.mdx')).not.toThrow();
+  });
+
+  it('reject a partial set instead of silently dropping the image', () => {
+    const { image_height: _dropped, ...partial } = image;
+    expect(() => parseContent(articleFrontmatterSchema, { ...base, ...partial }, 'blog/x.mdx')).toThrow(/go together/);
   });
 });
