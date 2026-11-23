@@ -5,6 +5,7 @@ import { getBlogArticles, getArticleBySlug } from "@/lib/content";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { BlogArticlesData } from "@/lib/types/blogType";
 import BlogCover from "@/components/BlogCover";
+import Scene3D from "@/components/Scene3D";
 import PageIntro from "@/components/PageIntro";
 import SectionHeader from "@/components/SectionHeader";
 import Link from "next/link";
@@ -42,7 +43,8 @@ export default function Article({
             current={article.category.title}
             title={title}
             size="title"
-            glow={image_background_color}
+            // 3D covers live in the accent palette; the old pastel tint would clash
+            glow={article.scene ? undefined : image_background_color}
           >
             <time
               dateTime={article.pubdate}
@@ -51,13 +53,23 @@ export default function Article({
               {format(new Date(article.pubdate), "d MMMM yyyy", { locale: ru })}
             </time>
           </PageIntro>
-          <BlogCover
-            image={image}
-            color={image_background_color}
-            mode="hero"
-            priority
-            className="reveal mt-10 aspect-[2/1] rounded-3xl border border-line [--d:500ms]"
-          />
+          {article.scene ? (
+            <Scene3D
+              scene={article.scene}
+              label={article.title}
+              mode="hero"
+              aspectClassName="aspect-[4/3] md:aspect-[2/1]"
+              className="reveal mt-10 [--d:500ms]"
+            />
+          ) : (
+            <BlogCover
+              image={image}
+              color={image_background_color}
+              mode="hero"
+              priority
+              className="reveal mt-10 aspect-[2/1] rounded-3xl border border-line [--d:500ms]"
+            />
+          )}
           <div className="content-blocks mt-12 text-lg text-fg/90">
             <MDXRemote {...mdxSource} components={mdxComponents} />
           </div>

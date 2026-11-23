@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { WorkSceneId } from "./ids";
+import type { SceneId } from "./ids";
 import {
   ACCENT,
   V,
@@ -12,15 +12,25 @@ import {
   paperPlaneGeometry,
   rockGeometry,
 } from "./kit";
-import { FLOAT, LOOP, TAU, ease, keyframes, phase, tri, wave } from "./motion";
+import {
+  FLOAT,
+  LOOP,
+  TAU,
+  clamp01,
+  ease,
+  keyframes,
+  phase,
+  tri,
+  wave,
+} from "./motion";
 
 /*
- * One minimal 3D abstraction per project, all on the same stage:
+ * One minimal 3D abstraction per project and per blog post, all on the same stage:
  * same camera, light, ground and palette (three greys + the accent on the
  * hero object). Every `update(t)` is a pure function of time.
  */
 
-export type WorkScene = {
+export type SceneDef = {
   root: THREE.Object3D;
   update: (t: number) => void;
 };
@@ -64,7 +74,7 @@ function container(material: THREE.Material, L = 2.6, H = 1, D = 1.05) {
   return g;
 }
 
-function containers(): WorkScene {
+function containers(): SceneDef {
   const root = new THREE.Group();
   const a = container(mat.dark());
   a.position.set(0, 0.5, -0.6);
@@ -108,7 +118,7 @@ function containers(): WorkScene {
 /* ИГЕМ РАН — geology: a diamond revealed in split rock                      */
 /* ------------------------------------------------------------------------ */
 
-function diamond(): WorkScene {
+function diamond(): SceneDef {
   const root = new THREE.Group();
   const base = mesh(rockGeometry(1.25, 1, 1.25, 0.55, 1.1), mat.dark());
   base.position.y = 0.45;
@@ -207,7 +217,7 @@ function diamond(): WorkScene {
 /* Сириус — messaging: a paper plane                                        */
 /* ------------------------------------------------------------------------ */
 
-function paperPlane(): WorkScene {
+function paperPlane(): SceneDef {
   const root = new THREE.Group();
   const plane = mesh(
     paperPlaneGeometry(),
@@ -248,7 +258,7 @@ function paperPlane(): WorkScene {
 /* Benefit Litigation — law: a judge's gavel                                */
 /* ------------------------------------------------------------------------ */
 
-function gavel(): WorkScene {
+function gavel(): SceneDef {
   const root = new THREE.Group();
   const block = mesh(
     lathe([
@@ -367,7 +377,7 @@ function gavel(): WorkScene {
 /* ОцЭкс — damage assessment: a cracked cube under a lens                   */
 /* ------------------------------------------------------------------------ */
 
-function fracturedCubeScene(): WorkScene {
+function fracturedCubeScene(): SceneDef {
   const root = new THREE.Group();
   const cube = new THREE.Group();
   const light = mat.light();
@@ -437,7 +447,7 @@ function fracturedCubeScene(): WorkScene {
 /* VESTA — the round Temple of Vesta                                        */
 /* ------------------------------------------------------------------------ */
 
-function temple(): WorkScene {
+function temple(): SceneDef {
   const root = new THREE.Group();
   const tholos = new THREE.Group();
   let y = 0;
@@ -525,7 +535,7 @@ function temple(): WorkScene {
 /* QuantumTec — messaging: Sputnik-1                                        */
 /* ------------------------------------------------------------------------ */
 
-function sputnik(): WorkScene {
+function sputnik(): SceneDef {
   const root = new THREE.Group();
   const sat = new THREE.Group();
   const R = 0.6;
@@ -600,7 +610,303 @@ function sputnik(): WorkScene {
   };
 }
 
-export const SCENES: Record<WorkSceneId, () => WorkScene> = {
+/* ======================================================================== */
+/* Blog covers — simplified 3D versions of the original illustrations       */
+/* ======================================================================== */
+
+/** Box with its base at y = 0, so scale.y grows it upwards */
+function column(w: number, h: number, d: number, m: THREE.Material) {
+  const geo = new THREE.BoxGeometry(w, h, d);
+  geo.translate(0, h / 2, 0);
+  return mesh(geo, m);
+}
+
+/* Next.js for business — an open laptop in front of a rising sun */
+function laptop(): SceneDef {
+  const root = new THREE.Group();
+  const device = new THREE.Group();
+  const shell = mat.light();
+  const base = mesh(new THREE.BoxGeometry(2.4, 0.1, 1.6), shell);
+  base.position.y = 0.05;
+  const keyboard = mesh(new THREE.BoxGeometry(2.0, 0.02, 0.7), mat.dark());
+  keyboard.position.set(0, 0.105, -0.25);
+  const touchpad = mesh(new THREE.BoxGeometry(0.72, 0.012, 0.4), mat.mid());
+  touchpad.position.set(0, 0.104, 0.42);
+  device.add(base, keyboard, touchpad);
+  // lid hinged on the back edge
+  const hinge = new THREE.Group();
+  hinge.position.set(0, 0.1, -0.78);
+  const lid = mesh(new THREE.BoxGeometry(2.4, 1.55, 0.07), shell);
+  lid.position.y = 0.775;
+  const screen = mesh(
+    new THREE.BoxGeometry(2.16, 1.32, 0.01),
+    mat.accent({
+      color: accentTint(0.55),
+      emissiveIntensity: 0.35,
+      roughness: 0.3,
+    })
+  );
+  screen.position.set(0, 0.79, 0.04);
+  hinge.add(lid, screen);
+  hinge.rotation.x = -0.22;
+  device.add(hinge);
+  device.rotation.y = 0.4;
+  device.position.set(0.15, 0, 0.35);
+  root.add(device);
+  // growth arrow drawn up out of the screen, in a plane facing the viewer
+  const arrowMat = mat.accent();
+  const path = [
+    V(-0.85, 0, 0),
+    V(-0.3, 0.55, 0),
+    V(0.1, 0.25, 0),
+    V(0.85, 1.15, 0),
+  ];
+  const R = 0.065;
+  const segGeo = new THREE.CylinderGeometry(R, R, 1, 24);
+  segGeo.translate(0, 0.5, 0); // grows from its start point
+  const up = V(0, 1, 0);
+  const segments = path.slice(1).map((end, i) => {
+    const start = path[i];
+    const dir = end.clone().sub(start);
+    const length = dir.length();
+    const m = mesh(segGeo, arrowMat);
+    m.position.copy(start);
+    m.quaternion.setFromUnitVectors(up, dir.normalize());
+    return { m, start, dir, length };
+  });
+  const joints = path.slice(1, -1).map((p) => {
+    const j = mesh(new THREE.SphereGeometry(R, 24, 12), arrowMat);
+    j.position.copy(p);
+    return j;
+  });
+  const head = mesh(new THREE.ConeGeometry(0.19, 0.36, 32), arrowMat);
+  const arrow = new THREE.Group();
+  arrow.add(...segments.map((s) => s.m), ...joints, head);
+  const total = segments.reduce((sum, s) => sum + s.length, 0);
+  // place it just in front of the screen, rising above the lid
+  const arrowHolder = new THREE.Group();
+  arrowHolder.add(arrow);
+  arrowHolder.position.set(0.42, 1.0, 0.55);
+  arrowHolder.lookAt(CAMERA_POSITION.clone().add(V(0, -GROUND_Y, 0)));
+  root.add(arrowHolder);
+  root.position.y = GROUND_Y;
+  root.scale.setScalar(1.35);
+
+  return {
+    root,
+    update(t) {
+      // draw the line up, hold, then rewind
+      const k = keyframes(phase(t), [
+        [0, 0],
+        [0.1, 0],
+        [0.5, 1, ease.inOut],
+        [0.85, 1],
+        [1, 0, ease.inOut],
+      ]);
+      let left = k * total;
+      let tip = path[0];
+      let tipDir = segments[0].dir;
+      segments.forEach((sg, i) => {
+        const len = Math.min(sg.length, Math.max(0, left));
+        sg.m.scale.y = Math.max(len, 1e-4);
+        sg.m.visible = len > 0;
+        if (i > 0) joints[i - 1].visible = len > 0;
+        if (len > 0) {
+          tip = sg.start.clone().addScaledVector(sg.dir, len);
+          tipDir = sg.dir;
+        }
+        left -= sg.length;
+      });
+      head.visible = k > 0.01;
+      head.position.copy(tip).addScaledVector(tipDir, 0.12);
+      head.quaternion.setFromUnitVectors(up, tipDir);
+      device.position.y = FLOAT * 0.6 * wave(t, 2);
+      hinge.rotation.x = -0.22 - 0.03 * wave(t, 1, 0.25);
+    },
+  };
+}
+
+/* SSR & SEO — three blocks of different heights, the tallest in accent */
+function blocks(): SceneDef {
+  const root = new THREE.Group();
+  const set: [number, number, number, number, THREE.Material][] = [
+    // x, z, footprint, height
+    [-0.55, -0.45, 0.95, 2.45, mat.accent()],
+    [0.8, -0.1, 0.85, 1.85, mat.light()],
+    [0.05, 0.8, 0.85, 0.85, mat.mid()],
+  ];
+  const cols = set.map(([x, z, s, h, m]) => {
+    const c = column(s, h, s, m);
+    c.position.set(x, 0, z);
+    root.add(c);
+    return c;
+  });
+  root.rotation.y = 0.15;
+  root.position.y = GROUND_Y;
+  root.scale.setScalar(1.3);
+
+  return {
+    root,
+    update(t) {
+      // grow one after another, like a rising ranking
+      cols.forEach((c, i) => {
+        c.scale.y = 0.86 + 0.14 * ease.inOut(tri(phase(t, 1, -i * 0.08)));
+      });
+    },
+  };
+}
+
+/* MySQL for Directus — two server cabinets, a drawer slides out */
+function cabinet(body: THREE.Material, front: THREE.Material) {
+  const W = 1.05;
+  const H = 2.1;
+  const D = 1.0;
+  const g = new THREE.Group();
+  g.add(column(W, H, D, body));
+  // side vent panel
+  const vent = mesh(new THREE.BoxGeometry(0.01, H * 0.8, D * 0.7), mat.dark());
+  vent.position.set(W / 2 + 0.005, H / 2, 0);
+  vent.castShadow = false;
+  g.add(vent);
+  const handleMat = mat.dark();
+  const drawers: THREE.Group[] = [];
+  for (let i = 0; i < 4; i++) {
+    const drawer = new THREE.Group();
+    const panel = mesh(new THREE.BoxGeometry(W * 0.86, 0.4, 0.06), front);
+    const handle = mesh(new THREE.BoxGeometry(0.3, 0.04, 0.04), handleMat);
+    handle.position.set(0, 0.1, 0.05);
+    drawer.add(panel, handle);
+    drawer.position.set(0, 0.32 + i * 0.47, D / 2 + 0.03);
+    g.add(drawer);
+    drawers.push(drawer);
+  }
+  return { g, drawers, D };
+}
+
+function servers(): SceneDef {
+  const root = new THREE.Group();
+  const left = cabinet(mat.accent(), mat.accent({ color: accentTint(0.25) }));
+  left.g.position.set(-0.6, 0, 0.45);
+  const right = cabinet(mat.mid(), mat.light());
+  right.g.position.set(0.7, 0, -0.55);
+  root.add(left.g, right.g);
+  // the open drawer: a tray with sheets of paper behind the front panel
+  const drawer = left.drawers[1];
+  const tray = new THREE.Group();
+  const trayMat = mat.light();
+  const floor = mesh(new THREE.BoxGeometry(0.86, 0.03, 0.8), trayMat);
+  floor.position.set(0, -0.17, -0.43);
+  tray.add(floor);
+  for (const x of [-0.42, 0.42]) {
+    const side = mesh(new THREE.BoxGeometry(0.03, 0.28, 0.8), trayMat);
+    side.position.set(x, -0.04, -0.43);
+    tray.add(side);
+  }
+  const paperMat = mat.light();
+  for (let k = 0; k < 7; k++) {
+    const sheet = mesh(new THREE.BoxGeometry(0.72, 0.3, 0.012), paperMat);
+    sheet.position.set(0, -0.02, -0.15 - k * 0.09);
+    sheet.rotation.x = -0.12;
+    tray.add(sheet);
+  }
+  drawer.add(tray);
+  const closedZ = drawer.position.z;
+  root.rotation.y = 0.35;
+  root.position.y = GROUND_Y;
+  root.scale.setScalar(1.45);
+
+  return {
+    root,
+    update(t) {
+      const out = keyframes(phase(t), [
+        [0, 0],
+        [0.15, 0],
+        [0.4, 0.62, ease.inOut],
+        [0.75, 0.62],
+        [0.95, 0, ease.inOut],
+        [1, 0],
+      ]);
+      drawer.position.z = closedZ + out;
+    },
+  };
+}
+
+/* Deploying Next.js — a cube of blocks assembling itself */
+function cubes(): SceneDef {
+  const root = new THREE.Group();
+  const cluster = new THREE.Group();
+  const S = 0.5;
+  const STEP = 0.56;
+  let seed = 5;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const light = mat.light();
+  const mid = mat.mid();
+  const parts: {
+    m: THREE.Mesh;
+    home: THREE.Vector3;
+    away: THREE.Vector3;
+    delay: number;
+  }[] = [];
+  for (let x = -1; x <= 1; x++)
+    for (let y = -1; y <= 1; y++)
+      for (let z = -1; z <= 1; z++) {
+        if (rnd() < 0.22) continue; // gaps make it read as an assembly
+        const home = V(x * STEP, y * STEP, z * STEP);
+        const loose = rnd() < 0.4 && (x !== 0 || y !== 0 || z !== 0);
+        const m = mesh(
+          new THREE.BoxGeometry(S, S, S),
+          rnd() < 0.3 ? mid : light
+        );
+        const dir = home.clone().normalize();
+        parts.push({
+          m,
+          home,
+          away: loose
+            ? home.clone().addScaledVector(dir, 0.45 + rnd() * 0.4)
+            : home.clone(),
+          delay: rnd() * 0.12,
+        });
+        cluster.add(m);
+      }
+  // the accent block is the last piece to fly in
+  const key = mesh(new THREE.BoxGeometry(S, S, S), mat.accent());
+  const keyHome = V(STEP, STEP, STEP);
+  parts.push({
+    m: key,
+    home: keyHome,
+    away: keyHome.clone().multiplyScalar(1.9),
+    delay: 0.16,
+  });
+  cluster.add(key);
+  cluster.position.y = 1.35;
+  cluster.rotation.set(0.12, 0.35, 0);
+  root.add(cluster);
+  root.position.y = GROUND_Y;
+  root.scale.setScalar(1.15);
+
+  return {
+    root,
+    update(t) {
+      const p = phase(t);
+      for (const s of parts) {
+        // scattered → fly in → hold together → drift apart again
+        const k = keyframes(clamp01(p - s.delay), [
+          [0, 0],
+          [0.12, 0],
+          [0.45, 1, ease.inOut],
+          [0.72, 1],
+          [0.98, 0, ease.inOut],
+        ]);
+        s.m.position.lerpVectors(s.away, s.home, k);
+        s.m.rotation.set((1 - k) * 0.6, (1 - k) * 0.4, 0);
+      }
+      cluster.rotation.y = 0.35 + 0.2 * wave(t, 1);
+      cluster.position.y = 1.35 + FLOAT * wave(t, 2);
+    },
+  };
+}
+
+export const SCENES: Record<SceneId, () => SceneDef> = {
   containers,
   diamond,
   "paper-plane": paperPlane,
@@ -608,6 +914,10 @@ export const SCENES: Record<WorkSceneId, () => WorkScene> = {
   "fractured-cube": fracturedCubeScene,
   temple,
   sputnik,
+  laptop,
+  blocks,
+  servers,
+  cubes,
 };
 
 export { ACCENT };

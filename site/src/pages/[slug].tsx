@@ -5,7 +5,7 @@ import { getWorks, getWorkBySlug } from "@/lib/content";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { WorksData } from "@/lib/types/worksType";
 import ProjectMedia from "@/components/ProjectMedia";
-import WorkScene from "@/components/WorkScene";
+import Scene3D from "@/components/Scene3D";
 import CaseVideo from "@/components/CaseVideo";
 import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
@@ -88,7 +88,7 @@ export default function Work({ work, next }: WorkProps) {
             </div>
           </PageIntro>
           {scene ? (
-            <WorkScene
+            <Scene3D
               scene={scene}
               label={title}
               mode="hero"

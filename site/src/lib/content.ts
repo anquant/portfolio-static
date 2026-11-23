@@ -15,6 +15,7 @@ import { AboutData } from "./types/aboutType";
 import { ContactsData } from "./types/contactsType";
 import { ClientsData } from "./types/clientsType";
 import { WorksData } from "./types/worksType";
+import type { SceneId } from "@/components/scene3d/ids";
 import { ServicesPageData, ServicesListData } from "./types/servicesType";
 import {
   BlogPageData,
@@ -132,6 +133,8 @@ interface ArticleFrontmatter {
   image_src?: string;
   image_width?: number;
   image_height?: number;
+  /** Animated 3D cover; replaces the image when set */
+  scene?: SceneId;
   meta_title: string;
   meta_description?: string;
 }
@@ -159,6 +162,7 @@ function readArticle(slug: string) {
     title: fm.title,
     annotation: fm.annotation,
     image_background_color: fm.image_background_color,
+    ...(fm.scene ? { scene: fm.scene } : {}),
     image:
       fm.image_src && fm.image_width && fm.image_height
         ? { src: fm.image_src, width: fm.image_width, height: fm.image_height }

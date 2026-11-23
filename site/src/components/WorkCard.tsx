@@ -1,5 +1,5 @@
 import ProjectMedia from "./ProjectMedia";
-import WorkScene from "./WorkScene";
+import Scene3D from "./Scene3D";
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { displayHost } from "@/lib/url";
@@ -29,7 +29,7 @@ export default function WorkCard({ works }: WorkCardProps) {
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
             {work.scene ? (
-              <WorkScene
+              <Scene3D
                 scene={work.scene}
                 label={work.title}
                 className="lg:col-span-7 lg:order-2"

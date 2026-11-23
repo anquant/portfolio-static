@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { WorkSceneId } from "./work-scene/ids";
+import type { SceneId } from "./scene3d/ids";
 
-type WorkSceneProps = {
-  scene: WorkSceneId;
+type Scene3DProps = {
+  scene: SceneId;
   /** Accessible label (the project title) */
   label: string;
   /** Frame proportions, as Tailwind aspect classes */
   aspectClassName?: string;
   /** "card": the glow lights up on parent `.group` hover */
   mode?: "card" | "hero";
+  /** Own border + rounded corners; off when a parent card already frames it */
+  framed?: boolean;
   className?: string;
 };
 
@@ -19,13 +21,14 @@ type WorkSceneProps = {
  * project media. three.js is only downloaded when the frame approaches the
  * viewport; without WebGL the empty stage stays as a quiet placeholder.
  */
-export default function WorkScene({
+export default function Scene3D({
   scene,
   label,
   aspectClassName = "aspect-[3/2]",
   mode = "card",
+  framed = true,
   className = "",
-}: WorkSceneProps) {
+}: Scene3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -38,11 +41,11 @@ export default function WorkScene({
       ([entry]) => {
         if (!entry.isIntersecting) return;
         near.disconnect();
-        import("./work-scene/engine").then(({ mountWorkScene }) => {
+        import("./scene3d/engine").then(({ mountScene }) => {
           if (cancelled) return;
           const hoverTarget =
             canvas.closest<HTMLElement>(".group") ?? canvas.parentElement!;
-          unmount = mountWorkScene(canvas, scene, hoverTarget);
+          unmount = mountScene(canvas, scene, hoverTarget);
         });
       },
       { rootMargin: "600px 0px" }
@@ -62,7 +65,9 @@ export default function WorkScene({
     <div
       role="img"
       aria-label={label}
-      className={`relative isolate overflow-hidden rounded-2xl md:rounded-3xl border border-line ${aspectClassName} ${className}`}
+      className={`relative isolate overflow-hidden ${
+        framed ? "rounded-2xl md:rounded-3xl border border-line" : ""
+      } ${aspectClassName} ${className}`}
       style={{
         background:
           "color-mix(in srgb, rgb(var(--accent)) 6%, rgb(var(--surface)))",

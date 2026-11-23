@@ -1,4 +1,5 @@
 import BlogCover from "./BlogCover";
+import Scene3D from "./Scene3D";
 import Reveal from "./Reveal";
 import Link from "next/link";
 import { ArticleCardData } from "@/lib/types/blogType";
@@ -27,11 +28,21 @@ export default function ArticleCard({
             href={`/blog/${article.slug}`}
             className="group flex w-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-fg/20 hover:bg-surface-2"
           >
-            <BlogCover
-              image={article.image}
-              color={article.image_background_color}
-              className="w-full aspect-[5/3]"
-            />
+            {article.scene ? (
+              <Scene3D
+                scene={article.scene}
+                label={article.title}
+                framed={false}
+                aspectClassName="aspect-[5/3]"
+                className="w-full"
+              />
+            ) : (
+              <BlogCover
+                image={article.image}
+                color={article.image_background_color}
+                className="w-full aspect-[5/3]"
+              />
+            )}
             <div className="flex flex-1 flex-col gap-3 p-6">
               <div className="flex items-center justify-between gap-4 text-xs md:text-sm text-muted">
                 <span className="rounded-full border border-line px-2.5 py-0.5 lowercase">

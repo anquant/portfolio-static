@@ -1,5 +1,5 @@
 import { ImageAsset, VideoAsset } from "./assetType";
-import type { WorkSceneId } from "@/components/work-scene/ids";
+import type { SceneId } from "@/components/scene3d/ids";
 
 export interface WorksData {
   sort: number;
@@ -9,7 +9,7 @@ export interface WorksData {
   link?: string;
   illustration?: ImageAsset;
   /** Animated 3D preview; takes the place of `illustration` when set */
-  scene?: WorkSceneId;
+  scene?: SceneId;
   color?: string;
   company: string;
   problem: string;

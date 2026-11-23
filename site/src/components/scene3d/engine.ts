@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import type { WorkSceneId } from "./ids";
+import type { SceneId } from "./ids";
 import { ACCENT } from "./kit";
 import { clamp01, ease } from "./motion";
 import {
@@ -8,7 +8,7 @@ import {
   CAMERA_TARGET,
   GROUND_Y,
   SCENES,
-  type WorkScene,
+  type SceneDef,
 } from "./scenes";
 
 /*
@@ -35,7 +35,7 @@ type View = {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   stage: THREE.Group;
-  work: WorkScene;
+  work: SceneDef;
   visible: boolean;
   introStart: number | null;
   pointer: { x: number; y: number; tx: number; ty: number };
@@ -99,7 +99,7 @@ function getRenderer() {
 }
 
 /** The common stage: camera, key + accent rim light, shadow-catching ground */
-function buildStage(work: WorkScene) {
+function buildStage(work: SceneDef) {
   const scene = new THREE.Scene();
   scene.environment = environment;
   // three ≥ 0.17x RoomEnvironment is much brighter than the one the series was
@@ -237,9 +237,9 @@ const observer =
  * hover drives the dolly (the whole card); parallax follows the pointer over
  * the canvas itself. Returns a cleanup function, or null without WebGL.
  */
-export function mountWorkScene(
+export function mountScene(
   canvas: HTMLCanvasElement,
-  sceneId: WorkSceneId,
+  sceneId: SceneId,
   hoverTarget: HTMLElement
 ): (() => void) | null {
   const gl = getRenderer();
