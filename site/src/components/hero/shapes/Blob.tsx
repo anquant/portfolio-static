@@ -3,13 +3,27 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { noiseGLSL } from '../glsl';
-import { useDispose } from '../materials';
+import { useDispose, uniformsOf } from '../materials';
 import { motion, ease } from '../motion';
-import { useTheme } from '../theme';
+import { useTheme, type Theme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Home: morphing blob with theme-coloured iridescent rim                   */
 /* ------------------------------------------------------------------------ */
+
+function blobUniforms(theme: Theme) {
+  return {
+    uTime: { value: 0 },
+    uEnergy: { value: 0 },
+    uIntro: { value: 0 },
+    uBase: { value: theme.surface },
+    uBg: { value: theme.bg },
+    uAccent: { value: theme.accent },
+    uAccent2: { value: theme.accent2 },
+  };
+}
+
+type BlobUniforms = ReturnType<typeof blobUniforms>;
 
 export function Blob() {
   const theme = useTheme();
@@ -19,15 +33,7 @@ export function Blob() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
-        uniforms: {
-          uTime: { value: 0 },
-          uEnergy: { value: 0 },
-          uIntro: { value: 0 },
-          uBase: { value: theme.surface },
-          uBg: { value: theme.bg },
-          uAccent: { value: theme.accent },
-          uAccent2: { value: theme.accent2 },
-        },
+        uniforms: blobUniforms(theme),
         vertexShader: /* glsl */ `
           ${noiseGLSL}
           uniform float uTime;
@@ -96,7 +102,7 @@ export function Blob() {
     if (!m) {
       return;
     }
-    const u = (m.material as THREE.ShaderMaterial).uniforms;
+    const u = uniformsOf<BlobUniforms>(m.material);
     u.uTime.value = motion.time;
     u.uEnergy.value = motion.energy;
     u.uIntro.value = ease.outCubic(motion.intro);

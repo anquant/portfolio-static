@@ -41,6 +41,9 @@ export function servers(): SceneDef {
   root.add(left.g, right.g);
   // the open drawer: a tray with sheets of paper behind the front panel
   const drawer = left.drawers[1];
+  if (!drawer) {
+    throw new Error('cabinet() builds four drawers');
+  }
   const tray = new THREE.Group();
   const trayMat = mat.light();
   const floor = mesh(new THREE.BoxGeometry(0.86, 0.03, 0.8), trayMat);

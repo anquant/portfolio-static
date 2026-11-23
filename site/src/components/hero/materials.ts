@@ -16,7 +16,19 @@ export function pointUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
   };
 }
 
-export function syncChoreography(u: Record<string, THREE.IUniform>) {
+export type PointUniforms = ReturnType<typeof pointUniforms>;
+
+/**
+ * Typed view of a ShaderMaterial's uniforms. three.js types them as a plain
+ * string map; each shape builds them with a factory (`blobUniforms`, …) and
+ * reads them back with that factory's type. Used inside useFrame on the
+ * material reached through a ref — React leaves those objects mutable.
+ */
+export function uniformsOf<U>(material: THREE.Material | THREE.Material[]): U {
+  return (material as THREE.ShaderMaterial).uniforms as unknown as U;
+}
+
+export function syncChoreography(u: PointUniforms) {
   u.uIntro.value = motion.intro;
   u.uScroll.value = motion.scroll;
   u.uEnergy.value = motion.energy;

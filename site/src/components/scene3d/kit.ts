@@ -35,6 +35,30 @@ export const mat = {
     }),
 };
 
+/** Element of a closed loop (a ring of vertices, a polygon): the index wraps both ways */
+export function cyclic<T>(items: readonly T[], i: number): T {
+  const item = items[((i % items.length) + items.length) % items.length];
+  if (item === undefined) {
+    throw new RangeError('cyclic() on an empty list');
+  }
+
+  return item;
+}
+
+/** [a, b, c] → [[a, b], [b, c]]: consecutive pairs, e.g. the segments of a path */
+export function pairwise<T>(items: readonly T[]): [T, T][] {
+  const pairs: [T, T][] = [];
+  let previous: T | undefined;
+  for (const item of items) {
+    if (previous !== undefined) {
+      pairs.push([previous, item]);
+    }
+    previous = item;
+  }
+
+  return pairs;
+}
+
 export function mesh(geo: THREE.BufferGeometry, m: THREE.Material) {
   const o = new THREE.Mesh(geo, m);
   o.castShadow = true;
@@ -97,7 +121,7 @@ export const lathe = (pts: [number, number][], segments = 72) =>
 /** Low-poly rock: an icosahedron with deterministic per-vertex jitter */
 export function rockGeometry(r: number, seed: number, sx = 1, sy = 1, sz = 1) {
   const g = new THREE.IcosahedronGeometry(r, 1);
-  const p = g.attributes.position;
+  const p = g.getAttribute('position');
   const v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) {
     v.fromBufferAttribute(p, i);
@@ -125,18 +149,18 @@ export function diamondGeometry() {
   const apex = V(0, -1.05, 0);
   const tris: Tri[] = [];
   for (let i = 0; i < 8; i++) {
-    tris.push([top, table[i], table[(i + 1) % 8]]);
+    tris.push([top, cyclic(table, i), cyclic(table, i + 1)]);
   }
   for (let i = 0; i < 8; i++) {
-    const t0 = table[i];
-    const t1 = table[(i + 1) % 8];
-    const g0 = girdle[2 * i];
-    const g1 = girdle[2 * i + 1];
-    const g2 = girdle[(2 * i + 2) % 16];
+    const t0 = cyclic(table, i);
+    const t1 = cyclic(table, i + 1);
+    const g0 = cyclic(girdle, 2 * i);
+    const g1 = cyclic(girdle, 2 * i + 1);
+    const g2 = cyclic(girdle, 2 * i + 2);
     tris.push([t0, g0, g1], [t0, g1, t1], [t1, g1, g2]);
   }
   for (let i = 0; i < 16; i++) {
-    tris.push([apex, girdle[i], girdle[(i + 1) % 16]]);
+    tris.push([apex, cyclic(girdle, i), cyclic(girdle, i + 1)]);
   }
 
   return facetGeometry(tris);
@@ -186,8 +210,8 @@ function clipConvex(faces: Poly[], n: THREE.Vector3, d: number) {
   for (const f of faces) {
     const poly: Poly = [];
     for (let i = 0; i < f.length; i++) {
-      const a = f[i];
-      const b = f[(i + 1) % f.length];
+      const a = cyclic(f, i);
+      const b = cyclic(f, i + 1);
       const da = n.dot(a) - d;
       const db = n.dot(b) - d;
       if (da <= 0) {
@@ -205,7 +229,7 @@ function clipConvex(faces: Poly[], n: THREE.Vector3, d: number) {
   }
   if (cut.length >= 3) {
     const c = cut.reduce((s, p) => s.add(p), new THREE.Vector3()).multiplyScalar(1 / cut.length);
-    const u = new THREE.Vector3().subVectors(cut[0], c).normalize();
+    const u = new THREE.Vector3().subVectors(cyclic(cut, 0), c).normalize();
     const w = new THREE.Vector3().crossVectors(n, u);
     const cap: Poly = [];
     for (const p of cut) {
@@ -262,7 +286,13 @@ export function fracturedCube(half: number, count: number, gap: number, seed: nu
     const tris: Tri[] = [];
     for (const f of faces) {
       for (let k = 1; k < f.length - 1; k++) {
-        tris.push([f[0].clone().sub(center), f[k].clone().sub(center), f[k + 1].clone().sub(center)]);
+        tris.push([
+          cyclic(f, 0).clone().sub(center),
+          cyclic(f, k).clone().sub(center),
+          cyclic(f, k + 1)
+            .clone()
+            .sub(center),
+        ]);
       }
     }
     cells.push({ geometry: facetGeometry(tris), center });

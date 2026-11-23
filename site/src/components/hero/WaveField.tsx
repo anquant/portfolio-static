@@ -3,9 +3,9 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { noiseGLSL, choreographyGLSL } from './glsl';
-import { pointUniforms, syncChoreography, useDispose } from './materials';
+import { pointUniforms, syncChoreography, useDispose, uniformsOf } from './materials';
 import { motion } from './motion';
-import { useTheme } from './theme';
+import { useTheme, type Theme } from './theme';
 
 /* ------------------------------------------------------------------------ */
 /* Wave field: grid of points that ripples and rises under the cursor       */
@@ -21,6 +21,17 @@ const fieldPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -FIELD_Y);
 const hit = new THREE.Vector3();
 const ndc = new THREE.Vector2();
 const flat = new THREE.Vector3();
+
+function fieldUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
+  return {
+    ...pointUniforms(gl, theme),
+    uMouse: { value: new THREE.Vector2(999, 999) },
+    uMouseStrength: { value: 0 },
+    uMuted: { value: theme.muted },
+  };
+}
+
+type FieldUniforms = ReturnType<typeof fieldUniforms>;
 
 export function WaveField() {
   const theme = useTheme();
@@ -51,15 +62,10 @@ export function WaveField() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        uniforms: fieldUniforms(gl, theme),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: {
-          ...pointUniforms(gl, theme),
-          uMouse: { value: new THREE.Vector2(999, 999) },
-          uMouseStrength: { value: 0 },
-          uMuted: { value: theme.muted },
-        },
         vertexShader: /* glsl */ `
           ${noiseGLSL}
           ${choreographyGLSL}
@@ -120,7 +126,7 @@ export function WaveField() {
     if (!points.current) {
       return;
     }
-    const u = (points.current.material as THREE.ShaderMaterial).uniforms;
+    const u = uniformsOf<FieldUniforms>(points.current.material);
     syncChoreography(u);
 
     // Project the smoothed cursor onto the field plane. Above the horizon the

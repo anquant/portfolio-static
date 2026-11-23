@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { V, accentTint, mat, mesh } from '../../kit';
+import { V, accentTint, mat, mesh, pairwise } from '../../kit';
 import { FLOAT, ease, keyframes, phase, wave } from '../../motion';
 import { type SceneDef, CAMERA_POSITION, GROUND_Y } from '../../stage';
 
@@ -38,13 +38,13 @@ export function laptop(): SceneDef {
   root.add(device);
   // growth arrow drawn up out of the screen, in a plane facing the viewer
   const arrowMat = mat.accent();
-  const path = [V(-0.85, 0, 0), V(-0.3, 0.55, 0), V(0.1, 0.25, 0), V(0.85, 1.15, 0)];
+  const origin = V(-0.85, 0, 0);
+  const path = [origin, V(-0.3, 0.55, 0), V(0.1, 0.25, 0), V(0.85, 1.15, 0)];
   const R = 0.065;
   const segGeo = new THREE.CylinderGeometry(R, R, 1, 24);
   segGeo.translate(0, 0.5, 0); // grows from its start point
   const up = V(0, 1, 0);
-  const segments = path.slice(1).map((end, i) => {
-    const start = path[i];
+  const segments = pairwise(path).map(([start, end]) => {
     const dir = end.clone().sub(start);
     const length = dir.length();
     const m = mesh(segGeo, arrowMat);
@@ -84,14 +84,15 @@ export function laptop(): SceneDef {
         [1, 0, ease.inOut],
       ]);
       let left = k * total;
-      let tip = path[0];
-      let tipDir = segments[0].dir;
+      let tip = origin;
+      let tipDir = up;
       segments.forEach((sg, i) => {
         const len = Math.min(sg.length, Math.max(0, left));
         sg.m.scale.y = Math.max(len, 1e-4);
         sg.m.visible = len > 0;
-        if (i > 0) {
-          joints[i - 1].visible = len > 0;
+        const joint = joints[i - 1]; // the joint before this segment; none before the first
+        if (joint) {
+          joint.visible = len > 0;
         }
         if (len > 0) {
           tip = sg.start.clone().addScaledVector(sg.dir, len);

@@ -34,17 +34,19 @@ export const ease = {
   outQuart: (x => 1 - Math.pow(1 - x, 4)) as Ease,
 };
 
-/** Keyframes sampled at phase p: [p, value, easing into this key] */
+/** Keyframes sampled at phase p: [p, value, easing into this key]. At least one key. */
 export type Key = [number, number, Ease?];
 
-export function keyframes(p: number, keys: Key[]) {
-  for (let i = 1; i < keys.length; i++) {
-    const [p0, v0] = keys[i - 1];
-    const [p1, v1, e = ease.inOut] = keys[i];
+export function keyframes(p: number, [first, ...rest]: [Key, ...Key[]]) {
+  let previous = first;
+  for (const key of rest) {
+    const [p0, v0] = previous;
+    const [p1, v1, e = ease.inOut] = key;
     if (p <= p1) {
       return v0 + (v1 - v0) * e(clamp01((p - p0) / (p1 - p0)));
     }
+    previous = key;
   }
 
-  return keys[keys.length - 1][1];
+  return previous[1];
 }

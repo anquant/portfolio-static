@@ -3,13 +3,23 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
-import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { pointUniforms, syncChoreography, useDispose, uniformsOf } from '../materials';
 import { MAX_DELTA, motion, ease, TAU } from '../motion';
-import { useTheme } from '../theme';
+import { useTheme, type Theme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Design: a circle drawn by a glowing pen, then precessing like a gyroscope */
 /* ------------------------------------------------------------------------ */
+
+function ringUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
+  return {
+    ...pointUniforms(gl, theme),
+    uPen: { value: 0 },
+    uReveal: { value: 0 },
+  };
+}
+
+type RingUniforms = ReturnType<typeof ringUniforms>;
 
 export function Ring() {
   const theme = useTheme();
@@ -45,14 +55,10 @@ export function Ring() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        uniforms: ringUniforms(gl, theme),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: {
-          ...pointUniforms(gl, theme),
-          uPen: { value: 0 },
-          uReveal: { value: 0 },
-        },
         vertexShader: /* glsl */ `
           ${noiseGLSL}
           ${choreographyGLSL}
@@ -101,7 +107,7 @@ export function Ring() {
       return;
     }
     const dt = Math.min(rawDelta, MAX_DELTA);
-    const u = (p.material as THREE.ShaderMaterial).uniforms;
+    const u = uniformsOf<RingUniforms>(p.material);
     syncChoreography(u);
 
     if (motion.intro < 1) {

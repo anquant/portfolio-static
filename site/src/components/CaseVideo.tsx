@@ -31,7 +31,11 @@ export default function CaseVideo({ video, poster, title, color }: CaseVideoProp
     }
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const io = new IntersectionObserver(
-      ([entry]) => {
+      entries => {
+        const entry = entries.at(-1);
+        if (!entry) {
+          return;
+        }
         const wants = userWants ?? !reduced;
         if (entry.isIntersecting && wants) {
           el.play().catch(() => {});

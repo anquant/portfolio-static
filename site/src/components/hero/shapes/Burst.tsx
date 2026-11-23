@@ -3,13 +3,30 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
-import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { pointUniforms, syncChoreography, useDispose, uniformsOf } from '../materials';
 import { MAX_DELTA, motion, ease } from '../motion';
-import { useTheme } from '../theme';
+import { useTheme, type Theme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* SEO: rays fired from a pulsing core in beats — reach, signal, growth     */
 /* ------------------------------------------------------------------------ */
+
+function burstUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
+  return { ...pointUniforms(gl, theme), uPhase: { value: 0 } };
+}
+
+type BurstUniforms = ReturnType<typeof burstUniforms>;
+
+function coreUniforms(theme: Theme) {
+  return {
+    uSize: { value: 0.6 },
+    uGlow: { value: 0.5 },
+    uAccent: { value: theme.accent },
+    uAccent2: { value: theme.accent2 },
+  };
+}
+
+type CoreUniforms = ReturnType<typeof coreUniforms>;
 
 export function Burst() {
   const theme = useTheme();
@@ -51,10 +68,10 @@ export function Burst() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        uniforms: burstUniforms(gl, theme),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: { ...pointUniforms(gl, theme), uPhase: { value: 0 } },
         vertexShader: /* glsl */ `
           ${noiseGLSL}
           ${choreographyGLSL}
@@ -97,15 +114,10 @@ export function Burst() {
   const coreMaterial = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        uniforms: coreUniforms(theme),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: {
-          uSize: { value: 0.6 },
-          uGlow: { value: 0.5 },
-          uAccent: { value: theme.accent },
-          uAccent2: { value: theme.accent2 },
-        },
         vertexShader: /* glsl */ `
           uniform float uSize;
           varying vec2 vUv;
@@ -142,7 +154,7 @@ export function Burst() {
       return;
     }
     const dt = Math.min(rawDelta, MAX_DELTA);
-    const u = (p.material as THREE.ShaderMaterial).uniforms;
+    const u = uniformsOf<BurstUniforms>(p.material);
     syncChoreography(u);
 
     // Emission in beats: a calm drift, then a sharp push every ~4.8 s
@@ -155,7 +167,7 @@ export function Burst() {
     p.rotation.y = t * 0.06;
     p.rotation.x = t * 0.025;
 
-    const cu = (c.material as THREE.ShaderMaterial).uniforms;
+    const cu = uniformsOf<CoreUniforms>(c.material);
     const appear = ease.outBack(Math.min(1, motion.intro * 1.6));
     cu.uSize.value = (0.55 + beat * 0.35 + motion.energy * 0.25) * appear;
     cu.uGlow.value = (0.45 + beat * 0.5 + motion.energy * 0.3) * (1 - motion.scroll);

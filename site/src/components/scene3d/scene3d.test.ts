@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { SCENE_IDS } from './ids';
 import { diamondGeometry, fracturedCube } from './kit';
-import { LOOP, keyframes, phase, tri, wave } from './motion';
+import { LOOP, keyframes, phase, tri, wave, type Key } from './motion';
 import { SCENES } from './scenes';
 
 /*
@@ -13,7 +13,7 @@ import { SCENES } from './scenes';
 
 /** Signed volume of a closed triangle mesh (divergence theorem). Positive ⇔ faces point outward. */
 function signedVolume(geometry: THREE.BufferGeometry) {
-  const p = geometry.attributes.position;
+  const p = geometry.getAttribute('position');
   const a = new THREE.Vector3();
   const b = new THREE.Vector3();
   const c = new THREE.Vector3();
@@ -68,7 +68,7 @@ describe('motion', () => {
   });
 
   it('keyframes hit their keys and clamp outside them', () => {
-    const keys: [number, number][] = [
+    const keys: [Key, ...Key[]] = [
       [0.2, 1],
       [0.6, 3],
     ];
@@ -135,7 +135,9 @@ describe.each(SCENE_IDS)('scene %s', id => {
       const a = pose(scene.root);
       scene.update(t + 2 * LOOP);
       const b = pose(scene.root);
-      b.forEach((x, i) => expect(x).toBeCloseTo(a[i], 6));
+      expect(b).toHaveLength(a.length);
+      const drift = Math.max(...b.map((x, i) => Math.abs(x - (a[i] ?? Infinity))));
+      expect(drift).toBeLessThan(1e-6);
     }
   });
 });

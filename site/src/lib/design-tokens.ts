@@ -10,10 +10,10 @@ export type Rgb = [r: number, g: number, b: number];
 /** Parses "140 156 255" → [140/255, 156/255, 255/255]; null if malformed */
 export function parseRgbToken(value: string): Rgb | null {
   const parts = value.trim().split(/\s+/).map(Number);
+  const valid = parts.length === 3 && parts.every(n => n >= 0 && n <= 255);
 
-  return parts.length === 3 && parts.every(n => n >= 0 && n <= 255)
-    ? [parts[0] / 255, parts[1] / 255, parts[2] / 255]
-    : null;
+  // the length check above is what makes this a 3-tuple
+  return valid ? (parts.map(n => n / 255) as Rgb) : null;
 }
 
 /** Reads a token from :root (browser only) */

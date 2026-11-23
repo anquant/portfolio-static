@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { V, diamondGeometry, mat, mesh, rockGeometry } from '../../kit';
+import { V, diamondGeometry, mat, mesh, rockGeometry, cyclic } from '../../kit';
 import { FLOAT, LOOP, TAU, ease, phase, tri, wave } from '../../motion';
 import { type SceneDef, GROUND_Y } from '../../stage';
 
@@ -59,7 +59,7 @@ export function diamond(): SceneDef {
     { r: 0.18, s: [1, 0.8, 1], p: [-1.2, 1.0, -0.9], rot: [0.6, 0.4, -0.3] },
   ];
   const parts = shards.map((d, i) => {
-    const m = mesh(rockGeometry(d.r, i + 2, ...d.s), rockMats[i % rockMats.length]);
+    const m = mesh(rockGeometry(d.r, i + 2, ...d.s), cyclic(rockMats, i));
     m.position.set(...d.p);
     m.rotation.set(...d.rot);
     root.add(m);

@@ -41,7 +41,11 @@ export default function Scene3D({
     let unmount: (() => void) | null = null;
 
     const near = new IntersectionObserver(
-      ([entry]) => {
+      entries => {
+        const entry = entries.at(-1);
+        if (!entry) {
+          return;
+        }
         if (!entry.isIntersecting) {
           return;
         }

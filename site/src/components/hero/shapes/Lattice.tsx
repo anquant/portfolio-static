@@ -3,9 +3,9 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
-import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { pointUniforms, syncChoreography, useDispose, uniformsOf } from '../materials';
 import { MAX_DELTA, motion, ease } from '../motion';
-import { useTheme } from '../theme';
+import { useTheme, type Theme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Development: a lattice that snaps through 90° turns like a mechanism,    */
@@ -14,6 +14,12 @@ import { useTheme } from '../theme';
 
 const STEP_PERIOD = 4.2; // seconds between turns
 const STEP_DURATION = 1.1; // length of one turn
+
+function latticeUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
+  return { ...pointUniforms(gl, theme), uScan: { value: 0 } };
+}
+
+type LatticeUniforms = ReturnType<typeof latticeUniforms>;
 
 export function Lattice() {
   const theme = useTheme();
@@ -40,10 +46,10 @@ export function Lattice() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
+        uniforms: latticeUniforms(gl, theme),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: { ...pointUniforms(gl, theme), uScan: { value: 0 } },
         vertexShader: /* glsl */ `
           ${noiseGLSL}
           ${choreographyGLSL}
@@ -89,7 +95,7 @@ export function Lattice() {
       return;
     }
     const dt = Math.min(rawDelta, MAX_DELTA);
-    const u = (p.material as THREE.ShaderMaterial).uniforms;
+    const u = uniformsOf<LatticeUniforms>(p.material);
     syncChoreography(u);
     scan.current += dt * (0.12 + motion.energy * 0.5) * (motion.time === 0 ? 0 : 1);
     u.uScan.value = scan.current;

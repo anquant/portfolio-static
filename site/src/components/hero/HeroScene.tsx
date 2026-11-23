@@ -52,7 +52,12 @@ export default function HeroScene({ variant = 'blob' }: { variant?: HeroSceneId 
     if (!el) {
       return;
     }
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
+    const io = new IntersectionObserver(entries => {
+      const latest = entries.at(-1);
+      if (latest) {
+        setVisible(latest.isIntersecting);
+      }
+    });
     io.observe(el);
 
     return () => io.disconnect();
