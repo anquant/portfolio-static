@@ -18,7 +18,7 @@ export default function WorkCard({ works }: WorkCardProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-16 md:gap-24">
+    <div className="grid grid-cols-1 gap-16 md:gap-20">
       {works.map((work, index) => (
         <Reveal as="article" key={work.slug} id={`work-${index + 1}`} className="scroll-mt-24">
           <Link
@@ -26,7 +26,7 @@ export default function WorkCard({ works }: WorkCardProps) {
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
             {work.scene ? (
-              <Scene3D scene={work.scene} label={work.title} className="lg:col-span-7 lg:order-2" />
+              <Scene3D scene={work.scene} label={work.title} className="lg:col-span-6 lg:order-2" />
             ) : (
               <ProjectMedia
                 src={work.illustration?.src ?? '/assets/images/default-image-portfolio.jpg'}
@@ -35,11 +35,11 @@ export default function WorkCard({ works }: WorkCardProps) {
                 alt=""
                 color={work.color}
                 mode="hover"
-                sizes="(min-width: 1024px) 60vw, 100vw"
-                className="lg:col-span-7 lg:order-2"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="lg:col-span-6 lg:order-2"
               />
             )}
-            <div className="lg:col-span-5 lg:order-1 flex flex-col">
+            <div className="lg:col-span-6 lg:order-1 flex flex-col">
               <div className="flex items-center gap-3 text-sm text-muted">
                 <span className="font-display font-semibold text-fg">{String(index + 1).padStart(2, '0')}</span>
                 <span className="h-px w-8 bg-line" />
