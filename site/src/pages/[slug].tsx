@@ -63,6 +63,7 @@ export default function Work({ work, next }: WorkProps) {
     title,
     description,
     infotext,
+    scope,
     link,
     illustration,
     scene,
@@ -97,7 +98,17 @@ export default function Work({ work, next }: WorkProps) {
               lead={<span className="text-fg/85">{description}</span>}
               glow={color}
               className="lg:col-span-2"
-            />
+            >
+              {scope && (
+                <ul aria-label="Что сделано" className="flex flex-wrap gap-1.5">
+                  {scope.map(item => (
+                    <li key={item} className="rounded-full border border-line px-3 py-1 text-[13px] text-fg/80">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </PageIntro>
             <div className="lg:col-span-2 lg:col-start-3 lg:row-span-2 lg:row-start-1">
               {scene ? (
                 <Scene3D
