@@ -35,6 +35,29 @@ function Row({ index, label, children }: { index: number; label: string; childre
   );
 }
 
+/** One cell of the hero grid: a hairline, a small label, the fact */
+function Cell({
+  label,
+  className = '',
+  delay,
+  children,
+}: {
+  label: string;
+  className?: string;
+  delay: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`reveal border-t border-line pt-4 ${className}`}
+      style={{ '--d': `${delay}ms` } as React.CSSProperties}
+    >
+      <div className="eyebrow mb-3">{label}</div>
+      {children}
+    </div>
+  );
+}
+
 export default function Work({ work, next }: WorkProps) {
   const {
     title,
@@ -62,47 +85,61 @@ export default function Work({ work, next }: WorkProps) {
       <section className="relative">
         <div className="container-page relative">
           <Header />
-          <PageIntro crumbs={[{ href: '/', label: 'Проекты' }]} title={title} glow={color}>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:items-end">
-              <div className="md:col-span-7 space-y-3">
-                <p className="text-lg md:text-xl">{description}</p>
-                <p className="text-muted">{infotext}</p>
-              </div>
+          {/*
+            Desktop: two halves of one block. Title + lead read as one thought on
+            the left, the facts sit on the 3D frame's bottom edge, so the whole
+            opening fits the first screen. On phones everything stacks.
+          */}
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 lg:grid-rows-[auto_1fr]">
+            <PageIntro
+              crumbs={[{ href: '/', label: 'Проекты' }]}
+              title={title}
+              lead={<span className="text-fg/85">{description}</span>}
+              glow={color}
+              className="lg:col-span-2"
+            />
+            <div className="lg:col-span-2 lg:col-start-3 lg:row-span-2 lg:row-start-1">
+              {scene ? (
+                <Scene3D
+                  scene={scene}
+                  label={title}
+                  mode="hero"
+                  aspectClassName="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[26rem]"
+                  className="reveal [--d:600ms]"
+                />
+              ) : (
+                illustration && (
+                  <ProjectMedia
+                    {...illustration}
+                    alt={title}
+                    color={color}
+                    priority
+                    sizes="(min-width: 1280px) 40rem, (min-width: 1024px) 50vw, 100vw"
+                    className="reveal [--d:600ms]"
+                  />
+                )
+              )}
+            </div>
+            {/* the facts sit on the media's bottom edge (desktop), after it on phones */}
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:self-end">
+              <Cell label="Стек" delay={500} className={link ? '' : 'sm:col-span-2'}>
+                <p className="text-muted leading-relaxed">{infotext}</p>
+              </Cell>
               {link && (
-                <div className="md:col-span-5 md:justify-self-end">
+                <Cell label="Сайт" delay={600}>
                   <a
                     href={link}
                     target="_blank"
                     rel="nofollow noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
+                    className="inline-flex items-center gap-2 text-lg transition-colors hover:text-accent"
                   >
                     {displayHost(link)}
                     <FiArrowUpRight />
                   </a>
-                </div>
+                </Cell>
               )}
             </div>
-          </PageIntro>
-          {scene ? (
-            <Scene3D
-              scene={scene}
-              label={title}
-              mode="hero"
-              aspectClassName="aspect-[4/3] md:aspect-[21/9]"
-              className="reveal mt-12 md:mt-16 [--d:600ms]"
-            />
-          ) : (
-            illustration && (
-              <ProjectMedia
-                {...illustration}
-                alt={title}
-                color={color}
-                priority
-                sizes="(min-width: 1280px) 80rem, 100vw"
-                className="reveal mt-12 md:mt-16 [--d:600ms]"
-              />
-            )
-          )}
+          </div>
         </div>
       </section>
 
