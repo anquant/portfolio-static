@@ -10,7 +10,6 @@ import PageIntro from '@/components/PageIntro';
 import { getBlogPage, getBlogCategories, getBlogArticles } from '@/lib/content';
 import type { BlogPageData, BlogCategoriesData, BlogArticlesData } from '@/lib/content/schemas';
 import { pageFromQuery } from '@/lib/pagination';
-import { SITE_URL } from '@/lib/site';
 
 interface BlogProps {
   blog_page: BlogPageData;
@@ -83,7 +82,7 @@ export default function Blog({ blog_page, blog_categories, blog_articles }: Blog
     }`;
 
   return (
-    <Layout seo={seo} site_url={SITE_URL} canonical={true}>
+    <Layout seo={seo}>
       <div className="container-page">
         <Header />
         <PageIntro title={title}>

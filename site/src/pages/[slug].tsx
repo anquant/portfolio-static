@@ -78,7 +78,13 @@ export default function Work({ work, next }: WorkProps) {
     meta_title,
     meta_description,
   } = work;
-  const seo = { meta_title, meta_description };
+  const image = illustration ?? cover;
+  const seo = {
+    meta_title,
+    meta_description,
+    type: 'article' as const,
+    image: image && { ...image, alt: title },
+  };
 
   return (
     <Layout seo={seo}>

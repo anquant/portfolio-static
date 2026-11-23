@@ -17,7 +17,7 @@ interface AboutProps {
 
 export default function About({ about }: AboutProps) {
   const { title_part1, title_part2, content, stats, skills, resume, meta_title, meta_description } = about;
-  const seo = { meta_title, meta_description };
+  const seo = { meta_title, meta_description, type: 'profile' as const };
 
   return (
     <Layout seo={seo}>
@@ -26,7 +26,7 @@ export default function About({ about }: AboutProps) {
         <PageIntro
           title={
             <>
-              {title_part1}
+              {title_part1}{' '}
               {title_part2 && (
                 <>
                   <br />

@@ -27,7 +27,7 @@ interface ArticleProps {
 
 export default function Article({ article, articles, mdxSource }: ArticleProps) {
   const { title, image, image_background_color, meta_title, meta_description } = article;
-  const seo = { meta_title, meta_description };
+  const seo = { meta_title, meta_description, type: 'article' as const, image: image && { ...image, alt: title } };
 
   return (
     <Layout seo={seo}>

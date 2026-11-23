@@ -10,7 +10,7 @@ export default function Error404() {
   };
 
   return (
-    <Layout seo={seo}>
+    <Layout seo={{ ...seo, noindex: true }}>
       <div className="container-page min-h-screen flex flex-col">
         <Header />
         <section className="flex-1 flex flex-col justify-center">

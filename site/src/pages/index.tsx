@@ -16,7 +16,6 @@ import type { HomeData } from '@/lib/content/schemas';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ClientsData } from '@/lib/content/schemas';
 import { pageFromQuery } from '@/lib/pagination';
-import { SITE_URL } from '@/lib/site';
 
 // three.js is loaded only in the browser and after the page is interactive
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
@@ -68,7 +67,7 @@ export default function Home({ home, works, clients }: HomeProps) {
   const paginatedWorks = works.slice(0, currentPage * ITEMS_PER_PAGE);
 
   return (
-    <Layout seo={seo} site_url={SITE_URL} canonical={true}>
+    <Layout seo={seo}>
       {/* Hero: interactive 3D background (wave field + morphing shape) */}
       <section className="relative isolate overflow-hidden min-h-[100svh] lg:min-h-[92svh] flex flex-col">
         <div className="absolute inset-0 -z-10">
