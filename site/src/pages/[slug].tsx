@@ -19,10 +19,17 @@ interface WorkProps {
   next: { slug: string; title: string } | null;
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * A chapter of the case story. Numbered and set in the display face so it
+ * reads as narrative, unlike the small-caps reference facts in the hero.
+ */
+function Row({ index, label, children }: { index: number; label: string; children: React.ReactNode }) {
   return (
     <Reveal className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 border-t border-line pt-8">
-      <h2 className="md:col-span-3 eyebrow pt-1">{label}</h2>
+      <h2 className="md:col-span-3 flex items-baseline gap-3 font-display font-semibold text-xl md:text-2xl">
+        <span className="text-sm text-muted tabular-nums">{String(index).padStart(2, '0')}</span>
+        {label}
+      </h2>
       <div className="md:col-span-9 text-lg md:text-xl leading-relaxed text-fg/90">{children}</div>
     </Reveal>
   );
@@ -100,11 +107,11 @@ export default function Work({ work, next }: WorkProps) {
       </section>
 
       <div className="container-page">
-        <div className="space-y-12 my-20 md:my-32 max-w-5xl">
-          <Row label="Заказчик">
+        <div className="space-y-12 mt-28 mb-20 md:mt-48 md:mb-32 max-w-5xl">
+          <Row index={1} label="Заказчик">
             <div dangerouslySetInnerHTML={{ __html: company }} />
           </Row>
-          <Row label="Задача">
+          <Row index={2} label="Задача">
             <div dangerouslySetInnerHTML={{ __html: problem }} />
           </Row>
         </div>
@@ -148,7 +155,7 @@ export default function Work({ work, next }: WorkProps) {
         )}
 
         <div className="section-gap max-w-5xl">
-          <Row label="Результат">
+          <Row index={3} label="Результат">
             <div dangerouslySetInnerHTML={{ __html: result }} />
           </Row>
         </div>
