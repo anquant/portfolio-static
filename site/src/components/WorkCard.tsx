@@ -1,4 +1,5 @@
 import ProjectMedia from "./ProjectMedia";
+import WorkScene from "./WorkScene";
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { displayHost } from "@/lib/url";
@@ -27,19 +28,27 @@ export default function WorkCard({ works }: WorkCardProps) {
             href={`/${work.slug}`}
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
-            <ProjectMedia
-              src={
-                work.illustration?.src ??
-                "/assets/images/default-image-portfolio.jpg"
-              }
-              width={work.illustration?.width ?? 1800}
-              height={work.illustration?.height ?? 1200}
-              alt=""
-              color={work.color}
-              mode="hover"
-              sizes="(min-width: 1024px) 60vw, 100vw"
-              className="lg:col-span-7 lg:order-2"
-            />
+            {work.scene ? (
+              <WorkScene
+                scene={work.scene}
+                label={work.title}
+                className="lg:col-span-7 lg:order-2"
+              />
+            ) : (
+              <ProjectMedia
+                src={
+                  work.illustration?.src ??
+                  "/assets/images/default-image-portfolio.jpg"
+                }
+                width={work.illustration?.width ?? 1800}
+                height={work.illustration?.height ?? 1200}
+                alt=""
+                color={work.color}
+                mode="hover"
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                className="lg:col-span-7 lg:order-2"
+              />
+            )}
             <div className="lg:col-span-5 lg:order-1 flex flex-col">
               <div className="flex items-center gap-3 text-sm text-muted">
                 <span className="font-display font-semibold text-fg">

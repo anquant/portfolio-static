@@ -5,6 +5,7 @@ import { getWorks, getWorkBySlug } from "@/lib/content";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { WorksData } from "@/lib/types/worksType";
 import ProjectMedia from "@/components/ProjectMedia";
+import WorkScene from "@/components/WorkScene";
 import CaseVideo from "@/components/CaseVideo";
 import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
@@ -41,6 +42,7 @@ export default function Work({ work, next }: WorkProps) {
     infotext,
     link,
     illustration,
+    scene,
     color,
     company,
     problem,
@@ -85,15 +87,25 @@ export default function Work({ work, next }: WorkProps) {
               )}
             </div>
           </PageIntro>
-          {illustration && (
-            <ProjectMedia
-              {...illustration}
-              alt={title}
-              color={color}
-              priority
-              sizes="(min-width: 1280px) 80rem, 100vw"
+          {scene ? (
+            <WorkScene
+              scene={scene}
+              label={title}
+              mode="hero"
+              aspectClassName="aspect-[4/3] md:aspect-[21/9]"
               className="reveal mt-12 md:mt-16 [--d:600ms]"
             />
+          ) : (
+            illustration && (
+              <ProjectMedia
+                {...illustration}
+                alt={title}
+                color={color}
+                priority
+                sizes="(min-width: 1280px) 80rem, 100vw"
+                className="reveal mt-12 md:mt-16 [--d:600ms]"
+              />
+            )
           )}
         </div>
       </section>
