@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { readRgbToken } from "@/lib/design-tokens";
 import type { SceneId } from "./ids";
 import { ACCENT } from "./kit";
 import { clamp01, ease } from "./motion";
@@ -57,24 +58,6 @@ const reducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** "R G B" token from :root (see globals.css) */
-function cssColor(name: string) {
-  const parts = getComputedStyle(document.documentElement)
-    .getPropertyValue(name)
-    .trim()
-    .split(/\s+/)
-    .map(Number);
-  return parts.length === 3 && parts.every((n) => !Number.isNaN(n))
-    ? // CSS values are sRGB; without the colour space three.js would read them as linear
-      new THREE.Color().setRGB(
-        parts[0] / 255,
-        parts[1] / 255,
-        parts[2] / 255,
-        THREE.SRGBColorSpace
-      )
-    : null;
-}
-
 function getRenderer() {
   if (renderer || unavailable) return renderer;
   try {
@@ -90,8 +73,10 @@ function getRenderer() {
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.setClearColor(0x000000, 0);
 
-  const accent = cssColor("--accent");
-  if (accent) ACCENT.copy(accent);
+  // Lit materials are colour-managed: the CSS (sRGB) accent must be converted,
+  // otherwise three.js would read it as linear and wash it out
+  const accent = readRgbToken("--accent");
+  if (accent) ACCENT.setRGB(...accent, THREE.SRGBColorSpace);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;

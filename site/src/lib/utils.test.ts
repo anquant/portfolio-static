@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { decode, encode, maskPhone } from "./obfuscate";
+import { parseRgbToken } from "./design-tokens";
 import { displayHost } from "./url";
 
 describe("displayHost", () => {
@@ -32,4 +33,17 @@ describe("obfuscate", () => {
   it("masks everything after the area code", () => {
     expect(maskPhone("+7 (921) 123-45-67")).toBe("+7 (921) *********");
   });
+});
+
+describe("parseRgbToken", () => {
+  it("reads a CSS 'R G B' triplet as 0–1 components", () => {
+    expect(parseRgbToken(" 140 156 255 ")).toEqual([140 / 255, 156 / 255, 1]);
+  });
+
+  it.each(["", "140 156", "a b c", "300 0 0", "#8c9cff"])(
+    "rejects %j",
+    (value) => {
+      expect(parseRgbToken(value)).toBeNull();
+    }
+  );
 });
