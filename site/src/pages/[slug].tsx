@@ -132,9 +132,11 @@ export default function Work({ work, next }: WorkProps) {
         </Reveal>
 
         {mockups_description && (
-          <Reveal className="max-w-4xl section-gap text-xl md:text-2xl leading-snug">
-            <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
-          </Reveal>
+          <div className="section-gap max-w-5xl">
+            <Row index={3} label="Решение">
+              <div dangerouslySetInnerHTML={{ __html: mockups_description }} />
+            </Row>
+          </div>
         )}
 
         {mockups && mockups.length > 0 && (
@@ -155,7 +157,7 @@ export default function Work({ work, next }: WorkProps) {
         )}
 
         <div className="section-gap max-w-5xl">
-          <Row index={3} label="Результат">
+          <Row index={mockups_description ? 4 : 3} label="Результат">
             <div dangerouslySetInnerHTML={{ __html: result }} />
           </Row>
         </div>
