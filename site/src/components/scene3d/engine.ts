@@ -23,6 +23,13 @@ import { CAMERA_POSITION, CAMERA_TARGET, GROUND_Y, type SceneDef } from './stage
  *  - intro   rises, turns and fades in the first time it scrolls into view
  *  - hover   pointer parallax + a gentle dolly-in while its card is hovered
  *  - time    one shared clock, so all scenes keep the same beat
+ *
+ * The shared drawing buffer only ever grows (to the largest visible view);
+ * smaller views render into its bottom-left corner via viewport + scissor,
+ * so differently sized cards never reallocate it frame after frame.
+ * With reduced motion each view is drawn once per change, not per frame.
+ * A lost WebGL context leaves the last frames on the cards and is rebuilt
+ * when the browser restores it.
  */
 
 const INTRO = 1.4; // s
@@ -41,19 +48,62 @@ type View = {
   pointer: { x: number; y: number; tx: number; ty: number };
   hover: number;
   hoverTarget: number;
+  /** Needs a redraw even when nothing animates (reduced motion) */
+  dirty: boolean;
+  fit: () => void;
   cleanup: () => void;
 };
 
 let renderer: THREE.WebGLRenderer | null = null;
 let environment: THREE.Texture | null = null;
 let unavailable = false;
+let contextLost = false;
 const views = new Set<View>();
 let frame = 0;
 let last = 0;
 const t0 = performance.now() / 1000;
+const bufferSize = new THREE.Vector2();
 
-const reducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const browser = typeof window !== 'undefined';
+
+/** Re-draws every view once and makes sure a frame is coming */
+function invalidateAll() {
+  for (const v of views) {
+    v.dirty = true;
+  }
+  wake();
+}
+
+const motionQuery = browser ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+motionQuery?.addEventListener('change', invalidateAll);
+const reducedMotion = () => motionQuery?.matches ?? false;
+
+/** Refit canvases when the pixel ratio changes (window moved to another screen, zoom) */
+function watchPixelRatio() {
+  const query = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+  query.addEventListener(
+    'change',
+    () => {
+      for (const v of views) {
+        v.fit();
+      }
+      invalidateAll();
+      watchPixelRatio(); // the query is tied to the old ratio; watch the new one
+    },
+    { once: true },
+  );
+}
+if (browser) {
+  watchPixelRatio();
+}
+
+function createEnvironment(gl: THREE.WebGLRenderer) {
+  const pmrem = new THREE.PMREMGenerator(gl);
+  const texture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+
+  return texture;
+}
 
 function getRenderer() {
   if (renderer || unavailable) {
@@ -86,9 +136,24 @@ function getRenderer() {
     ACCENT.setRGB(...accent, THREE.SRGBColorSpace);
   }
 
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  pmrem.dispose();
+  environment = createEnvironment(renderer);
+
+  // Cards keep their last frame (it lives in their 2D canvases) while the
+  // context is gone; on restore three.js re-uploads geometry and materials,
+  // the render-target environment has to be rebuilt.
+  const gl = renderer;
+  gl.domElement.addEventListener('webglcontextlost', event => {
+    event.preventDefault(); // allow the browser to restore it
+    contextLost = true;
+  });
+  gl.domElement.addEventListener('webglcontextrestored', () => {
+    contextLost = false;
+    environment = createEnvironment(gl);
+    for (const v of views) {
+      v.scene.environment = environment;
+    }
+    invalidateAll();
+  });
 
   return renderer;
 }
@@ -140,21 +205,25 @@ function dispose(scene: THREE.Scene) {
   });
 }
 
-function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t: number) {
+/** Grows the shared buffer to fit a view; never shrinks it */
+function ensureBuffer(gl: THREE.WebGLRenderer, w: number, h: number) {
+  gl.getSize(bufferSize);
+  if (w > bufferSize.x || h > bufferSize.y) {
+    gl.setSize(Math.max(w, bufferSize.x), Math.max(h, bufferSize.y), false);
+    gl.getSize(bufferSize);
+  }
+}
+
+function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t: number, reduce: boolean) {
   const { canvas, camera } = v;
   const w = canvas.width;
   const h = canvas.height;
   if (!w || !h) {
     return;
   }
-  const size = gl.getSize(new THREE.Vector2());
-  if (size.x !== w || size.y !== h) {
-    gl.setSize(w, h, false);
-  }
+  ensureBuffer(gl, w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
-
-  const reduce = reducedMotion();
   // intro: rise + settle + fade, same curve as the site's reveal
   const ip = reduce || v.introStart === null ? 1 : clamp01((now - v.introStart) / INTRO);
   const e = ease.outQuart(ip);
@@ -178,9 +247,16 @@ function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t
   camera.lookAt(CAMERA_TARGET);
 
   v.work.update(reduce ? REST_POSE : t);
+  // draw into the bottom-left w×h corner of the (possibly larger) buffer…
+  gl.setViewport(0, 0, w, h);
+  gl.setScissor(0, 0, w, h);
+  gl.setScissorTest(true);
   gl.render(v.scene, camera);
+  gl.setScissorTest(false);
+  // …and copy just that corner (2D canvas y runs downwards, WebGL's upwards)
   v.ctx.clearRect(0, 0, w, h);
-  v.ctx.drawImage(gl.domElement, 0, 0, w, h);
+  v.ctx.drawImage(gl.domElement, 0, bufferSize.y - h, w, h, 0, 0, w, h);
+  v.dirty = false;
 }
 
 function tick() {
@@ -189,19 +265,28 @@ function tick() {
   if (!gl) {
     return;
   }
+  // The lost event arrives asynchronously; check the context itself too, or
+  // a frame rendered from the dead context would blank the cards' last image
+  if (contextLost || gl.getContext().isContextLost()) {
+    return; // resumes from the restore handler
+  }
   const now = performance.now() / 1000;
   const dt = Math.min(now - last, 0.05);
   last = now;
   const t = now - t0;
-  let any = false;
+  const reduce = reducedMotion();
+  let animating = false;
   for (const v of views) {
     if (!v.visible) {
       continue;
     }
-    any = true;
-    renderView(gl, v, now, dt, t);
+    // a still picture only needs drawing when something changed
+    if (!reduce || v.dirty) {
+      renderView(gl, v, now, dt, t, reduce);
+    }
+    animating ||= !reduce;
   }
-  if (any) {
+  if (animating) {
     frame = requestAnimationFrame(tick);
   }
 }
@@ -214,26 +299,26 @@ function wake() {
   frame = requestAnimationFrame(tick);
 }
 
-const observer =
-  typeof window !== 'undefined'
-    ? new IntersectionObserver(
-        entries => {
-          for (const entry of entries) {
-            for (const v of views) {
-              if (v.canvas !== entry.target) {
-                continue;
-              }
-              v.visible = entry.isIntersecting;
-              if (v.visible && v.introStart === null) {
-                v.introStart = performance.now() / 1000;
-              }
+const observer = browser
+  ? new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          for (const v of views) {
+            if (v.canvas !== entry.target) {
+              continue;
+            }
+            v.visible = entry.isIntersecting;
+            v.dirty ||= v.visible;
+            if (v.visible && v.introStart === null) {
+              v.introStart = performance.now() / 1000;
             }
           }
-          wake();
-        },
-        { threshold: 0.15 },
-      )
-    : null;
+        }
+        wake();
+      },
+      { threshold: 0.15 },
+    )
+  : null;
 
 /**
  * Starts rendering `sceneId` into `canvas`. `hoverTarget` is the element whose
@@ -263,6 +348,7 @@ export function mountScene(canvas: HTMLCanvasElement, sceneId: SceneId, hoverTar
   fit();
   const resize = new ResizeObserver(() => {
     fit();
+    view.dirty = true;
     wake();
   });
   resize.observe(canvas);
@@ -296,6 +382,8 @@ export function mountScene(canvas: HTMLCanvasElement, sceneId: SceneId, hoverTar
     pointer: { x: 0, y: 0, tx: 0, ty: 0 },
     hover: 0,
     hoverTarget: 0,
+    dirty: true,
+    fit,
     cleanup: () => {
       observer?.unobserve(canvas);
       resize.disconnect();
