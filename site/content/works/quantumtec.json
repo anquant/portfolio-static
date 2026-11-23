@@ -3,6 +3,7 @@
   "title": "QuantumTec",
   "description": "Сайт и личный кабинет пользователя сервиса SMS, Email и Viber-рассылок с множеством инструментов для эффективной коммуникации бизнеса с клиентами.",
   "infotext": "Дизайн был создан в Sketch, разработка велась на Next.js, а управление контентом осуществлялось через Directus.",
+  "scope": ["Логотип", "Дизайн", "Разработка", "Личный кабинет"],
   "link": "https://quantumtec.eu/",
   "illustration": {
     "src": "/images/works/quantumtec.jpg",

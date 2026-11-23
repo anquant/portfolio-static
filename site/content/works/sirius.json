@@ -3,6 +3,7 @@
   "title": "Сириус",
   "description": "Сайт сервиса SMS и Email рассылок для автоматизации бизнес-коммуникаций с клиентами.",
   "infotext": "Дизайн в Figma, разработка на Next.js, управление контентом через Directus.",
+  "scope": ["Дизайн", "Разработка", "SEO"],
   "link": "https://sirius-llc.ru/",
   "illustration": {
     "src": "/images/works/sirius.jpg",

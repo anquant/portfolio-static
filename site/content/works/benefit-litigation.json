@@ -3,6 +3,7 @@
   "title": "Benefit Litigation",
   "description": "Сайт для юридической компании, специализирующейся на решении сложных страховых споров и защите прав клиентов.",
   "infotext": "Дизайн выполнен в Figma, сайт разработан на Next.js, управление контентом через Directus.",
+  "scope": ["Концепция бренда", "Дизайн", "Анимация", "Разработка"],
   "link": "https://benefitlaw.ru/",
   "illustration": {
     "src": "/images/works/benefit-litigation.jpg",
