@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { HERO_SCENES } from "@/components/hero/variants";
 import { SCENE_IDS } from "@/components/scene3d/ids";
 
 /*
@@ -39,7 +40,6 @@ export const videoAssetSchema = z.strictObject({
 
 export const sceneIdSchema = z.enum(SCENE_IDS);
 
-export const HERO_SCENES = ["blob", "ring", "lattice", "burst"] as const;
 export const heroSceneSchema = z.enum(HERO_SCENES);
 
 /* ------------------------------------------------------------------------ */

@@ -17,7 +17,7 @@ import { SITE_URL } from "@/lib/site";
 import dynamic from "next/dynamic";
 
 // three.js is loaded only in the browser and after the page is interactive
-const HeroScene = dynamic(() => import("@/components/HeroScene"), {
+const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
 

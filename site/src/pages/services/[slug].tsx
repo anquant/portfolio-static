@@ -18,7 +18,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import remarkGfm from "remark-gfm";
 import { mdxComponents } from "@/lib/mdx-components";
 
-const HeroScene = dynamic(() => import("@/components/HeroScene"), {
+const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
 
