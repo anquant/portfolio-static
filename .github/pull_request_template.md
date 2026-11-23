@@ -19,3 +19,4 @@ Design decisions outline and high-level implementation details.
 - [ ] `npm run build` passes (validates all content)
 - [ ] Visual changes checked on desktop and mobile; screenshots attached
 - [ ] New content fields are added to `site/src/lib/content/schemas.ts`
+- [ ] Adds entries to `.git-blame-ignore-revs`? Merge with a merge commit, not squash
