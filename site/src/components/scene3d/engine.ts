@@ -3,16 +3,17 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import type { SceneId } from "./ids";
 import { ACCENT } from "./kit";
 import { clamp01, ease } from "./motion";
+import { SCENES } from "./scenes";
 import {
   CAMERA_POSITION,
   CAMERA_TARGET,
   GROUND_Y,
-  SCENES,
   type SceneDef,
-} from "./scenes";
+} from "./stage";
 
 /*
- * Renders every work preview on the page with ONE WebGL context.
+ * Renders every 3D scene on the page (work previews, blog covers) with ONE
+ * WebGL context.
  *
  * Each card owns a plain 2D <canvas>; a single offscreen WebGLRenderer draws
  * each visible scene in turn and the frame is copied into that card's canvas.
