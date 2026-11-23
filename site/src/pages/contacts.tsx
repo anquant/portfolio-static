@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
 import { getContacts } from "@/lib/content";
-import { GetStaticProps } from "next";
+import { type GetStaticProps } from "next";
 import Link from "next/link";
 import {
   RiEyeLine,
@@ -14,7 +14,7 @@ import {
   RiCheckLine,
   RiCloseLine,
 } from "react-icons/ri";
-import { encode, decode, maskPhone } from "@/helpers/obfuscate";
+import { encode, decode, maskPhone } from "@/lib/obfuscate";
 
 interface ContactsProps {
   title: string;

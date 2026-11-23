@@ -1,4 +1,4 @@
-import { ReactNode, MouseEvent } from "react";
+import { type ReactNode, type MouseEvent } from "react";
 import Link from "next/link";
 
 type Variant = "primary" | "secondary" | "ghost";

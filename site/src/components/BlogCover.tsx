@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ImageAsset } from "@/lib/types/assetType";
+import type { ImageAsset } from "@/lib/content/schemas";
 
 type BlogCoverProps = {
   image?: ImageAsset;

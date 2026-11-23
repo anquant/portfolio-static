@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { IoPause, IoPlay } from "react-icons/io5";
-import { ImageAsset, VideoAsset } from "@/lib/types/assetType";
+import type { ImageAsset, VideoAsset } from "@/lib/content/schemas";
 import ProjectMedia from "./ProjectMedia";
 
 type CaseVideoProps = {

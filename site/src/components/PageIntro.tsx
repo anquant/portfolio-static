@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 
 type Crumb = { href: string; label: string };
 

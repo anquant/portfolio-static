@@ -2,7 +2,7 @@ import BlogCover from "./BlogCover";
 import Scene3D from "./Scene3D";
 import Reveal from "./Reveal";
 import Link from "next/link";
-import { ArticleCardData } from "@/lib/types/blogType";
+import type { ArticleCardData } from "@/lib/content/schemas";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 

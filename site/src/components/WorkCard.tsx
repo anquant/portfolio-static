@@ -3,7 +3,7 @@ import Scene3D from "./Scene3D";
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { displayHost } from "@/lib/url";
-import { WorksData } from "@/lib/types/worksType";
+import type { WorksData } from "@/lib/content/schemas";
 import { FiArrowRight } from "react-icons/fi";
 
 type WorkCardProps = {

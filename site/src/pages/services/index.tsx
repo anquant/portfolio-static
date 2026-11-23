@@ -2,8 +2,8 @@ import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getServicesPage, getServicesList } from "@/lib/content";
-import { GetStaticProps } from "next";
-import { ServicesPageData, ServicesListData } from "@/lib/types/servicesType";
+import { type GetStaticProps } from "next";
+import type { ServicesPageData, ServicesListData } from "@/lib/content/schemas";
 import ServiceCard from "@/components/ServiceCard";
 import PageIntro from "@/components/PageIntro";
 

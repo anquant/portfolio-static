@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  CSSProperties,
-  ElementType,
-  ReactNode,
+  type CSSProperties,
+  type ElementType,
+  type ReactNode,
   useEffect,
   useRef,
   useState,

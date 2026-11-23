@@ -6,8 +6,8 @@ import PageIntro from "@/components/PageIntro";
 import Reveal from "@/components/Reveal";
 import SectionHeader from "@/components/SectionHeader";
 import { getAbout } from "@/lib/content";
-import { GetStaticProps } from "next";
-import { AboutData } from "@/lib/types/aboutType";
+import { type GetStaticProps } from "next";
+import type { AboutData } from "@/lib/content/schemas";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 
 interface AboutProps {

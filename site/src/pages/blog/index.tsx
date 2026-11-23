@@ -2,12 +2,12 @@ import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getBlogPage, getBlogCategories, getBlogArticles } from "@/lib/content";
-import { GetStaticProps } from "next";
-import {
+import { type GetStaticProps } from "next";
+import type {
   BlogPageData,
   BlogCategoriesData,
   BlogArticlesData,
-} from "@/lib/types/blogType";
+} from "@/lib/content/schemas";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ArticleCard from "@/components/ArticleCard";

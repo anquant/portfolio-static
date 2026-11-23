@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 
 type ProjectMediaProps = {
   src: string;
