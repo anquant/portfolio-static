@@ -15,6 +15,7 @@ import { getHome, getWorks, getClients } from '@/lib/content';
 import type { HomeData } from '@/lib/content/schemas';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ClientsData } from '@/lib/content/schemas';
+import { pageFromQuery } from '@/lib/pagination';
 import { SITE_URL } from '@/lib/site';
 
 // three.js is loaded only in the browser and after the page is interactive
@@ -44,11 +45,11 @@ export default function Home({ home, works, clients }: HomeProps) {
     if (page === undefined) {
       return setCurrentPage(1);
     }
-    const n = Number(page) || 1;
-    if (n <= 1) {
+    const n = pageFromQuery(page, totalPages);
+    if (n === 1) {
       router.replace('/', undefined, { shallow: true });
     } else {
-      setCurrentPage(Math.min(n, totalPages));
+      setCurrentPage(n);
     }
   }, [page, router, totalPages]);
 

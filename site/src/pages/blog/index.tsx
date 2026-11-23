@@ -9,6 +9,7 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import { getBlogPage, getBlogCategories, getBlogArticles } from '@/lib/content';
 import type { BlogPageData, BlogCategoriesData, BlogArticlesData } from '@/lib/content/schemas';
+import { pageFromQuery } from '@/lib/pagination';
 import { SITE_URL } from '@/lib/site';
 
 interface BlogProps {
@@ -28,15 +29,13 @@ export default function Blog({ blog_page, blog_categories, blog_articles }: Blog
   const searchParams = useSearchParams();
 
   const categorySlug = searchParams.get('category') || '';
-  const page = parseInt(searchParams.get('page') || '1');
+  const pageParam = searchParams.get('page');
 
   const [activeCategory, setActiveCategory] = useState(categorySlug);
-  const [currentPage, setCurrentPage] = useState(page);
 
   useEffect(() => {
     setActiveCategory(categorySlug);
-    setCurrentPage(page);
-  }, [categorySlug, page]);
+  }, [categorySlug]);
 
   const filteredArticles = useMemo(() => {
     if (!activeCategory) {
@@ -47,6 +46,7 @@ export default function Blog({ blog_page, blog_categories, blog_articles }: Blog
   }, [activeCategory, blog_articles]);
 
   const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
+  const currentPage = pageFromQuery(pageParam, totalPages);
   const paginatedArticles = filteredArticles.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handleCategoryClick = (slug: string) => {
