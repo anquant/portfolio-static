@@ -42,21 +42,23 @@ export default function Scene3D({
 
     const near = new IntersectionObserver(
       entries => {
-        const entry = entries.at(-1);
-        if (!entry) {
-          return;
-        }
-        if (!entry.isIntersecting) {
+        if (!entries.at(-1)?.isIntersecting) {
           return;
         }
         near.disconnect();
-        import('./scene3d/engine').then(({ mountScene }) => {
-          if (cancelled) {
-            return;
-          }
-          const hoverTarget = canvas.closest<HTMLElement>('.group') ?? canvas.parentElement!;
-          unmount = mountScene(canvas, scene, hoverTarget);
-        });
+        import('./scene3d/engine')
+          .then(({ mountScene }) => {
+            if (cancelled) {
+              return;
+            }
+            const hoverTarget = canvas.closest<HTMLElement>('.group') ?? canvas.parentElement ?? canvas;
+            unmount = mountScene(canvas, scene, hoverTarget);
+          })
+          .catch((error: unknown) => {
+            // e.g. a stale tab after a deploy can't fetch the old chunk: the
+            // stage stays as the quiet placeholder, the page is unaffected
+            console.warn('3D scene unavailable:', error);
+          });
       },
       { rootMargin: '600px 0px' },
     );
