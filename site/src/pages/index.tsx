@@ -126,7 +126,7 @@ export default function Home({ home, works, clients }: HomeProps) {
         {works.length > paginatedWorks.length && (
           <div className="flex justify-center mt-16 md:mt-24">
             <Button variant="secondary" onClick={handleClickLoadMore}>
-              Показать ещё {Math.min(ITEMS_PER_PAGE, works.length - paginatedWorks.length)}
+              Показать ещё
             </Button>
           </div>
         )}
