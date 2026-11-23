@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 import { readRgbToken } from '@/lib/design-tokens';
+import { supportsWebGL } from '@/lib/webgl';
 
 import type { SceneId } from './ids';
 import { ACCENT } from './kit';
@@ -57,6 +58,12 @@ const reducedMotion = () =>
 function getRenderer() {
   if (renderer || unavailable) {
     return renderer;
+  }
+  // probe first: a failing WebGLRenderer logs errors before it throws
+  if (!supportsWebGL()) {
+    unavailable = true;
+
+    return null;
   }
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });

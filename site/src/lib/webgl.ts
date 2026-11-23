@@ -1,3 +1,9 @@
+/*
+ * WebGL feature detection shared by both 3D systems (hero, scene3d). Probing
+ * a throwaway canvas is silent; letting three.js try and fail would log
+ * console errors on every page for browsers without WebGL.
+ */
+
 /** Checked once per page load; the probe context is released right away */
 let webglSupport: boolean | undefined;
 

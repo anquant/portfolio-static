@@ -3,6 +3,8 @@
 import { Canvas } from '@react-three/fiber';
 import { useEffect, useRef, useState, type JSX } from 'react';
 
+import { supportsWebGL } from '@/lib/webgl';
+
 import { Anchor } from './Anchor';
 import { Driver, useInput } from './motion';
 import { Blob } from './shapes/Blob';
@@ -11,7 +13,6 @@ import { Lattice } from './shapes/Lattice';
 import { Ring } from './shapes/Ring';
 import type { HeroSceneId } from './variants';
 import { WaveField } from './WaveField';
-import { supportsWebGL } from './webgl';
 
 /*
  * Interactive hero background: a cursor-reactive point field plus a
