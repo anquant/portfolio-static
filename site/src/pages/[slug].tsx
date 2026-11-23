@@ -101,7 +101,7 @@ export default function Work({ work, next }: WorkProps) {
 
       <div className="container-page">
         <div className="space-y-12 my-20 md:my-32 max-w-5xl">
-          <Row label="О компании">
+          <Row label="Заказчик">
             <div dangerouslySetInnerHTML={{ __html: company }} />
           </Row>
           <Row label="Задача">
