@@ -1,21 +1,22 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { getBlogArticles, getArticleBySlug } from '@/lib/content';
-import { type GetStaticPaths, type GetStaticProps } from 'next';
-import type { BlogArticlesData } from '@/lib/content/schemas';
-import BlogCover from '@/components/BlogCover';
-import Scene3D from '@/components/Scene3D';
-import PageIntro from '@/components/PageIntro';
-import SectionHeader from '@/components/SectionHeader';
-import Link from 'next/link';
-import ArticleCard from '@/components/ArticleCard';
-import { FiArrowRight } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { type GetStaticPaths, type GetStaticProps } from 'next';
+import Link from 'next/link';
 import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
+import { FiArrowRight } from 'react-icons/fi';
 import remarkGfm from 'remark-gfm';
+
+import ArticleCard from '@/components/ArticleCard';
+import BlogCover from '@/components/BlogCover';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import Scene3D from '@/components/Scene3D';
+import SectionHeader from '@/components/SectionHeader';
+import { getBlogArticles, getArticleBySlug } from '@/lib/content';
+import type { BlogArticlesData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
 
 interface ArticleProps {

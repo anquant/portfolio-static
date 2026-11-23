@@ -1,17 +1,18 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { getWorks, getWorkBySlug } from '@/lib/content';
 import { type GetStaticPaths, type GetStaticProps } from 'next';
-import type { WorksData } from '@/lib/content/schemas';
-import ProjectMedia from '@/components/ProjectMedia';
-import Scene3D from '@/components/Scene3D';
-import CaseVideo from '@/components/CaseVideo';
-import PageIntro from '@/components/PageIntro';
-import Reveal from '@/components/Reveal';
-import { displayHost } from '@/lib/url';
 import Link from 'next/link';
 import { FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
+
+import CaseVideo from '@/components/CaseVideo';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import ProjectMedia from '@/components/ProjectMedia';
+import Reveal from '@/components/Reveal';
+import Scene3D from '@/components/Scene3D';
+import { getWorks, getWorkBySlug } from '@/lib/content';
+import type { WorksData } from '@/lib/content/schemas';
+import { displayHost } from '@/lib/url';
 
 interface WorkProps {
   work: WorksData;
@@ -188,7 +189,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   const work = getWorkBySlug(slug);
-  if (!work) return { notFound: true };
+  if (!work) {
+    return { notFound: true };
+  }
 
   const works = getWorks();
   const i = works.findIndex(w => w.slug === slug);

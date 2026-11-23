@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+
 import { describe, expect, it } from 'vitest';
+
 import {
   ContentError,
   getAbout,
@@ -26,9 +28,16 @@ const PUBLIC_DIR = path.join(process.cwd(), 'public');
 
 /** Every "/…" string found anywhere inside a value */
 function publicPaths(value: unknown): string[] {
-  if (typeof value === 'string') return /^\/[\w./-]+\.\w+$/.test(value) ? [value] : [];
-  if (Array.isArray(value)) return value.flatMap(publicPaths);
-  if (value && typeof value === 'object') return Object.values(value).flatMap(publicPaths);
+  if (typeof value === 'string') {
+    return /^\/[\w./-]+\.\w+$/.test(value) ? [value] : [];
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap(publicPaths);
+  }
+  if (value && typeof value === 'object') {
+    return Object.values(value).flatMap(publicPaths);
+  }
+
   return [];
 }
 

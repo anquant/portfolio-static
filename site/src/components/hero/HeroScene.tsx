@@ -1,16 +1,17 @@
 'use client';
 
-import { useEffect, useRef, useState, type JSX } from 'react';
 import { Canvas } from '@react-three/fiber';
-import type { HeroSceneId } from './variants';
+import { useEffect, useRef, useState, type JSX } from 'react';
+
 import { Anchor } from './Anchor';
 import { Driver, useInput } from './motion';
-import { WaveField } from './WaveField';
-import { supportsWebGL } from './webgl';
 import { Blob } from './shapes/Blob';
 import { Burst } from './shapes/Burst';
 import { Lattice } from './shapes/Lattice';
 import { Ring } from './shapes/Ring';
+import type { HeroSceneId } from './variants';
+import { WaveField } from './WaveField';
+import { supportsWebGL } from './webgl';
 
 /*
  * Interactive hero background: a cursor-reactive point field plus a
@@ -48,13 +49,18 @@ export default function HeroScene({ variant = 'blob' }: { variant?: HeroSceneId 
   // Stop rendering when the hero is scrolled out of view
   useEffect(() => {
     const el = wrapper.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
     io.observe(el);
+
     return () => io.disconnect();
   }, []);
 
-  if (!ok) return null;
+  if (!ok) {
+    return null;
+  }
 
   return (
     <div

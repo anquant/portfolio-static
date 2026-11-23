@@ -25,6 +25,25 @@ const eslintConfig = [
     },
   },
   {
+    // Shared with the AppointmentsApp frontend: same import layout and
+    // statement shape across projects
+    rules: {
+      curly: ['error', 'all'],
+      'padding-line-between-statements': ['error', { blankLine: 'always', prev: '*', next: 'return' }],
+      'import/newline-after-import': ['error', { count: 1 }],
+      'import/order': [
+        'error',
+        {
+          alphabetize: { order: 'asc', caseInsensitive: true },
+          groups: ['builtin', 'external', ['internal', 'parent'], ['sibling', 'index']],
+          'newlines-between': 'always',
+          pathGroups: [{ pattern: '@/**', group: 'internal', position: 'before' }],
+          pathGroupsExcludedImportTypes: [],
+        },
+      ],
+    },
+  },
+  {
     ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
 ];

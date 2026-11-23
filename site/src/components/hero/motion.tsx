@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useEffect } from 'react';
 import * as THREE from 'three';
 
 /* ------------------------------------------------------------------------ */
@@ -29,6 +29,7 @@ export const ease = {
   outBack: (t: number, s = 1.4) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2),
   inOutBack: (t: number, s = 1.2) => {
     const c = s * 1.525;
+
     return t < 0.5
       ? (Math.pow(2 * t, 2) * ((c + 1) * 2 * t - c)) / 2
       : (Math.pow(2 * t - 2, 2) * ((c + 1) * (t * 2 - 2) + c) + 2) / 2;
@@ -66,6 +67,7 @@ export function Driver({ speed }: { speed: number }) {
     const target = THREE.MathUtils.clamp(v / 4, 0, 1) * (input.active ? 1 : 0);
     motion.energy = d(motion.energy, target, target > motion.energy ? 5 : 1.2, dt);
   });
+
   return null;
 }
 
@@ -73,7 +75,9 @@ export function useInput(target: React.RefObject<HTMLElement | null>) {
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       const el = target.current;
-      if (!el) return;
+      if (!el) {
+        return;
+      }
       const r = el.getBoundingClientRect();
       input.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       input.y = -((e.clientY - r.top) / r.height) * 2 + 1;
@@ -82,7 +86,9 @@ export function useInput(target: React.RefObject<HTMLElement | null>) {
     const onLeave = () => (input.active = false);
     const onScroll = () => {
       const el = target.current;
-      if (!el) return;
+      if (!el) {
+        return;
+      }
       const r = el.getBoundingClientRect();
       input.scroll = THREE.MathUtils.clamp(-r.top / Math.max(r.height, 1), 0, 1);
     };
@@ -90,6 +96,7 @@ export function useInput(target: React.RefObject<HTMLElement | null>) {
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('pointerleave', onLeave);
+
     return () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('scroll', onScroll);

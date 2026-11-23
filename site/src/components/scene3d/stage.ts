@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { V, mesh } from './kit';
 
 /*
@@ -26,5 +27,6 @@ export const GROUND_Y = -0.55;
 export function column(w: number, h: number, d: number, m: THREE.Material) {
   const geo = new THREE.BoxGeometry(w, h, d);
   geo.translate(0, h / 2, 0);
+
   return mesh(geo, m);
 }

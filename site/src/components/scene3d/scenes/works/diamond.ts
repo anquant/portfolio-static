@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { V, diamondGeometry, mat, mesh, rockGeometry } from '../../kit';
 import { FLOAT, LOOP, TAU, ease, phase, tri, wave } from '../../motion';
 import { type SceneDef, GROUND_Y } from '../../stage';
@@ -62,6 +63,7 @@ export function diamond(): SceneDef {
     m.position.set(...d.p);
     m.rotation.set(...d.rot);
     root.add(m);
+
     return {
       m,
       home: m.position.clone(),

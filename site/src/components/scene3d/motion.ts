@@ -41,7 +41,10 @@ export function keyframes(p: number, keys: Key[]) {
   for (let i = 1; i < keys.length; i++) {
     const [p0, v0] = keys[i - 1];
     const [p1, v1, e = ease.inOut] = keys[i];
-    if (p <= p1) return v0 + (v1 - v0) * e(clamp01((p - p0) / (p1 - p0)));
+    if (p <= p1) {
+      return v0 + (v1 - v0) * e(clamp01((p - p0) / (p1 - p0)));
+    }
   }
+
   return keys[keys.length - 1][1];
 }

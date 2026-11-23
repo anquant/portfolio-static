@@ -1,12 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/router';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, useState } from 'react';
+import { FiArrowRight } from 'react-icons/fi';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
 import { IoClose } from 'react-icons/io5';
-import { FiArrowRight } from 'react-icons/fi';
+
 import Button from './Button';
 
 export const navigation = [
@@ -23,7 +24,10 @@ type HeaderProps = {
 };
 
 function isActive(path: string, slug: string) {
-  if (slug === '/') return path === '/' || path === '/[slug]';
+  if (slug === '/') {
+    return path === '/' || path === '/[slug]';
+  }
+
   return path === slug || path.startsWith(`${slug}/`);
 }
 
@@ -39,6 +43,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
     const mq = window.matchMedia('(min-width: 1024px)');
     const onChange = () => mq.matches && setOpen(false);
     mq.addEventListener('change', onChange);
+
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
@@ -72,6 +77,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
         >
           {navigation.map(item => {
             const active = isActive(path, item.slug);
+
             return (
               <Link
                 key={item.slug}
@@ -143,6 +149,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
                 <nav aria-label="Основное меню" className="mt-16 flex flex-col">
                   {[...navigation, { title: 'Контакты', slug: '/contacts' }].map((item, i) => {
                     const active = isActive(path, item.slug);
+
                     return (
                       <Link
                         key={item.slug}

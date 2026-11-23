@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+
 import Reveal from './Reveal';
 
 type SectionHeaderProps = {

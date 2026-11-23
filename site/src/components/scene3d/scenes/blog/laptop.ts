@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { V, accentTint, mat, mesh } from '../../kit';
 import { FLOAT, ease, keyframes, phase, wave } from '../../motion';
 import { type SceneDef, CAMERA_POSITION, GROUND_Y } from '../../stage';
@@ -49,11 +50,13 @@ export function laptop(): SceneDef {
     const m = mesh(segGeo, arrowMat);
     m.position.copy(start);
     m.quaternion.setFromUnitVectors(up, dir.normalize());
+
     return { m, start, dir, length };
   });
   const joints = path.slice(1, -1).map(p => {
     const j = mesh(new THREE.SphereGeometry(R, 24, 12), arrowMat);
     j.position.copy(p);
+
     return j;
   });
   const head = mesh(new THREE.ConeGeometry(0.19, 0.36, 32), arrowMat);
@@ -87,7 +90,9 @@ export function laptop(): SceneDef {
         const len = Math.min(sg.length, Math.max(0, left));
         sg.m.scale.y = Math.max(len, 1e-4);
         sg.m.visible = len > 0;
-        if (i > 0) joints[i - 1].visible = len > 0;
+        if (i > 0) {
+          joints[i - 1].visible = len > 0;
+        }
         if (len > 0) {
           tip = sg.start.clone().addScaledVector(sg.dir, len);
           tipDir = sg.dir;

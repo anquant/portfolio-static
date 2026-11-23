@@ -1,8 +1,8 @@
 'use client';
 
-import { type ReactNode } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { type ReactNode } from 'react';
 
 type SeoData = {
   meta_title: string;

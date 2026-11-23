@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { IoMdCopy, IoMdCheckmark } from 'react-icons/io';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { nord } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { IoMdCopy, IoMdCheckmark } from 'react-icons/io';
 
 const codeStyle = {
   borderRadius: '1rem',

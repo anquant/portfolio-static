@@ -2,7 +2,9 @@
 let webglSupport: boolean | undefined;
 
 export function supportsWebGL() {
-  if (webglSupport !== undefined) return webglSupport;
+  if (webglSupport !== undefined) {
+    return webglSupport;
+  }
   try {
     const canvas = document.createElement('canvas');
     const gl = (canvas.getContext('webgl2') || canvas.getContext('webgl')) as WebGLRenderingContext | null;
@@ -11,5 +13,6 @@ export function supportsWebGL() {
   } catch {
     webglSupport = false;
   }
+
   return webglSupport;
 }

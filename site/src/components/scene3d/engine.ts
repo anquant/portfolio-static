@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
 import { readRgbToken } from '@/lib/design-tokens';
+
 import type { SceneId } from './ids';
 import { ACCENT } from './kit';
 import { clamp01, ease } from './motion';
@@ -53,11 +55,14 @@ const reducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function getRenderer() {
-  if (renderer || unavailable) return renderer;
+  if (renderer || unavailable) {
+    return renderer;
+  }
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   } catch {
     unavailable = true;
+
     return null;
   }
   renderer.setPixelRatio(1); // sizes below are already in device pixels
@@ -70,11 +75,14 @@ function getRenderer() {
   // Lit materials are colour-managed: the CSS (sRGB) accent must be converted,
   // otherwise three.js would read it as linear and wash it out
   const accent = readRgbToken('--accent');
-  if (accent) ACCENT.setRGB(...accent, THREE.SRGBColorSpace);
+  if (accent) {
+    ACCENT.setRGB(...accent, THREE.SRGBColorSpace);
+  }
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   pmrem.dispose();
+
   return renderer;
 }
 
@@ -108,6 +116,7 @@ function buildStage(work: SceneDef) {
   const stage = new THREE.Group(); // intro transform wrapper
   stage.add(work.root);
   scene.add(stage);
+
   return { scene, camera, stage };
 }
 
@@ -118,7 +127,9 @@ function dispose(scene: THREE.Scene) {
       const m = o.material as THREE.Material | THREE.Material[];
       (Array.isArray(m) ? m : [m]).forEach(x => x.dispose());
     }
-    if (o instanceof THREE.DirectionalLight) o.shadow.map?.dispose();
+    if (o instanceof THREE.DirectionalLight) {
+      o.shadow.map?.dispose();
+    }
   });
 }
 
@@ -126,9 +137,13 @@ function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t
   const { canvas, camera } = v;
   const w = canvas.width;
   const h = canvas.height;
-  if (!w || !h) return;
+  if (!w || !h) {
+    return;
+  }
   const size = gl.getSize(new THREE.Vector2());
-  if (size.x !== w || size.y !== h) gl.setSize(w, h, false);
+  if (size.x !== w || size.y !== h) {
+    gl.setSize(w, h, false);
+  }
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 
@@ -164,22 +179,30 @@ function renderView(gl: THREE.WebGLRenderer, v: View, now: number, dt: number, t
 function tick() {
   frame = 0;
   const gl = renderer;
-  if (!gl) return;
+  if (!gl) {
+    return;
+  }
   const now = performance.now() / 1000;
   const dt = Math.min(now - last, 0.05);
   last = now;
   const t = now - t0;
   let any = false;
   for (const v of views) {
-    if (!v.visible) continue;
+    if (!v.visible) {
+      continue;
+    }
     any = true;
     renderView(gl, v, now, dt, t);
   }
-  if (any) frame = requestAnimationFrame(tick);
+  if (any) {
+    frame = requestAnimationFrame(tick);
+  }
 }
 
 function wake() {
-  if (frame || !renderer) return;
+  if (frame || !renderer) {
+    return;
+  }
   last = performance.now() / 1000;
   frame = requestAnimationFrame(tick);
 }
@@ -190,9 +213,13 @@ const observer =
         entries => {
           for (const entry of entries) {
             for (const v of views) {
-              if (v.canvas !== entry.target) continue;
+              if (v.canvas !== entry.target) {
+                continue;
+              }
               v.visible = entry.isIntersecting;
-              if (v.visible && v.introStart === null) v.introStart = performance.now() / 1000;
+              if (v.visible && v.introStart === null) {
+                v.introStart = performance.now() / 1000;
+              }
             }
           }
           wake();
@@ -210,7 +237,9 @@ export function mountScene(canvas: HTMLCanvasElement, sceneId: SceneId, hoverTar
   const gl = getRenderer();
   const ctx = canvas.getContext('2d');
   const build = SCENES[sceneId];
-  if (!gl || !ctx || !build) return null;
+  if (!gl || !ctx || !build) {
+    return null;
+  }
 
   const work = build();
   const { scene, camera, stage } = buildStage(work);

@@ -1,16 +1,17 @@
 import type { SceneId } from '../ids';
 import type { SceneDef } from '../stage';
+
+import { blocks } from './blog/blocks';
+import { cubes } from './blog/cubes';
+import { laptop } from './blog/laptop';
+import { servers } from './blog/servers';
 import { containers } from './works/containers';
 import { diamond } from './works/diamond';
-import { paperPlane } from './works/paperPlane';
-import { gavel } from './works/gavel';
 import { fracturedCubeScene } from './works/fracturedCube';
-import { temple } from './works/temple';
+import { gavel } from './works/gavel';
+import { paperPlane } from './works/paperPlane';
 import { sputnik } from './works/sputnik';
-import { laptop } from './blog/laptop';
-import { blocks } from './blog/blocks';
-import { servers } from './blog/servers';
-import { cubes } from './blog/cubes';
+import { temple } from './works/temple';
 
 /*
  * One minimal 3D abstraction per project and per blog post, all on the same

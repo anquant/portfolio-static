@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import type { ServicesListData } from '@/lib/content/schemas';
 import { FiArrowRight } from 'react-icons/fi';
+
+import type { ServicesListData } from '@/lib/content/schemas';
+
 import Reveal from './Reveal';
 
 type ServiceCardProps = {

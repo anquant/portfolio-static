@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import type * as THREE from 'three';
-import { type Theme } from './theme';
+
 import { motion } from './motion';
+import { type Theme } from './theme';
 
 export function pointUniforms(gl: THREE.WebGLRenderer, theme: Theme) {
   return {

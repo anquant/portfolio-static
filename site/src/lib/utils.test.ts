@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { decode, encode, maskPhone } from './obfuscate';
+
 import { parseRgbToken } from './design-tokens';
+import { decode, encode, maskPhone } from './obfuscate';
 import { displayHost } from './url';
 
 describe('displayHost', () => {

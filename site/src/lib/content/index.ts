@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+
 import matter from 'gray-matter';
 import { z } from 'zod';
 
@@ -49,11 +50,13 @@ export function parseContent<S extends z.ZodType>(schema: S, data: unknown, file
   if (!result.success) {
     throw new ContentError(file, z.prettifyError(result.error));
   }
+
   return result.data as z.output<S>;
 }
 
 function readJson<S extends z.ZodType>(schema: S, file: string) {
   const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
+
   return parseContent(schema, JSON.parse(raw), file);
 }
 
@@ -110,6 +113,7 @@ export function getServicesList(): ServicesListData[] {
   return slugsInDir('services')
     .map(slug => {
       const { sections, ...service } = readJson(serviceFileSchema, `services/${slug}.json`);
+
       return { ...service, content: sections, slug };
     })
     .sort((a, b) => a.sort - b.sort);
@@ -165,6 +169,9 @@ export function getBlogArticles(): BlogArticlesData[] {
 }
 
 export function getArticleBySlug(slug: string): { article: BlogArticlesData; body: string } | undefined {
-  if (!slugsInDir('blog').includes(slug)) return undefined;
+  if (!slugsInDir('blog').includes(slug)) {
+    return undefined;
+  }
+
   return readArticle(slug);
 }

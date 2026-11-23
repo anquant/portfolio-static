@@ -1,21 +1,22 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
 import { type GetStaticPaths, type GetStaticProps } from 'next';
-import type { ServicesListData } from '@/lib/content/schemas';
-import type { WorksData } from '@/lib/content/schemas';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import WorkCard from '@/components/WorkCard';
-import Reveal from '@/components/Reveal';
-import SectionHeader from '@/components/SectionHeader';
-import PageIntro from '@/components/PageIntro';
-import { FiArrowRight } from 'react-icons/fi';
-import Button from '@/components/Button';
+import Link from 'next/link';
 import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
+import { FiArrowRight } from 'react-icons/fi';
 import remarkGfm from 'remark-gfm';
+
+import Button from '@/components/Button';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import PageIntro from '@/components/PageIntro';
+import Reveal from '@/components/Reveal';
+import SectionHeader from '@/components/SectionHeader';
+import WorkCard from '@/components/WorkCard';
+import { getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
+import type { WorksData } from '@/lib/content/schemas';
+import type { ServicesListData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
 
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
@@ -147,7 +148,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   const service = getServiceBySlug(slug);
-  if (!service) return { notFound: true };
+  if (!service) {
+    return { notFound: true };
+  }
 
   const sections: SerializedSection[] = await Promise.all(
     (service.content ?? []).map(async section => ({

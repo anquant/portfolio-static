@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { mat, mesh, paperPlaneGeometry } from '../../kit';
 import { LOOP, TAU } from '../../motion';
 import { type SceneDef, GROUND_Y } from '../../stage';

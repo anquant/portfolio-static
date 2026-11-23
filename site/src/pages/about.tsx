@@ -1,14 +1,15 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import { type GetStaticProps } from 'next';
+import { FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
+
 import Button from '@/components/Button';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
 import { getAbout } from '@/lib/content';
-import { type GetStaticProps } from 'next';
 import type { AboutData } from '@/lib/content/schemas';
-import { FiArrowRight, FiArrowUpRight } from 'react-icons/fi';
 
 interface AboutProps {
   about: AboutData;

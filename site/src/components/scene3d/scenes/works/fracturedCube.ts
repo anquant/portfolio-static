@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { V, accentTint, fracturedCube, mat, mesh } from '../../kit';
 import { ease, phase, tri, wave } from '../../motion';
 import { type SceneDef, CAMERA_POSITION, GROUND_Y, SCREEN_RIGHT, SCREEN_UP } from '../../stage';
@@ -14,6 +15,7 @@ export function fracturedCubeScene(): SceneDef {
     const m = mesh(geometry, i % 5 === 0 ? mid : light);
     m.position.copy(center);
     cube.add(m);
+
     return { m, home: center.clone(), dir: center.clone().normalize() };
   });
   cube.rotation.y = 0.1;

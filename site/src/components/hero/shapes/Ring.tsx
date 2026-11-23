@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../theme';
-import { MAX_DELTA, motion, ease, TAU } from '../motion';
+
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
 import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { MAX_DELTA, motion, ease, TAU } from '../motion';
+import { useTheme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Design: a circle drawn by a glowing pen, then precessing like a gyroscope */
@@ -37,6 +38,7 @@ export function Ring() {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('aAngle', new THREE.Float32BufferAttribute(angle, 1));
+
     return g;
   }, []);
 
@@ -95,7 +97,9 @@ export function Ring() {
   useFrame((_, rawDelta) => {
     const p = pts.current;
     const g = group.current;
-    if (!p || !g) return;
+    if (!p || !g) {
+      return;
+    }
     const dt = Math.min(rawDelta, MAX_DELTA);
     const u = (p.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);

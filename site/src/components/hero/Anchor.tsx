@@ -1,7 +1,8 @@
-import { useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
+import * as THREE from 'three';
+
 import { MAX_DELTA, motion, ease } from './motion';
 
 /* ------------------------------------------------------------------------ */
@@ -36,7 +37,9 @@ export function Anchor({
 
   useFrame((_, rawDelta) => {
     const g = group.current;
-    if (!g) return;
+    if (!g) {
+      return;
+    }
     const dt = Math.min(rawDelta, MAX_DELTA);
     const tx = baseX + motion.x * 0.2;
     const ty = baseY + motion.y * 0.14 + Math.sin(motion.time * 0.6) * 0.05 + motion.scroll * lift;

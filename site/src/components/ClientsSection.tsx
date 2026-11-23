@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
+
 import type { ClientsData } from '@/lib/content/schemas';
+
 import Reveal from './Reveal';
 import SectionHeader from './SectionHeader';
 
@@ -14,7 +16,9 @@ interface ClientsSectionProps {
  * all clients are visible at once and nothing moves on its own.
  */
 export default function ClientsSection({ clients, title = 'Клиенты' }: ClientsSectionProps) {
-  if (!clients || clients.length === 0) return null;
+  if (!clients || clients.length === 0) {
+    return null;
+  }
 
   return (
     <section className="section-gap" aria-labelledby="clients-title">
@@ -32,6 +36,7 @@ export default function ClientsSection({ clients, title = 'Клиенты' }: Cl
                 className="logo-on-dark w-full h-auto group-hover:opacity-100"
               />
             );
+
             return (
               <li key={client.id} className="group bg-bg transition-colors hover:bg-surface">
                 {client.link ? (

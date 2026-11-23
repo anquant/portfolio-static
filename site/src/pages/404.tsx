@@ -1,7 +1,7 @@
-import Layout from '@/components/Layout';
-import Header, { navigation } from '@/components/Header';
 import Button from '@/components/Button';
 import { Footer } from '@/components/Footer';
+import Header, { navigation } from '@/components/Header';
+import Layout from '@/components/Layout';
 
 export default function Error404() {
   const seo = {

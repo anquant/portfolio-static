@@ -39,6 +39,7 @@ export function mesh(geo: THREE.BufferGeometry, m: THREE.Material) {
   const o = new THREE.Mesh(geo, m);
   o.castShadow = true;
   o.receiveShadow = true;
+
   return o;
 }
 
@@ -53,10 +54,13 @@ type Tri = [THREE.Vector3, THREE.Vector3, THREE.Vector3];
 /** Non-indexed triangles → flat facets */
 export function trianglesGeometry(tris: Tri[]) {
   const pos: number[] = [];
-  for (const [a, b, c] of tris) pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+  for (const [a, b, c] of tris) {
+    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+  }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.computeVertexNormals();
+
   return g;
 }
 
@@ -66,6 +70,7 @@ export function facetGeometry(tris: Tri[], center = new THREE.Vector3()) {
   const ac = new THREE.Vector3();
   const n = new THREE.Vector3();
   const c = new THREE.Vector3();
+
   return trianglesGeometry(
     tris.map(([a, b, d]) => {
       ab.subVectors(b, a);
@@ -76,6 +81,7 @@ export function facetGeometry(tris: Tri[], center = new THREE.Vector3()) {
         .add(d)
         .multiplyScalar(1 / 3)
         .sub(center);
+
       return n.dot(c) < 0 ? [a, d, b] : [a, b, d];
     }),
   );
@@ -101,6 +107,7 @@ export function rockGeometry(r: number, seed: number, sx = 1, sy = 1, sz = 1) {
     p.setXYZ(i, v.x * k * sx, v.y * k * sy, v.z * k * sz);
   }
   g.computeVertexNormals();
+
   return g;
 }
 
@@ -109,6 +116,7 @@ export function diamondGeometry() {
   const ring = (n: number, r: number, y: number, off = 0) =>
     Array.from({ length: n }, (_, i) => {
       const a = ((i + off) / n) * Math.PI * 2;
+
       return V(Math.cos(a) * r, y, Math.sin(a) * r);
     });
   const table = ring(8, 0.56, 0.42, 0.5);
@@ -116,7 +124,9 @@ export function diamondGeometry() {
   const top = V(0, 0.42, 0);
   const apex = V(0, -1.05, 0);
   const tris: Tri[] = [];
-  for (let i = 0; i < 8; i++) tris.push([top, table[i], table[(i + 1) % 8]]);
+  for (let i = 0; i < 8; i++) {
+    tris.push([top, table[i], table[(i + 1) % 8]]);
+  }
   for (let i = 0; i < 8; i++) {
     const t0 = table[i];
     const t1 = table[(i + 1) % 8];
@@ -125,7 +135,10 @@ export function diamondGeometry() {
     const g2 = girdle[(2 * i + 2) % 16];
     tris.push([t0, g0, g1], [t0, g1, t1], [t1, g1, g2]);
   }
-  for (let i = 0; i < 16; i++) tris.push([apex, girdle[i], girdle[(i + 1) % 16]]);
+  for (let i = 0; i < 16; i++) {
+    tris.push([apex, girdle[i], girdle[(i + 1) % 16]]);
+  }
+
   return facetGeometry(tris);
 }
 
@@ -158,6 +171,7 @@ export function paperPlaneGeometry() {
   const bL = V(-R, -DEPTH, BACK);
   const bR = V(R, -DEPTH, BACK);
   tris.push([kL, bL, bR], [kL, bR, kR]);
+
   return trianglesGeometry(tris);
 }
 
@@ -176,28 +190,40 @@ function clipConvex(faces: Poly[], n: THREE.Vector3, d: number) {
       const b = f[(i + 1) % f.length];
       const da = n.dot(a) - d;
       const db = n.dot(b) - d;
-      if (da <= 0) poly.push(a);
+      if (da <= 0) {
+        poly.push(a);
+      }
       if ((da < 0 && db > 0) || (da > 0 && db < 0)) {
         const p = a.clone().lerp(b, da / (da - db));
         poly.push(p);
         cut.push(p);
       }
     }
-    if (poly.length >= 3) out.push(poly);
+    if (poly.length >= 3) {
+      out.push(poly);
+    }
   }
   if (cut.length >= 3) {
     const c = cut.reduce((s, p) => s.add(p), new THREE.Vector3()).multiplyScalar(1 / cut.length);
     const u = new THREE.Vector3().subVectors(cut[0], c).normalize();
     const w = new THREE.Vector3().crossVectors(n, u);
     const cap: Poly = [];
-    for (const p of cut) if (!cap.some(q => q.distanceToSquared(p) < 1e-10)) cap.push(p);
+    for (const p of cut) {
+      if (!cap.some(q => q.distanceToSquared(p) < 1e-10)) {
+        cap.push(p);
+      }
+    }
     const angle = (p: THREE.Vector3) => {
       const dp = p.clone().sub(c);
+
       return Math.atan2(dp.dot(w), dp.dot(u));
     };
     cap.sort((p, q) => angle(p) - angle(q));
-    if (cap.length >= 3) out.push(cap);
+    if (cap.length >= 3) {
+      out.push(cap);
+    }
   }
+
   return out;
 }
 
@@ -221,19 +247,26 @@ export function fracturedCube(half: number, count: number, gap: number, seed: nu
   sites.forEach((si, i) => {
     let faces = box.map(f => f.map(p => p.clone()));
     sites.forEach((sj, j) => {
-      if (i === j || !faces.length) return;
+      if (i === j || !faces.length) {
+        return;
+      }
       const n = new THREE.Vector3().subVectors(sj, si).normalize();
       const d = n.dot(si.clone().add(sj).multiplyScalar(0.5)) - gap / 2;
       faces = clipConvex(faces, n, d);
     });
-    if (faces.length < 4) return;
+    if (faces.length < 4) {
+      return;
+    }
     const pts = faces.flat();
     const center = pts.reduce((a, p) => a.add(p), new THREE.Vector3()).multiplyScalar(1 / pts.length);
     const tris: Tri[] = [];
-    for (const f of faces)
-      for (let k = 1; k < f.length - 1; k++)
+    for (const f of faces) {
+      for (let k = 1; k < f.length - 1; k++) {
         tris.push([f[0].clone().sub(center), f[k].clone().sub(center), f[k + 1].clone().sub(center)]);
+      }
+    }
     cells.push({ geometry: facetGeometry(tris), center });
   });
+
   return cells;
 }

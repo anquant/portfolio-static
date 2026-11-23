@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { accentTint, mat, mesh } from '../../kit';
 import { ease, keyframes, phase } from '../../motion';
 import { type SceneDef, GROUND_Y, column } from '../../stage';
@@ -27,6 +28,7 @@ function cabinet(body: THREE.Material, front: THREE.Material) {
     g.add(drawer);
     drawers.push(drawer);
   }
+
   return { g, drawers, D };
 }
 

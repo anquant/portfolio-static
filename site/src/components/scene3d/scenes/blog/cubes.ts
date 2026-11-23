@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { V, mat, mesh } from '../../kit';
 import { FLOAT, clamp01, ease, keyframes, phase, wave } from '../../motion';
 import { type SceneDef, GROUND_Y } from '../../stage';
@@ -19,10 +20,12 @@ export function cubes(): SceneDef {
     away: THREE.Vector3;
     delay: number;
   }[] = [];
-  for (let x = -1; x <= 1; x++)
-    for (let y = -1; y <= 1; y++)
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
-        if (rnd() < 0.22) continue; // gaps make it read as an assembly
+        if (rnd() < 0.22) {
+          continue;
+        } // gaps make it read as an assembly
         const home = V(x * STEP, y * STEP, z * STEP);
         const loose = rnd() < 0.4 && (x !== 0 || y !== 0 || z !== 0);
         const m = mesh(new THREE.BoxGeometry(S, S, S), rnd() < 0.3 ? mid : light);
@@ -35,6 +38,8 @@ export function cubes(): SceneDef {
         });
         cluster.add(m);
       }
+    }
+  }
   // the accent block is the last piece to fly in
   const key = mesh(new THREE.BoxGeometry(S, S, S), mat.accent());
   const keyHome = V(STEP, STEP, STEP);

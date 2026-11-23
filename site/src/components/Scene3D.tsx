@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
 import type { SceneId } from './scene3d/ids';
 
 type Scene3DProps = {
@@ -33,16 +34,22 @@ export default function Scene3D({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
     let cancelled = false;
     let unmount: (() => void) | null = null;
 
     const near = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting) {
+          return;
+        }
         near.disconnect();
         import('./scene3d/engine').then(({ mountScene }) => {
-          if (cancelled) return;
+          if (cancelled) {
+            return;
+          }
           const hoverTarget = canvas.closest<HTMLElement>('.group') ?? canvas.parentElement!;
           unmount = mountScene(canvas, scene, hoverTarget);
         });

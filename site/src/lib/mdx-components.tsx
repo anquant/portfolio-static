@@ -1,5 +1,6 @@
-import type { ReactElement, ComponentProps } from 'react';
 import type { MDXProvider } from '@mdx-js/react';
+import type { ReactElement, ComponentProps } from 'react';
+
 import CodeBlock from '@/components/CodeBlock';
 
 type CodeChildProps = {

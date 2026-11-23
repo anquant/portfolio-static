@@ -21,7 +21,9 @@ export default function Reveal({ children, as: Tag = 'div', delay = 0, className
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -32,6 +34,7 @@ export default function Reveal({ children, as: Tag = 'div', delay = 0, className
       { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
     );
     io.observe(el);
+
     return () => io.disconnect();
   }, []);
 

@@ -1,20 +1,21 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import { type GetStaticProps } from 'next';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { FiArrowDown } from 'react-icons/fi';
+
 import Button from '@/components/Button';
 import ClientsSection from '@/components/ClientsSection';
-import WorkCard from '@/components/WorkCard';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import SectionHeader from '@/components/SectionHeader';
-import { FiArrowDown } from 'react-icons/fi';
+import WorkCard from '@/components/WorkCard';
 import { getHome, getWorks, getClients } from '@/lib/content';
-import { type GetStaticProps } from 'next';
 import type { HomeData } from '@/lib/content/schemas';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ClientsData } from '@/lib/content/schemas';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { SITE_URL } from '@/lib/site';
-import dynamic from 'next/dynamic';
 
 // three.js is loaded only in the browser and after the page is interactive
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
@@ -40,7 +41,9 @@ export default function Home({ home, works, clients }: HomeProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    if (page === undefined) return setCurrentPage(1);
+    if (page === undefined) {
+      return setCurrentPage(1);
+    }
     const n = Number(page) || 1;
     if (n <= 1) {
       router.replace('/', undefined, { shallow: true });
@@ -51,7 +54,9 @@ export default function Home({ home, works, clients }: HomeProps) {
 
   const handleClickLoadMore = () => {
     const nextPage = currentPage + 1;
-    if (nextPage > totalPages) return;
+    if (nextPage > totalPages) {
+      return;
+    }
     setCurrentPage(nextPage);
     router.push({ pathname: '/', query: { page: nextPage } }, undefined, {
       shallow: true,

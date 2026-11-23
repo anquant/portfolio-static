@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
+
 import { readRgbToken, type Rgb } from '@/lib/design-tokens';
 
 /**

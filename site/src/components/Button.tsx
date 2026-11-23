@@ -1,5 +1,5 @@
-import { type ReactNode, type MouseEvent } from 'react';
 import Link from 'next/link';
+import { type ReactNode, type MouseEvent } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
 type Size = 'normal' | 'small';

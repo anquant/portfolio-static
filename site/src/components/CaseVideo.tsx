@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { IoPause, IoPlay } from 'react-icons/io5';
+
 import type { ImageAsset, VideoAsset } from '@/lib/content/schemas';
+
 import ProjectMedia from './ProjectMedia';
 
 type CaseVideoProps = {
@@ -24,7 +26,9 @@ export default function CaseVideo({ video, poster, title, color }: CaseVideoProp
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -38,12 +42,15 @@ export default function CaseVideo({ video, poster, title, color }: CaseVideoProp
       { threshold: 0.35 },
     );
     io.observe(el);
+
     return () => io.disconnect();
   }, [userWants]);
 
   const toggle = () => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     if (el.paused) {
       setUserWants(true);
       el.play().catch(() => {});

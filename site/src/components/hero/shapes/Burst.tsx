@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../theme';
-import { MAX_DELTA, motion, ease } from '../motion';
+
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
 import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { MAX_DELTA, motion, ease } from '../motion';
+import { useTheme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* SEO: rays fired from a pulsing core in beats — reach, signal, growth     */
@@ -43,6 +44,7 @@ export function Burst() {
     g.setAttribute('position', new THREE.Float32BufferAttribute(dir, 3));
     g.setAttribute('aOffset', new THREE.Float32BufferAttribute(offset, 1));
     g.setAttribute('aRate', new THREE.Float32BufferAttribute(rate, 1));
+
     return g;
   }, []);
 
@@ -136,7 +138,9 @@ export function Burst() {
   useFrame((_, rawDelta) => {
     const p = pts.current;
     const c = core.current;
-    if (!p || !c) return;
+    if (!p || !c) {
+      return;
+    }
     const dt = Math.min(rawDelta, MAX_DELTA);
     const u = (p.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
+
 import { SCENE_IDS } from './ids';
 import { diamondGeometry, fracturedCube } from './kit';
 import { LOOP, keyframes, phase, tri, wave } from './motion';
@@ -23,6 +24,7 @@ function signedVolume(geometry: THREE.BufferGeometry) {
     c.fromBufferAttribute(p, i + 2);
     v += a.dot(b.clone().cross(c)) / 6;
   }
+
   return v;
 }
 
@@ -37,17 +39,19 @@ function pose(root: THREE.Object3D) {
     o.updateMatrix();
     out.push(...o.matrix.elements);
   });
+
   return out;
 }
 
 describe('motion', () => {
   it('phase stays in 0..1, also for negative offsets', () => {
-    for (const t of [0, 1.3, LOOP, 37.2])
+    for (const t of [0, 1.3, LOOP, 37.2]) {
       for (const off of [-0.4, 0, 0.7]) {
         const p = phase(t, 1, off);
         expect(p).toBeGreaterThanOrEqual(0);
         expect(p).toBeLessThan(1);
       }
+    }
   });
 
   it('wave and phase repeat every LOOP', () => {
@@ -110,7 +114,9 @@ describe.each(SCENE_IDS)('scene %s', id => {
   it('builds a non-empty graph', () => {
     let meshes = 0;
     scene.root.traverse(o => {
-      if (o instanceof THREE.Mesh) meshes++;
+      if (o instanceof THREE.Mesh) {
+        meshes++;
+      }
     });
     expect(meshes).toBeGreaterThan(0);
   });

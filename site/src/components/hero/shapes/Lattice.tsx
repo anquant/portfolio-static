@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../theme';
-import { MAX_DELTA, motion, ease } from '../motion';
+
 import { noiseGLSL, choreographyGLSL, pointFragment } from '../glsl';
 import { pointUniforms, syncChoreography, useDispose } from '../materials';
+import { MAX_DELTA, motion, ease } from '../motion';
+import { useTheme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Development: a lattice that snaps through 90° turns like a mechanism,    */
@@ -23,11 +24,16 @@ export function Lattice() {
   const geometry = useMemo(() => {
     const n = 11;
     const pos: number[] = [];
-    for (let x = 0; x < n; x++)
-      for (let y = 0; y < n; y++)
-        for (let z = 0; z < n; z++) pos.push((x / (n - 1)) * 2 - 1, (y / (n - 1)) * 2 - 1, (z / (n - 1)) * 2 - 1);
+    for (let x = 0; x < n; x++) {
+      for (let y = 0; y < n; y++) {
+        for (let z = 0; z < n; z++) {
+          pos.push((x / (n - 1)) * 2 - 1, (y / (n - 1)) * 2 - 1, (z / (n - 1)) * 2 - 1);
+        }
+      }
+    }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+
     return g;
   }, []);
 
@@ -79,7 +85,9 @@ export function Lattice() {
 
   useFrame((_, rawDelta) => {
     const p = pts.current;
-    if (!p) return;
+    if (!p) {
+      return;
+    }
     const dt = Math.min(rawDelta, MAX_DELTA);
     const u = (p.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);

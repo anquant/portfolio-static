@@ -1,10 +1,12 @@
-import BlogCover from './BlogCover';
-import Scene3D from './Scene3D';
-import Reveal from './Reveal';
-import Link from 'next/link';
-import type { ArticleCardData } from '@/lib/content/schemas';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import Link from 'next/link';
+
+import type { ArticleCardData } from '@/lib/content/schemas';
+
+import BlogCover from './BlogCover';
+import Reveal from './Reveal';
+import Scene3D from './Scene3D';
 
 type ArticleCardProps = {
   articles?: ArticleCardData[];

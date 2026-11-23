@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { mat } from '../../kit';
 import { ease, phase, tri } from '../../motion';
 import { type SceneDef, GROUND_Y, column } from '../../stage';
@@ -16,6 +17,7 @@ export function blocks(): SceneDef {
     const c = column(s, h, s, m);
     c.position.set(x, 0, z);
     root.add(c);
+
     return c;
   });
   root.rotation.y = 0.15;

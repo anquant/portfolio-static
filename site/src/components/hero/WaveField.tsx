@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from './theme';
-import { motion } from './motion';
+
 import { noiseGLSL, choreographyGLSL } from './glsl';
 import { pointUniforms, syncChoreography, useDispose } from './materials';
+import { motion } from './motion';
+import { useTheme } from './theme';
 
 /* ------------------------------------------------------------------------ */
 /* Wave field: grid of points that ripples and rises under the cursor       */
@@ -43,6 +44,7 @@ export function WaveField() {
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
     return g;
   }, []);
 
@@ -115,7 +117,9 @@ export function WaveField() {
   useDispose(geometry, material);
 
   useFrame(() => {
-    if (!points.current) return;
+    if (!points.current) {
+      return;
+    }
     const u = (points.current.material as THREE.ShaderMaterial).uniforms;
     syncChoreography(u);
 

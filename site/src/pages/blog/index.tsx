@@ -1,13 +1,14 @@
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { getBlogPage, getBlogCategories, getBlogArticles } from '@/lib/content';
 import { type GetStaticProps } from 'next';
-import type { BlogPageData, BlogCategoriesData, BlogArticlesData } from '@/lib/content/schemas';
-import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+
 import ArticleCard from '@/components/ArticleCard';
+import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
+import { getBlogPage, getBlogCategories, getBlogArticles } from '@/lib/content';
+import type { BlogPageData, BlogCategoriesData, BlogArticlesData } from '@/lib/content/schemas';
 import { SITE_URL } from '@/lib/site';
 
 interface BlogProps {
@@ -38,7 +39,9 @@ export default function Blog({ blog_page, blog_categories, blog_articles }: Blog
   }, [categorySlug, page]);
 
   const filteredArticles = useMemo(() => {
-    if (!activeCategory) return blog_articles;
+    if (!activeCategory) {
+      return blog_articles;
+    }
 
     return blog_articles.filter(article => article.category?.slug === activeCategory);
   }, [activeCategory, blog_articles]);

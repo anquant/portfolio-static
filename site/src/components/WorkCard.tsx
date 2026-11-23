@@ -1,10 +1,12 @@
-import ProjectMedia from './ProjectMedia';
-import Scene3D from './Scene3D';
 import Link from 'next/link';
-import Reveal from './Reveal';
-import { displayHost } from '@/lib/url';
-import type { WorksData } from '@/lib/content/schemas';
 import { FiArrowRight } from 'react-icons/fi';
+
+import type { WorksData } from '@/lib/content/schemas';
+import { displayHost } from '@/lib/url';
+
+import ProjectMedia from './ProjectMedia';
+import Reveal from './Reveal';
+import Scene3D from './Scene3D';
 
 type WorkCardProps = {
   works?: WorksData[];

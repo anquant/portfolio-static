@@ -1,13 +1,14 @@
+import { type GetStaticProps } from 'next';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
+import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
+
 import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import { getContacts } from '@/lib/content';
-import { type GetStaticProps } from 'next';
-import Link from 'next/link';
-import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import { encode, decode, maskPhone } from '@/lib/obfuscate';
 
 interface ContactsProps {
@@ -39,7 +40,9 @@ function CopyButton({ getValue }: { getValue: () => string }) {
 
   const handleCopy = async () => {
     const value = getValue();
-    if (!value) return;
+    if (!value) {
+      return;
+    }
     try {
       // clipboard is unavailable without HTTPS or when permission is denied
       await navigator.clipboard.writeText(value);

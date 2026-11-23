@@ -1,4 +1,5 @@
 import Image from 'next/image';
+
 import type { ImageAsset } from '@/lib/content/schemas';
 
 type BlogCoverProps = {
@@ -23,6 +24,7 @@ export default function BlogCover({
   className = '',
 }: BlogCoverProps) {
   const card = mode === 'card';
+
   return (
     <div
       className={`relative isolate flex items-center justify-center overflow-hidden ${className}`}

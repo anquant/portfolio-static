@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import Button from './Button';
-import Reveal from './Reveal';
 import { FiArrowRight, FiArrowUp, FiArrowUpRight } from 'react-icons/fi';
+
+import Button from './Button';
 import { navigation, siteName } from './Header';
+import Reveal from './Reveal';
 
 type FooterProps = {
   /** Hide the "discuss a project" block (e.g. on the contacts page itself) */

@@ -6,6 +6,7 @@
 export function displayHost(link: string): string {
   try {
     const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(link) ? link : `https://${link}`;
+
     return new URL(withScheme).hostname.replace(/^www\./, '');
   } catch {
     return link;

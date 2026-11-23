@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { mat, mesh } from '../../kit';
 import { ease, phase, tri, wave } from '../../motion';
 import { type SceneDef } from '../../stage';
@@ -21,12 +22,14 @@ function container(material: THREE.Material, L = 2.6, H = 1, D = 1.05) {
   }
   // corner posts
   const postGeo = new THREE.BoxGeometry(0.09, H + 0.02, 0.09);
-  for (const x of [-L / 2, L / 2])
+  for (const x of [-L / 2, L / 2]) {
     for (const z of [-D / 2, D / 2]) {
       const p = mesh(postGeo, material);
       p.position.set(x, 0, z);
       g.add(p);
     }
+  }
+
   return g;
 }
 

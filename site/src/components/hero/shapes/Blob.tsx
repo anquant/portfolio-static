@@ -1,10 +1,11 @@
-import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../theme';
-import { motion, ease } from '../motion';
+
 import { noiseGLSL } from '../glsl';
 import { useDispose } from '../materials';
+import { motion, ease } from '../motion';
+import { useTheme } from '../theme';
 
 /* ------------------------------------------------------------------------ */
 /* Home: morphing blob with theme-coloured iridescent rim                   */
@@ -92,7 +93,9 @@ export function Blob() {
 
   useFrame(() => {
     const m = mesh.current;
-    if (!m) return;
+    if (!m) {
+      return;
+    }
     const u = (m.material as THREE.ShaderMaterial).uniforms;
     u.uTime.value = motion.time;
     u.uEnergy.value = motion.energy;
