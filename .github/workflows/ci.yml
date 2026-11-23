@@ -1,9 +1,10 @@
 name: CI
 
+# One check per PR, on the merge result. Branch pushes without a PR are not
+# checked separately (that only duplicated this run), and main is checked
+# by the deploy workflow before it publishes.
 on:
   pull_request:
-  push:
-    branches-ignore: [main] # main is checked by the deploy workflow
 
 concurrency:
   group: ci-${{ github.ref }}
