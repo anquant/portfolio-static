@@ -57,7 +57,10 @@ const lines = [
   '',
   '## Услуги',
   '',
-  ...services.map(s => `- [${s.preview_title}](${SITE}/services/${s.slug}): ${plain(s.meta_description)}`),
+  ...services.flatMap(s => [
+    `- [${s.preview_title}](${SITE}/services/${s.slug}): ${plain(s.meta_description)}`,
+    ...(s.faq?.items ?? []).map(item => `  - ${item.question} ${plain(item.answer)}`),
+  ]),
   '',
   '## Проекты',
   '',

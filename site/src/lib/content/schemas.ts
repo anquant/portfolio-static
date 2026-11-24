@@ -121,6 +121,8 @@ export const workFileSchema = z.strictObject({
   ...seo,
 });
 
+const titledText = z.strictObject({ title: z.string().min(1), text: z.string().min(1) });
+
 /** services/<slug>.json */
 export const serviceFileSchema = z.strictObject({
   sort: z.number(),
@@ -139,6 +141,39 @@ export const serviceFileSchema = z.strictObject({
         blocks: z.array(z.strictObject({ title: z.string(), content: z.string() })).optional(),
       }),
     )
+    .optional(),
+  /** "Who comes with what": situations the service solves, as cards */
+  tasks: z.strictObject({ title: z.string(), items: z.array(titledText).min(1) }).optional(),
+  /** Work stages, in order */
+  process: z.strictObject({ title: z.string(), steps: z.array(titledText).min(1) }).optional(),
+  /** Engagement formats with an optional "from" price */
+  pricing: z
+    .strictObject({
+      title: z.string(),
+      note: z.string().optional(),
+      plans: z
+        .array(
+          z.strictObject({
+            title: z.string().min(1),
+            text: z.string().min(1),
+            /** Rubles; the card says "по оценке" when absent */
+            price_from: z.number().int().positive().optional(),
+            /** "за проект", "в месяц", … */
+            unit: z.string().optional(),
+            term: z.string().optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
+  /** Slugs of works/<slug>.json shown as related cases */
+  works: z.array(z.string().min(1)).optional(),
+  /** Questions people actually search; also emitted as FAQPage JSON-LD */
+  faq: z
+    .strictObject({
+      title: z.string(),
+      items: z.array(z.strictObject({ question: z.string().min(1), answer: z.string().min(1) })).min(1),
+    })
     .optional(),
   ...seo,
 });

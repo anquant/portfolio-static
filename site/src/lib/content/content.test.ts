@@ -73,6 +73,12 @@ describe('real content', () => {
     }
   });
 
+  it('links services only to works that exist', () => {
+    const slugs = new Set(works.map(w => w.slug));
+    const broken = services.flatMap(s => (s.works ?? []).filter(w => !slugs.has(w)).map(w => `${s.slug} → ${w}`));
+    expect(broken).toEqual([]);
+  });
+
   it('lists articles newest first', () => {
     const dates = articles.map(a => a.pubdate);
     expect(dates).toEqual([...dates].sort().reverse());
