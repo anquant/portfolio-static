@@ -113,24 +113,28 @@
         "title": "Website design",
         "text": "Prototype, visual design and responsive layouts for a company or services website.",
         "unit": "per project",
+        "price_from": 2500,
         "term": "3–5 weeks"
       },
       {
         "title": "Interface or app",
         "text": "A client portal, web service or mobile app with a design system.",
         "unit": "per project",
+        "price_from": 6000,
         "term": "6–10 weeks"
       },
       {
         "title": "Redesign",
         "text": "A new look and logic for an existing website, keeping what already works.",
         "unit": "per project",
+        "price_from": 2000,
         "term": "3–5 weeks"
       },
       {
         "title": "UX audit",
         "text": "A review of user flows, errors and the places where leads are lost. You get a document with prioritised fixes.",
         "unit": "per audit",
+        "price_from": 1000,
         "term": "1–2 weeks"
       }
     ]

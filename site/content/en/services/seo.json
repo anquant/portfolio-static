@@ -113,23 +113,27 @@
         "title": "One-off audit",
         "text": "A technical and content review of the website. You get a document with problems, solutions and priorities. Works both as a starting point and as a way to check another contractor.",
         "unit": "per audit",
+        "price_from": 800,
         "term": "1–2 weeks"
       },
       {
         "title": "Ongoing SEO",
         "text": "Continuous work on the website: strategy, implementation, content, analytics and monthly reports.",
-        "unit": "per month"
+        "unit": "per month",
+        "price_from": 900
       },
       {
         "title": "SEO for a launch",
         "text": "Structure, keywords, meta tags and a technical foundation for a new website before it goes live.",
         "unit": "per project",
+        "price_from": 1000,
         "term": "2–3 weeks"
       },
       {
         "title": "Consultation",
         "text": "If you're growing the website in-house: I review the situation, set priorities and answer your questions.",
-        "unit": "per session"
+        "unit": "per session",
+        "price_from": 90
       }
     ]
   },

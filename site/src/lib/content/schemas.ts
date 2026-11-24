@@ -200,7 +200,7 @@ export const serviceFileSchema = z.strictObject({
           z.strictObject({
             title: z.string().min(1),
             text: z.string().min(1),
-            /** Rubles (euros on the English site); the card says "по оценке" when absent */
+            /** Rubles (US dollars on the English site); the card says "по оценке" when absent */
             price_from: z.number().int().positive().optional(),
             /** "за проект", "в месяц", … */
             unit: z.string().optional(),

@@ -113,23 +113,27 @@
         "title": "Company website",
         "text": "A corporate or services website: structure, design, development, admin panel and basic SEO.",
         "unit": "per project",
+        "price_from": 4000,
         "term": "4–8 weeks"
       },
       {
         "title": "Client portal or web service",
         "text": "Authentication, roles, data and document handling, integrations with CRM, payments and external APIs.",
         "unit": "per project",
+        "price_from": 10000,
         "term": "2–4 months"
       },
       {
         "title": "Improvements",
         "text": "New features, bug fixes, performance work, migration to a modern stack.",
-        "unit": "per hour"
+        "unit": "per hour",
+        "price_from": 50
       },
       {
         "title": "Support",
         "text": "Updates, backups, monitoring and small changes on request.",
-        "unit": "per month"
+        "unit": "per month",
+        "price_from": 300
       }
     ]
   },

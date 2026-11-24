@@ -71,9 +71,9 @@ describe('navigation', () => {
 });
 
 describe('formatPrice', () => {
-  it('uses rubles in Russian and euros in English', () => {
+  it('uses rubles in Russian and US dollars in English', () => {
     expect(formatPrice('ru', 120000)).toBe('120 000 ₽');
-    expect(formatPrice('en', 2500)).toBe('€2,500');
+    expect(formatPrice('en', 2500)).toBe('$2,500');
   });
 });
 

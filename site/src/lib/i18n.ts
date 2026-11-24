@@ -212,14 +212,14 @@ const en: Dictionary = {
 
 export const DICTIONARY: Record<Locale, Dictionary> = { ru, en };
 
-/** Prices: rubles on the Russian site, euros on the English one */
+/** Prices: rubles on the Russian site, US dollars on the English one */
 export function formatPrice(locale: Locale, amount: number): string {
   return locale === 'en'
-    ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount)
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)
     : `${new Intl.NumberFormat('ru-RU').format(amount)} ₽`;
 }
 
-export const CURRENCY: Record<Locale, string> = { ru: 'RUB', en: 'EUR' };
+export const CURRENCY: Record<Locale, string> = { ru: 'RUB', en: 'USD' };
 
 /** Main menu, also mirrored in the footer and on the 404 page */
 export function navigation(locale: Locale) {
