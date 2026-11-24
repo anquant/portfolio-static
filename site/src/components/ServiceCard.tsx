@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
 
-import type { ServicesListData } from '@/lib/content/schemas';
+import type { ServicePreview } from '@/lib/content/schemas';
 
 import Reveal from './Reveal';
 
 type ServiceCardProps = {
-  services?: ServicesListData[];
+  services?: ServicePreview[];
 };
 
 export default function ServiceCard({ services }: ServiceCardProps) {

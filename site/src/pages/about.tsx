@@ -8,6 +8,7 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
+import { Cards } from '@/components/service/ServiceBlocks';
 import { getAbout } from '@/lib/content';
 import type { AboutData } from '@/lib/content/schemas';
 import { breadcrumbLd, personLd } from '@/lib/seo';
@@ -17,10 +18,32 @@ interface AboutProps {
 }
 
 export default function About({ about }: AboutProps) {
-  const { title_part1, title_part2, content, stats, skills, resume, meta_title, meta_description } = about;
+  const {
+    title_part1,
+    title_part2,
+    lead,
+    content,
+    stats,
+    principles,
+    experience,
+    skills,
+    resume,
+    meta_title,
+    meta_description,
+  } = about;
   const seo = { meta_title, meta_description, type: 'profile' as const };
   const jsonLd = [
-    { '@type': 'ProfilePage', mainEntity: personLd((skills ?? []).flatMap(group => group.items)) },
+    {
+      '@type': 'ProfilePage',
+      mainEntity: {
+        ...personLd((skills ?? []).flatMap(group => group.items)),
+        alumniOf: {
+          '@type': 'CollegeOrUniversity',
+          name: 'Санкт-Петербургский государственный университет аэрокосмического приборостроения (ГУАП)',
+        },
+        homeLocation: { '@type': 'City', name: 'Санкт-Петербург' },
+      },
+    },
     breadcrumbLd([{ name: meta_title, path: '/about' }]),
   ];
 
@@ -40,6 +63,7 @@ export default function About({ about }: AboutProps) {
               )}
             </>
           }
+          lead={lead}
         />
 
         {/* Story: one comfortable reading column, first paragraph as the lead */}
@@ -75,6 +99,32 @@ export default function About({ about }: AboutProps) {
                 </Reveal>
               ))}
             </dl>
+          </section>
+        )}
+
+        {principles && <Cards {...principles} />}
+
+        {/* Experience: newest first, period / role / what it taught */}
+        {experience && (
+          <section className="section-gap" aria-labelledby="experience-title">
+            <SectionHeader id="experience-title" title={experience.title} />
+            <ol>
+              {experience.items.map((item, i) => (
+                <Reveal
+                  as="li"
+                  key={i}
+                  delay={i * 70}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-8 border-t border-line py-7 first:border-t-0 first:pt-0"
+                >
+                  <div className="md:col-span-3 text-sm md:text-base text-muted tabular-nums">{item.period}</div>
+                  <div className="md:col-span-4">
+                    <h3 className="font-semibold text-lg md:text-xl">{item.role}</h3>
+                    <div className="mt-1 text-muted">{item.place}</div>
+                  </div>
+                  {item.text && <p className="md:col-span-5 text-muted leading-relaxed">{item.text}</p>}
+                </Reveal>
+              ))}
+            </ol>
           </section>
         )}
 

@@ -52,12 +52,34 @@ export const homeSchema = z.strictObject({
   ...seo,
 });
 
+const titledText = z.strictObject({ title: z.string().min(1), text: z.string().min(1) });
+
 export const aboutSchema = z.strictObject({
   title_part1: z.string(),
   title_part2: z.string().optional(),
   content: z.string(),
   stats: z.array(z.strictObject({ value: z.string(), label: z.string() })).optional(),
+  /** One-sentence answer to "who is this", shown under the title */
+  lead: z.string().optional(),
   skills: z.array(z.strictObject({ title: z.string(), items: z.array(z.string()) })).optional(),
+  /** "How I work": principles as cards */
+  principles: z.strictObject({ title: z.string(), items: z.array(titledText).min(1) }).optional(),
+  /** Career and education, newest first */
+  experience: z
+    .strictObject({
+      title: z.string(),
+      items: z
+        .array(
+          z.strictObject({
+            period: z.string().min(1).optional(),
+            role: z.string().min(1),
+            place: z.string().min(1),
+            text: z.string().optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
   resume: publicPath.optional(),
   ...seo,
 });
@@ -140,6 +162,39 @@ export const serviceFileSchema = z.strictObject({
       }),
     )
     .optional(),
+  /** "Who comes with what": situations the service solves, as cards */
+  tasks: z.strictObject({ title: z.string(), items: z.array(titledText).min(1) }).optional(),
+  /** Work stages, in order */
+  process: z.strictObject({ title: z.string(), steps: z.array(titledText).min(1) }).optional(),
+  /** Engagement formats with an optional "from" price */
+  pricing: z
+    .strictObject({
+      title: z.string(),
+      note: z.string().optional(),
+      plans: z
+        .array(
+          z.strictObject({
+            title: z.string().min(1),
+            text: z.string().min(1),
+            /** Rubles; the card says "по оценке" when absent */
+            price_from: z.number().int().positive().optional(),
+            /** "за проект", "в месяц", … */
+            unit: z.string().optional(),
+            term: z.string().optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
+  /** Slugs of works/<slug>.json shown as related cases */
+  works: z.array(z.string().min(1)).optional(),
+  /** Questions people actually search; also emitted as FAQPage JSON-LD */
+  faq: z
+    .strictObject({
+      title: z.string(),
+      items: z.array(z.strictObject({ question: z.string().min(1), answer: z.string().min(1) })).min(1),
+    })
+    .optional(),
   ...seo,
 });
 
@@ -196,6 +251,9 @@ export type ServicesListData = Omit<ServiceFile, 'sections'> & {
   content?: ServiceSection[];
   slug: string;
 };
+
+/** What a service card on /services needs */
+export type ServicePreview = Pick<ServicesListData, 'slug' | 'preview_title' | 'preview_description' | 'tech_list'>;
 
 export type BlogArticlesData = {
   pubdate: string;

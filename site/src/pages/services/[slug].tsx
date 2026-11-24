@@ -13,8 +13,9 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
+import { Cards, Faq, Pricing, Process, faqLd } from '@/components/service/ServiceBlocks';
 import WorkCard from '@/components/WorkCard';
-import { getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
+import { ContentError, getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ServicesListData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
@@ -43,7 +44,9 @@ interface CurrentServiceProps {
 }
 
 export default function CurrentService({ service, works }: CurrentServiceProps) {
-  const { title, tech_list, introtext, scene, sections, meta_title, meta_description } = service;
+  const { title, tech_list, introtext, scene, sections, tasks, process, pricing, faq, meta_title, meta_description } =
+    service;
+  const offers = pricing?.plans.filter(plan => plan.price_from) ?? [];
   const seo = { meta_title, meta_description };
   const jsonLd = [
     {
@@ -53,7 +56,20 @@ export default function CurrentService({ service, works }: CurrentServiceProps) 
       provider: personRef,
       areaServed: { '@type': 'Country', name: 'Россия' },
       inLanguage: 'ru-RU',
+      ...(offers.length > 0 && {
+        offers: offers.map(plan => ({
+          '@type': 'Offer',
+          name: plan.title,
+          priceSpecification: {
+            '@type': 'UnitPriceSpecification',
+            minPrice: plan.price_from,
+            priceCurrency: 'RUB',
+            ...(plan.unit && { unitText: plan.unit }),
+          },
+        })),
+      }),
     },
+    ...(faq ? [faqLd(faq.items)] : []),
     breadcrumbLd([
       { name: 'Услуги', path: '/services' },
       { name: service.preview_title, path: `/services/${service.slug}` },
@@ -101,44 +117,54 @@ export default function CurrentService({ service, works }: CurrentServiceProps) 
         </div>
       </section>
 
-      {sections.map((section, s_index) => (
-        <section
-          key={s_index}
-          className={section.color === 'dark' ? 'bg-surface border-b border-line' : 'border-b border-line'}
-        >
-          <div className="container-page py-16 md:py-28">
-            <Reveal as="h2" className="t-section md:text-4xl max-w-3xl mb-12 md:mb-20">
-              {section.title}
-            </Reveal>
-            {section.blocks.length > 0 && (
-              <div className="divide-y divide-line">
-                {section.blocks.map((b, b_index) => (
-                  <Reveal
-                    key={b_index}
-                    delay={b_index * 80}
-                    className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-8 first:pt-0"
-                  >
-                    <h3 className="md:col-span-4 flex gap-4 text-lg md:text-xl font-semibold">
-                      <span className="font-display text-muted text-sm pt-1.5">
-                        {String(b_index + 1).padStart(2, '0')}
-                      </span>
-                      {b.title}
-                    </h3>
-                    <div className="md:col-span-8 content-blocks text-muted">
-                      <MDXRemote {...b.mdxSource} components={mdxComponents} />
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      ))}
+      {tasks && (
+        <div className="container-page">
+          <Cards {...tasks} />
+        </div>
+      )}
+
+      <div className={tasks ? 'section-gap border-t border-line' : ''}>
+        {sections.map((section, s_index) => (
+          <section
+            key={s_index}
+            className={section.color === 'dark' ? 'bg-surface border-b border-line' : 'border-b border-line'}
+          >
+            <div className="container-page py-16 md:py-28">
+              <Reveal as="h2" className="t-section md:text-4xl max-w-3xl mb-12 md:mb-20">
+                {section.title}
+              </Reveal>
+              {section.blocks.length > 0 && (
+                <div className="divide-y divide-line">
+                  {section.blocks.map((b, b_index) => (
+                    <Reveal
+                      key={b_index}
+                      delay={b_index * 80}
+                      className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-8 first:pt-0"
+                    >
+                      <h3 className="md:col-span-4 flex gap-4 text-lg md:text-xl font-semibold">
+                        <span className="font-display text-muted text-sm pt-1.5">
+                          {String(b_index + 1).padStart(2, '0')}
+                        </span>
+                        {b.title}
+                      </h3>
+                      <div className="md:col-span-8 content-blocks text-muted">
+                        <MDXRemote {...b.mdxSource} components={mdxComponents} />
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        ))}
+      </div>
 
       <div className="container-page">
+        {process && <Process {...process} />}
+        {pricing && <Pricing {...pricing} />}
         <section className="section-gap">
           <SectionHeader
-            title="Реализованные проекты"
+            title="Проекты по теме"
             aside={
               <Link href="/#works" className="transition-colors hover:text-fg">
                 Все проекты <FiArrowRight aria-hidden className="inline -mt-0.5" />
@@ -147,6 +173,7 @@ export default function CurrentService({ service, works }: CurrentServiceProps) 
           />
           <WorkCard works={works} />
         </section>
+        {faq && <Faq {...faq} />}
         <Footer />
       </div>
     </Layout>
@@ -183,11 +210,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   );
 
   const { content: _content, ...serviceRest } = service;
+  const allWorks = getWorks();
+  const worksBySlug = new Map(allWorks.map(work => [work.slug, work]));
 
   return {
     props: {
       service: { ...serviceRest, sections },
-      works: getWorks().slice(0, 3),
+      works: service.works
+        ? service.works.map(workSlug => {
+            const work = worksBySlug.get(workSlug);
+            if (!work) {
+              throw new ContentError(`services/${slug}.json`, `works: unknown work "${workSlug}"`);
+            }
+
+            return work;
+          })
+        : allWorks.slice(0, 3),
     },
   };
 };

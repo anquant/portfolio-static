@@ -6,12 +6,12 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import ServiceCard from '@/components/ServiceCard';
 import { getServicesPage, getServicesList } from '@/lib/content';
-import type { ServicesPageData, ServicesListData } from '@/lib/content/schemas';
+import type { ServicePreview, ServicesPageData } from '@/lib/content/schemas';
 import { breadcrumbLd } from '@/lib/seo';
 
 interface ServicesProps {
   services_page: ServicesPageData;
-  services_list: ServicesListData[];
+  services_list: ServicePreview[];
 }
 
 export default function Services({ services_page, services_list }: ServicesProps) {
@@ -34,7 +34,14 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       services_page: getServicesPage(),
-      services_list: getServicesList(),
+      services_list: getServicesList().map(
+        ({ slug, preview_title, preview_description, tech_list }): ServicePreview => ({
+          slug,
+          preview_title,
+          preview_description,
+          ...(tech_list && { tech_list }),
+        }),
+      ),
     },
   };
 };
