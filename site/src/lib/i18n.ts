@@ -15,6 +15,12 @@ const PREFIX: Record<Locale, string> = { ru: '', en: '/en' };
 export const LANG_TAG: Record<Locale, string> = { ru: 'ru-RU', en: 'en' };
 export const OG_LOCALE: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 
+/**
+ * hreflang="x-default": the version for visitors whose language matches
+ * none of ours (Finnish, German, …) — they get English, not Russian.
+ */
+export const X_DEFAULT_LOCALE: Locale = 'en';
+
 /** Locale of a route pattern or URL path: "/en/[slug]", "/en/about?x" → "en" */
 export function localeFromPath(path: string): Locale {
   return /^\/en(?=$|[/?#])/.test(path) ? 'en' : 'ru';

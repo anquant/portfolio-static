@@ -18,6 +18,29 @@ function blogDates() {
 
 const dates = blogDates();
 
+/*
+ * hreflang alternates for every page that exists in both languages — the
+ * same pairs as the <link rel="alternate"> tags (src/lib/i18n.ts; this file
+ * is CommonJS and can't import it). The blog is Russian-only.
+ */
+const SITE = (process.env.SITE_URL || 'https://moiseevp.ru/').replace(/\/$/, '');
+
+function alternateRefs(loc) {
+  const base = loc === '/en' ? '/' : loc.replace(/^\/en(?=\/)/, '');
+  if (/^\/(blog|404)(\/|$)/.test(base)) {
+    return [];
+  }
+  const ru = `${SITE}${base === '/' ? '/' : base}`;
+  const en = `${SITE}${base === '/' ? '/en' : `/en${base}`}`;
+
+  return [
+    { href: ru, hreflang: 'ru-RU', hrefIsAbsolute: true },
+    { href: en, hreflang: 'en', hrefIsAbsolute: true },
+    // visitors whose language is neither get English (X_DEFAULT_LOCALE)
+    { href: en, hreflang: 'x-default', hrefIsAbsolute: true },
+  ];
+}
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://moiseevp.ru/',
@@ -33,5 +56,6 @@ module.exports = {
   transform: async (config, loc) => ({
     loc,
     ...(dates[loc] && { lastmod: new Date(dates[loc]).toISOString() }),
+    alternateRefs: alternateRefs(loc),
   }),
 };

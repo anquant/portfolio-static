@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { type ReactNode } from 'react';
 
-import { LANG_TAG, LOCALES, OG_LOCALE, alternatePath } from '@/lib/i18n';
+import { LANG_TAG, LOCALES, OG_LOCALE, X_DEFAULT_LOCALE, alternatePath } from '@/lib/i18n';
 import { DEFAULT_OG_IMAGE, absUrl, ldGraph, pageTitle } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
@@ -37,6 +37,7 @@ const Layout = ({ seo, jsonLd, children }: LayoutProps) => {
 
     return path ? [{ locale: l, url: absUrl(path) }] : [];
   });
+  const translated = !seo.noindex && alternates.length > 1;
   const image: OgImage = seo.image ?? DEFAULT_OG_IMAGE;
 
   return (
@@ -47,16 +48,23 @@ const Layout = ({ seo, jsonLd, children }: LayoutProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml" />
         {seo.noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={url} />}
-        {!seo.noindex &&
-          alternates.length > 1 &&
-          alternates.map(a => <link key={a.locale} rel="alternate" hrefLang={LANG_TAG[a.locale]} href={a.url} />)}
-        {!seo.noindex && alternates.length > 1 && (
-          <link rel="alternate" hrefLang="x-default" href={alternates.find(a => a.locale === 'ru')?.url} />
+        {translated &&
+          alternates.map(a => (
+            <link key={`hreflang-${a.locale}`} rel="alternate" hrefLang={LANG_TAG[a.locale]} href={a.url} />
+          ))}
+        {translated && (
+          <link rel="alternate" hrefLang="x-default" href={alternates.find(a => a.locale === X_DEFAULT_LOCALE)?.url} />
         )}
 
         <meta property="og:type" content={seo.type ?? 'website'} />
         <meta property="og:site_name" content={t.authorName} />
         <meta property="og:locale" content={OG_LOCALE[locale]} />
+        {translated &&
+          alternates
+            .filter(a => a.locale !== locale)
+            .map(a => (
+              <meta key={`og-locale-${a.locale}`} property="og:locale:alternate" content={OG_LOCALE[a.locale]} />
+            ))}
         <meta property="og:title" content={title} />
         {seo.meta_description && <meta property="og:description" content={seo.meta_description} />}
         {!seo.noindex && <meta property="og:url" content={url} />}
