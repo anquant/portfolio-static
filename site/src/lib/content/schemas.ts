@@ -252,6 +252,9 @@ export type ServicesListData = Omit<ServiceFile, 'sections'> & {
   slug: string;
 };
 
+/** What a service card on /services needs */
+export type ServicePreview = Pick<ServicesListData, 'slug' | 'preview_title' | 'preview_description' | 'tech_list'>;
+
 export type BlogArticlesData = {
   pubdate: string;
   category: BlogCategoriesData;

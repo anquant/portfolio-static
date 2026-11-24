@@ -15,7 +15,7 @@ import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
 import { Cards, Faq, Pricing, Process, faqLd } from '@/components/service/ServiceBlocks';
 import WorkCard from '@/components/WorkCard';
-import { getServicesList, getServiceBySlug, getWorkBySlug, getWorks } from '@/lib/content';
+import { ContentError, getServicesList, getServiceBySlug, getWorks } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
 import type { ServicesListData } from '@/lib/content/schemas';
 import { mdxComponents } from '@/lib/mdx-components';
@@ -60,7 +60,12 @@ export default function CurrentService({ service, works }: CurrentServiceProps) 
         offers: offers.map(plan => ({
           '@type': 'Offer',
           name: plan.title,
-          priceSpecification: { '@type': 'PriceSpecification', minPrice: plan.price_from, priceCurrency: 'RUB' },
+          priceSpecification: {
+            '@type': 'UnitPriceSpecification',
+            minPrice: plan.price_from,
+            priceCurrency: 'RUB',
+            ...(plan.unit && { unitText: plan.unit }),
+          },
         })),
       }),
     },
@@ -205,20 +210,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   );
 
   const { content: _content, ...serviceRest } = service;
+  const allWorks = getWorks();
+  const worksBySlug = new Map(allWorks.map(work => [work.slug, work]));
 
   return {
     props: {
       service: { ...serviceRest, sections },
       works: service.works
         ? service.works.map(workSlug => {
-            const work = getWorkBySlug(workSlug);
+            const work = worksBySlug.get(workSlug);
             if (!work) {
-              throw new Error(`services/${slug}.json: unknown work "${workSlug}"`);
+              throw new ContentError(`services/${slug}.json`, `works: unknown work "${workSlug}"`);
             }
 
             return work;
           })
-        : getWorks().slice(0, 3),
+        : allWorks.slice(0, 3),
     },
   };
 };

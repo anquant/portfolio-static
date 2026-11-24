@@ -112,7 +112,7 @@ export default function About({ about }: AboutProps) {
               {experience.items.map((item, i) => (
                 <Reveal
                   as="li"
-                  key={item.place}
+                  key={i}
                   delay={i * 70}
                   className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-8 border-t border-line py-7 first:border-t-0 first:pt-0"
                 >

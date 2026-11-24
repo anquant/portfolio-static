@@ -31,11 +31,7 @@ export function Cards({ title, items }: { title: string; items: { title: string;
       <SectionHeader title={title} />
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {items.map((item, i) => (
-          <Reveal
-            key={item.title}
-            delay={i * 70}
-            className="flex flex-col rounded-3xl border border-line bg-surface p-6 md:p-8"
-          >
+          <Reveal key={i} delay={i * 70} className="flex flex-col rounded-3xl border border-line bg-surface p-6 md:p-8">
             <span className="font-display text-sm font-semibold text-accent">{num(i)}</span>
             <h3 className="t-card mt-6">{item.title}</h3>
             <p className="mt-3 text-muted leading-relaxed">{item.text}</p>
@@ -52,7 +48,7 @@ export function Process({ title, steps }: NonNullable<ServiceFile['process']>) {
       <SectionHeader title={title} />
       <ol className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-4">
         {steps.map((step, i) => (
-          <Reveal as="li" key={step.title} delay={i * 90} className="relative border-t border-line pt-6">
+          <Reveal as="li" key={i} delay={i * 90} className="relative border-t border-line pt-6">
             <span aria-hidden className="absolute -top-[5px] left-0 size-[9px] rounded-full bg-accent" />
             <div className="eyebrow">Этап {num(i)}</div>
             <h3 className="t-card mt-3">{step.title}</h3>
@@ -73,7 +69,7 @@ export function Pricing({ title, note, plans }: NonNullable<ServiceFile['pricing
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {plans.map((plan, i) => (
           <Reveal
-            key={plan.title}
+            key={i}
             delay={i * 70}
             className="flex flex-col rounded-3xl border border-line bg-surface p-6 md:p-10"
           >
@@ -114,8 +110,8 @@ export function Faq({ title, items }: NonNullable<ServiceFile['faq']>) {
         {title}
       </Reveal>
       <div className="lg:col-span-8 divide-y divide-line border-y border-line">
-        {items.map(item => (
-          <details key={item.question} className="group">
+        {items.map((item, i) => (
+          <details key={i} className="group">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-lg md:text-xl font-semibold transition-colors hover:text-accent [&::-webkit-details-marker]:hidden">
               <h3>{item.question}</h3>
               <FiPlus
