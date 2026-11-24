@@ -1,9 +1,7 @@
-import { SITE_URL } from './site';
+import { AUTHOR_NAME, BEHANCE_URL, SITE_URL } from './site';
 
-/** The person behind the site: the brand in titles and the author everywhere */
-export const AUTHOR_NAME = 'Павел Моисеев';
 export const AUTHOR_JOB = 'Fullstack веб-разработчик';
-export const AUTHOR_PROFILES = ['https://www.behance.net/moiseevp'];
+export const AUTHOR_PROFILES = [BEHANCE_URL];
 
 /** Link previews (Telegram, VK, …) for pages without an image of their own */
 export const DEFAULT_OG_IMAGE = { src: '/og.png', width: 1200, height: 630 };

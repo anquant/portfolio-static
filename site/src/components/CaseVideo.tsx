@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import { IoPause, IoPlay } from 'react-icons/io5';
 

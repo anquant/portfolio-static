@@ -1,7 +1,8 @@
 import Button from '@/components/Button';
-import { Footer } from '@/components/Footer';
-import Header, { navigation } from '@/components/Header';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import Layout from '@/components/Layout';
+import { NAVIGATION } from '@/lib/site';
 
 export default function Error404() {
   const seo = {
@@ -23,7 +24,7 @@ export default function Error404() {
             <Button type="link" href="/">
               На главную
             </Button>
-            {navigation.slice(1).map(item => (
+            {NAVIGATION.slice(1).map(item => (
               <Button key={item.slug} type="link" href={item.slug} variant="secondary">
                 {item.title}
               </Button>

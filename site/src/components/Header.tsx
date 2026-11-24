@@ -1,5 +1,3 @@
-'use client';
-
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,16 +6,9 @@ import { FiArrowRight } from 'react-icons/fi';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
 import { IoClose } from 'react-icons/io5';
 
+import { AUTHOR_NAME, NAVIGATION } from '@/lib/site';
+
 import Button from './Button';
-
-export const navigation = [
-  { title: 'Проекты', slug: '/' },
-  { title: 'Услуги', slug: '/services' },
-  { title: 'Обо мне', slug: '/about' },
-  { title: 'Блог', slug: '/blog' },
-];
-
-export const siteName = 'Павел Моисеев';
 
 type HeaderProps = {
   classes?: string;
@@ -55,7 +46,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
       >
         ПМ
       </span>
-      {siteName}
+      {AUTHOR_NAME}
     </span>
   );
 
@@ -75,7 +66,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
           aria-label="Основное меню"
           className="hidden lg:flex items-center gap-1 rounded-full border border-line bg-surface/70 backdrop-blur p-1"
         >
-          {navigation.map(item => {
+          {NAVIGATION.map(item => {
             const active = isActive(path, item.slug);
 
             return (
@@ -147,7 +138,7 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
                   </Button>
                 </div>
                 <nav aria-label="Основное меню" className="mt-16 flex flex-col">
-                  {[...navigation, { title: 'Контакты', slug: '/contacts' }].map((item, i) => {
+                  {[...NAVIGATION, { title: 'Контакты', slug: '/contacts' }].map((item, i) => {
                     const active = isActive(path, item.slug);
 
                     return (

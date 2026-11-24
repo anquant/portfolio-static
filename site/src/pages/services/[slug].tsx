@@ -7,7 +7,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import remarkGfm from 'remark-gfm';
 
 import Button from '@/components/Button';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';

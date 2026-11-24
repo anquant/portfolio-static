@@ -1,10 +1,9 @@
-'use client';
-
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { type ReactNode } from 'react';
 
-import { AUTHOR_NAME, DEFAULT_OG_IMAGE, absUrl, ldGraph, pageTitle } from '@/lib/seo';
+import { DEFAULT_OG_IMAGE, absUrl, ldGraph, pageTitle } from '@/lib/seo';
+import { AUTHOR_NAME } from '@/lib/site';
 
 type OgImage = { src: string; width?: number; height?: number; alt?: string };
 

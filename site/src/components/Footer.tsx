@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { FiArrowRight, FiArrowUp, FiArrowUpRight } from 'react-icons/fi';
 
+import { AUTHOR_NAME, BEHANCE_URL, NAVIGATION } from '@/lib/site';
+
 import Button from './Button';
-import { navigation, siteName } from './Header';
 import Reveal from './Reveal';
 
 type FooterProps = {
@@ -10,7 +11,7 @@ type FooterProps = {
   cta?: boolean;
 };
 
-export function Footer({ cta = true }: FooterProps) {
+export default function Footer({ cta = true }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -36,10 +37,10 @@ export function Footer({ cta = true }: FooterProps) {
 
       <div className="flex flex-col gap-8 border-t border-line mt-16 py-10 md:flex-row md:items-center md:justify-between">
         <div className="text-sm text-muted">
-          © {currentYear} {siteName}
+          © {currentYear} {AUTHOR_NAME}
         </div>
         <nav aria-label="Навигация в подвале" className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
-          {navigation.map(item => (
+          {NAVIGATION.map(item => (
             <Link key={item.slug} href={item.slug} className="text-muted transition-colors hover:text-fg">
               {item.title}
             </Link>
@@ -48,7 +49,7 @@ export function Footer({ cta = true }: FooterProps) {
             Контакты
           </Link>
           <Link
-            href="https://www.behance.net/moiseevp"
+            href={BEHANCE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted transition-colors hover:text-fg"
