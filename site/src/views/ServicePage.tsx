@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { MDXRemote } from 'next-mdx-remote';
 import { FiArrowRight } from 'react-icons/fi';
 
 import Button from '@/components/Button';
@@ -15,6 +15,7 @@ import WorkCard from '@/components/WorkCard';
 import type { ServicesListData, WorksData } from '@/lib/content/schemas';
 import { CURRENCY, LANG_TAG } from '@/lib/i18n';
 import { mdxComponents } from '@/lib/mdx-components';
+import type { SerializedSection } from '@/lib/page-props';
 import { breadcrumbLd, personRef } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
@@ -22,25 +23,14 @@ const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
 });
 
-type SerializedBlock = {
-  title: string;
-  mdxSource: MDXRemoteSerializeResult;
-};
-
-export type SerializedSection = {
-  title: string;
-  color: 'light' | 'dark';
-  blocks: SerializedBlock[];
-};
-
-interface CurrentServiceProps {
+interface ServicePageProps {
   service: Omit<ServicesListData, 'content'> & {
     sections: SerializedSection[];
   };
   works: WorksData[];
 }
 
-export default function ServicePage({ service, works }: CurrentServiceProps) {
+export default function ServicePage({ service, works }: ServicePageProps) {
   const { locale, t, href } = useLocale();
   const { title, tech_list, introtext, scene, sections, tasks, process, pricing, faq, meta_title, meta_description } =
     service;

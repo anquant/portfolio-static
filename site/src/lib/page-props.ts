@@ -1,7 +1,9 @@
 import { type GetStaticPaths, type GetStaticProps } from 'next';
+import { type MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import remarkGfm from 'remark-gfm';
 
+import type { ContactItem } from '@/lib/contact';
 import {
   ContentError,
   getAbout,
@@ -17,7 +19,6 @@ import {
 import type { ServicePreview } from '@/lib/content/schemas';
 import type { Locale } from '@/lib/i18n';
 import { encode, maskPhone, maskTelegram } from '@/lib/obfuscate';
-import type { SerializedSection } from '@/views/ServicePage';
 
 /*
  * Build-time data for the pages that exist in both languages. Each factory
@@ -26,10 +27,17 @@ import type { SerializedSection } from '@/views/ServicePage';
  * getStaticProps / getStaticPaths, which Next.js strips from the client.
  */
 
+/** A service section with its blocks' Markdown compiled at build time */
+export type SerializedSection = {
+  title: string;
+  color: 'light' | 'dark';
+  blocks: { title: string; mdxSource: MDXRemoteSerializeResult }[];
+};
+
 export const homeProps =
   (locale: Locale): GetStaticProps =>
   async () => ({
-    props: { home: getHome(locale), works: getWorks(locale), clients: getClients() },
+    props: { home: getHome(locale), works: getWorks(locale), clients: getClients(locale) },
   });
 
 export const aboutProps =
@@ -39,20 +47,16 @@ export const aboutProps =
 export const contactsProps =
   (locale: Locale): GetStaticProps =>
   async () => {
-    const contacts = getContacts(locale);
+    const { title, text, meta_title, meta_description, email, phone, telegram } = getContacts(locale);
+    // in display order; absent channels are left out
+    const contacts: ContactItem[] = [
+      ...(email ? [{ kind: 'email' as const, encoded: encode(email), masked: null }] : []),
+      ...(phone ? [{ kind: 'phone' as const, encoded: encode(phone), masked: maskPhone(phone) }] : []),
+      ...(telegram ? [{ kind: 'telegram' as const, encoded: encode(telegram), masked: maskTelegram(telegram) }] : []),
+    ];
 
     return {
-      props: {
-        title: contacts.title,
-        text: contacts.text ?? null,
-        meta_title: contacts.meta_title,
-        meta_description: contacts.meta_description ?? null,
-        emailEncoded: encode(contacts.email ?? ''),
-        phoneEncoded: encode(contacts.phone ?? ''),
-        maskedPhone: contacts.phone ? maskPhone(contacts.phone) : '',
-        telegramEncoded: encode(contacts.telegram ?? ''),
-        maskedTelegram: contacts.telegram ? maskTelegram(contacts.telegram) : '',
-      },
+      props: { title, text: text ?? null, meta_title, meta_description: meta_description ?? null, contacts },
     };
   };
 

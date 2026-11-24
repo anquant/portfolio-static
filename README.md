@@ -52,6 +52,22 @@ GLSL: a point field that ripples under the cursor and a per-page centrepiece
 and disperses on scroll. All motion runs through one smoothed state object, so
 every shape follows the same choreography.
 
+### Two languages on one static export
+
+Russian lives at the root, English under `/en`. Next.js i18n routing doesn't
+work with `output: 'export'`, so the locale is just the URL prefix: every page
+is a [view](site/src/views) shared by a thin `pages/…` and `pages/en/…` file,
+fed by a [per-locale data loader](site/src/lib/page-props.ts). Interface
+strings, navigation and price formatting live in one
+[dictionary](site/src/lib/i18n.ts). English case files hold only the
+translated text — media, colours and order come from the Russian file, so the
+two versions can't drift; tests check that every case and service is
+translated and that no Russian is left in the English copy.
+
+Search engines get `<html lang>`, `hreflang` pairs (in the page head and in
+the sitemap), `og:locale` and per-language JSON-LD. The blog is Russian-only
+and has no English counterpart.
+
 ### Built to degrade gracefully
 
 - `prefers-reduced-motion`: scenes hold a still pose, parallax is off
@@ -63,9 +79,11 @@ every shape follows the same choreography.
 ```
 site/
 ├── content/                 JSON + MDX content, one file per page / item
+│   └── en/                  English pages, services and case texts
 ├── public/                  images, video, files
 └── src/
-    ├── pages/               Next.js pages (getStaticProps reads content)
+    ├── pages/               routes: /… and /en/… are thin wrappers over views
+    ├── views/               page components shared by both languages
     ├── components/
     │   ├── hero/            R3F + GLSL hero: field, anchor, shapes/
     │   ├── scene3d/         shared-context 3D scenes
@@ -77,6 +95,8 @@ site/
     │   └── …                UI components
     ├── lib/
     │   ├── content/         zod schemas + loaders
+    │   ├── i18n.ts          locales, URL helpers, interface strings
+    │   ├── page-props.ts    getStaticProps / getStaticPaths per locale
     │   └── …                small utilities
     └── styles/              Tailwind + design tokens (CSS variables)
 ```
@@ -105,6 +125,8 @@ then deploys to GitHub Pages ([deploy.yml](.github/workflows/deploy.yml)).
 - `works/*.json` — one case study per file (file name = URL slug)
 - `services/*.json` — one service per file
 - `blog/*.mdx` — one article per file (frontmatter + body)
+- `en/…` — the English version: the same file names for pages and services;
+  `en/works/*.json` holds only the translated text of a case
 
 Media lives in `site/public/` and is referenced by its `/`-rooted path. The
 schemas in [`schemas.ts`](site/src/lib/content/schemas.ts) document every

@@ -116,6 +116,8 @@ export const blogCategorySchema = z.strictObject({
 export const clientSchema = z.strictObject({
   id: z.number().int(),
   title: z.string(),
+  /** Latin spelling for the English site, when `title` is in Cyrillic */
+  title_en: z.string().optional(),
   logo: imageAssetSchema,
   link: z.url().nullish(),
 });
@@ -262,7 +264,8 @@ export type ContactsData = z.infer<typeof contactsSchema>;
 export type ServicesPageData = z.infer<typeof servicesPageSchema>;
 export type BlogPageData = z.infer<typeof blogPageSchema>;
 export type BlogCategoriesData = z.infer<typeof blogCategorySchema>;
-export type ClientsData = z.infer<typeof clientSchema>;
+/** A client as pages see it: `title` already in the page's language */
+export type ClientsData = Omit<z.infer<typeof clientSchema>, 'title_en'>;
 
 export type WorksData = z.infer<typeof workFileSchema> & { slug: string };
 export type ArticleFrontmatter = z.output<typeof articleFrontmatterSchema>;

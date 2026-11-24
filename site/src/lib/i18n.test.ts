@@ -1,6 +1,18 @@
+import { createRequire } from 'node:module';
+
 import { describe, expect, it } from 'vitest';
 
-import { alternatePath, formatPrice, localeFromPath, localePath, navigation, stripLocale } from './i18n';
+import {
+  LANG_TAG,
+  LOCALES,
+  X_DEFAULT_LOCALE,
+  alternatePath,
+  formatPrice,
+  localeFromPath,
+  localePath,
+  navigation,
+  stripLocale,
+} from './i18n';
 
 describe('localeFromPath', () => {
   it.each([
@@ -63,4 +75,30 @@ describe('formatPrice', () => {
     expect(formatPrice('ru', 120000)).toBe('120 000 ₽');
     expect(formatPrice('en', 2500)).toBe('€2,500');
   });
+});
+
+describe('sitemap hreflang', () => {
+  // next-sitemap.config.js is CommonJS and repeats the alternatePath rules: keep them in step
+  const require = createRequire(import.meta.url);
+  const config = require('../../next-sitemap.config.js') as {
+    transform: (config: unknown, loc: string) => Promise<{ alternateRefs: { href: string; hreflang: string }[] }>;
+  };
+  const SITE = 'https://moiseevp.ru';
+
+  it.each(['/', '/about', '/services/seo', '/igem-ran', '/en', '/en/about', '/en/services/seo', '/blog', '/blog/x'])(
+    '%s',
+    async loc => {
+      const { alternateRefs } = await config.transform({}, loc);
+      const expected = LOCALES.flatMap(l => {
+        const path = alternatePath(loc, l);
+
+        return path ? [{ hreflang: LANG_TAG[l], href: `${SITE}${path}` }] : [];
+      });
+      const xDefault = alternatePath(loc, X_DEFAULT_LOCALE);
+      const pairs =
+        expected.length > 1 && xDefault ? [...expected, { hreflang: 'x-default', href: `${SITE}${xDefault}` }] : [];
+
+      expect(alternateRefs.map(({ hreflang, href }) => ({ hreflang, href }))).toEqual(pairs);
+    },
+  );
 });

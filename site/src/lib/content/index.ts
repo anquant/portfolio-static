@@ -102,7 +102,12 @@ export const getBlogPage = (): BlogPageData => readJson(blogPageSchema, 'blog-pa
 export const getBlogCategories = (): BlogCategoriesData[] =>
   readJson(z.array(blogCategorySchema), 'blog-categories.json');
 
-export const getClients = (): ClientsData[] => readJson(z.array(clientSchema), 'clients.json');
+/** One shared list; the English site gets the Latin spelling of each name */
+export const getClients = (locale: Locale = 'ru'): ClientsData[] =>
+  readJson(z.array(clientSchema), 'clients.json').map(({ title_en, ...client }) => ({
+    ...client,
+    title: locale === 'en' && title_en ? title_en : client.title,
+  }));
 
 /* ------------------------------------------------------------------------ */
 /* Works                                                                    */

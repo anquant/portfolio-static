@@ -139,6 +139,10 @@ describe('English content', () => {
     expect(cyrillic).toEqual([]);
   });
 
+  it('spells every client name in Latin letters', () => {
+    expect(getClients('en').filter(c => /[а-яё]/i.test(c.title))).toEqual([]);
+  });
+
   it('never lets a case slug shadow the /en prefix', () => {
     expect(slugsInDir('works')).not.toContain('en');
   });

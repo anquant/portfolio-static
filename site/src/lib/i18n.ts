@@ -120,14 +120,21 @@ const ru = {
   },
   about: { resume: 'Резюме (PDF)', inNumbers: 'В цифрах', skills: 'Навыки' },
   contacts: {
-    phone: 'Телефон',
+    labels: { email: 'E-mail', phone: 'Телефон', telegram: 'Telegram' },
+    /** Show / hide buttons of the masked channels */
+    reveal: {
+      phone: { show: 'Показать номер', hide: 'Скрыть номер' },
+      telegram: { show: 'Показать ник в Telegram', hide: 'Скрыть ник в Telegram' },
+    },
     copy: 'Скопировать',
     copied: 'Скопировано',
     copyFailed: 'Не удалось скопировать',
-    showPhone: 'Показать номер',
-    hidePhone: 'Скрыть номер',
-    showTelegram: 'Показать ник в Telegram',
-    hideTelegram: 'Скрыть ник в Telegram',
+  },
+  notFound: {
+    metaTitle: 'Ошибка 404',
+    title: 'Такой страницы не существует',
+    text: 'Возможно, она переехала. Попробуйте один из разделов:',
+    home: 'На главную',
   },
 };
 
@@ -186,14 +193,20 @@ const en: Dictionary = {
   },
   about: { resume: 'Résumé (PDF)', inNumbers: 'In numbers', skills: 'Skills' },
   contacts: {
-    phone: 'Phone',
+    labels: { email: 'E-mail', phone: 'Phone', telegram: 'Telegram' },
+    reveal: {
+      phone: { show: 'Show number', hide: 'Hide number' },
+      telegram: { show: 'Show Telegram username', hide: 'Hide Telegram username' },
+    },
     copy: 'Copy',
     copied: 'Copied',
     copyFailed: 'Could not copy',
-    showPhone: 'Show number',
-    hidePhone: 'Hide number',
-    showTelegram: 'Show Telegram username',
-    hideTelegram: 'Hide Telegram username',
+  },
+  notFound: {
+    metaTitle: 'Error 404',
+    title: 'This page does not exist',
+    text: 'It may have moved. Try one of these sections:',
+    home: 'Home page',
   },
 };
 
