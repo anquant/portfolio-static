@@ -13,7 +13,7 @@ meta_description: "Step-by-step: deploy a Next.js app to an Ubuntu server — SS
 ---
 Deploying a Next.js app to your own server can look daunting if you haven't managed a Linux server or configured a web server before. Follow the steps below and you'll have the app running reliably in the background, served through Nginx and protected with HTTPS. We'll go from the first SSH connection to a free SSL certificate from Let's Encrypt.
 
-The commands assume a fresh Ubuntu server and a domain that already points to its IP address.
+The commands assume a fresh Ubuntu server and a domain whose DNS records — for both the bare domain and www — already point to the server's IP address.
 
 ## Connect to the server
 
@@ -219,6 +219,8 @@ npm ci
 npm run build
 pm2 restart <process_name>
 ```
+
+> The build overwrites the files the running app uses, so the site may return errors for the few seconds it takes. For releases without downtime, build in CI or in a separate directory and switch over once the build is done.
 
 Your Next.js app is now running on your own server under PM2, available on your domain and protected with HTTPS. This setup is simple, stable and easy to automate later with a CI/CD pipeline.
 
