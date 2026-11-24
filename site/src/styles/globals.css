@@ -89,12 +89,17 @@
   .story {
     @apply max-w-[46rem] text-lg md:text-xl leading-[1.75] md:leading-[1.7] text-fg/75;
   }
-  /* The opening paragraph reads as the entry point: larger and brighter */
-  .story p:first-child {
-    @apply text-xl md:text-2xl leading-[1.55] text-fg;
-  }
-  .story p + p {
+  /* The story is split into revealed blocks (see AboutPage) */
+  .story > * + * {
     @apply mt-7 md:mt-8;
+  }
+  .story ul,
+  .story ol {
+    @apply list-disc pl-6;
+  }
+  /* The opening paragraph reads as the entry point: larger and brighter */
+  .story > :first-child p:first-child {
+    @apply text-xl md:text-2xl leading-[1.55] text-fg;
   }
 
   /* Vertical rhythm: gap before a major section (page end uses the footer's own gap) */
@@ -213,8 +218,10 @@
   line-height: 1.7;
 }
 
-/* Links in running text: accent colour + soft underline, visible without hover */
-.content-blocks a {
+/* Links in running text: accent colour + soft underline, visible without hover.
+   .text-links gives the same look to short rich text outside .content-blocks. */
+.content-blocks a,
+.text-links a {
   color: rgb(var(--accent));
   text-decoration: underline;
   text-decoration-color: rgb(var(--accent) / 0.4);
@@ -225,7 +232,8 @@
     text-decoration-color 0.2s;
 }
 
-.content-blocks a:hover {
+.content-blocks a:hover,
+.text-links a:hover {
   color: rgb(var(--fg));
   text-decoration-color: rgb(var(--fg));
 }

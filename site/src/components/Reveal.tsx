@@ -42,8 +42,9 @@ export default function Reveal({
         if (!entry) {
           return;
         }
-        // the observer reports the initial state right away: visible then = first screen
-        if (entry.isIntersecting && firstCallback) {
+        // the observer reports the initial state right away: visible then, with the
+        // page at the top, = first screen (not a restored scroll or a #hash jump)
+        if (entry.isIntersecting && firstCallback && window.scrollY === 0) {
           setOnFirstScreen(true);
         }
         firstCallback = false;

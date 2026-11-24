@@ -9,6 +9,7 @@ import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
 import { Cards } from '@/components/service/ServiceBlocks';
 import type { AboutData } from '@/lib/content/schemas';
+import { splitHtmlBlocks } from '@/lib/html-blocks';
 import { breadcrumbLd, personLd } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
@@ -31,9 +32,8 @@ export default function AboutPage({ about }: AboutProps) {
     meta_title,
     meta_description,
   } = about;
-  // one reveal per paragraph, so the story reads in as it appears
-  const matched = Array.from(content.matchAll(/<p>([\s\S]*?)<\/p>/g), m => m[1] ?? '');
-  const paragraphs = matched.length > 0 ? matched : [content];
+  // one reveal per block, so the story reads in as it appears
+  const blocks = splitHtmlBlocks(content);
   const seo = { meta_title, meta_description, type: 'profile' as const };
   const jsonLd = [
     {
@@ -79,12 +79,7 @@ export default function AboutPage({ about }: AboutProps) {
           }
           lead={
             // the lead links its key words to the matching services
-            lead && (
-              <span
-                className="[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/40 [&_a]:decoration-1 [&_a]:underline-offset-4 [&_a]:transition-colors [&_a:hover]:text-fg [&_a:hover]:decoration-fg"
-                dangerouslySetInnerHTML={{ __html: lead }}
-              />
-            )
+            lead && <span className="text-links" dangerouslySetInnerHTML={{ __html: lead }} />
           }
         />
 
@@ -93,13 +88,13 @@ export default function AboutPage({ about }: AboutProps) {
         <section className="mt-16 md:mt-24 grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-8">
             <div className="story">
-              {paragraphs.map((html, i) => (
-                <Reveal key={i} as="p" delay={i * 80} introDelay={450}>
-                  <span dangerouslySetInnerHTML={{ __html: html }} />
+              {blocks.map((html, i) => (
+                <Reveal key={i} delay={i * 80} introDelay={450}>
+                  <div dangerouslySetInnerHTML={{ __html: html }} />
                 </Reveal>
               ))}
             </div>
-            <Reveal delay={paragraphs.length * 80} introDelay={450} className="mt-12 flex flex-wrap gap-3">
+            <Reveal delay={blocks.length * 80} introDelay={450} className="mt-12 flex flex-wrap gap-3">
               {resume && (
                 <Button type="link" href={resume} external>
                   {t.about.resume} <FiArrowUpRight aria-hidden />
