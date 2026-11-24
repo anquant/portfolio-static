@@ -166,7 +166,7 @@ export default function WorkPage({ work, next, services }: WorkProps) {
                   <a
                     href={link}
                     target="_blank"
-                    rel="nofollow noopener noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-lg transition-colors hover:text-accent"
                   >
                     {displayHost(link)}

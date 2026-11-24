@@ -81,7 +81,7 @@ export default function AboutPage({ about }: AboutProps) {
             // the lead links its key words to the matching services
             lead && (
               <span
-                className="[&_a]:text-fg/90 [&_a]:underline [&_a]:decoration-fg/30 [&_a]:underline-offset-4 [&_a]:transition-colors [&_a:hover]:decoration-fg"
+                className="[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/40 [&_a]:decoration-1 [&_a]:underline-offset-4 [&_a]:transition-colors [&_a:hover]:text-fg [&_a:hover]:decoration-fg"
                 dangerouslySetInnerHTML={{ __html: lead }}
               />
             )
