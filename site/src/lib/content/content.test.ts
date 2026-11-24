@@ -9,6 +9,7 @@ import {
   getAbout,
   getArticleBySlug,
   getBlogArticles,
+  getBlogCategories,
   getClients,
   getContacts,
   getHome,
@@ -97,6 +98,8 @@ describe('English content', () => {
 
   it('loads and validates every file', () => {
     expect(() => [getHome('en'), getAbout('en'), getContacts('en'), getServicesPage('en')]).not.toThrow();
+    expect(getBlogArticles('en').length).toBe(slugsInDir('en/blog').length);
+    expect(getBlogCategories('en').filter(c => /[а-яё]/i.test(c.title))).toEqual([]);
   });
 
   it('translates every case and every service, and nothing extra', () => {
@@ -131,7 +134,8 @@ describe('English content', () => {
 
   it('has no Russian left in it', () => {
     const files = [
-      ...['home', 'about', 'contacts', 'services-page'].map(f => `en/${f}.json`),
+      ...['home', 'about', 'contacts', 'services-page', 'blog-page'].map(f => `en/${f}.json`),
+      ...slugsInDir('en/blog').map(s => `en/blog/${s}.mdx`),
       ...slugsInDir('en/works').map(s => `en/works/${s}.json`),
       ...slugsInDir('en/services').map(s => `en/services/${s}.json`),
     ];

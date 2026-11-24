@@ -1,8 +1,8 @@
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import Link from 'next/link';
 
 import type { ArticleCardData } from '@/lib/content/schemas';
+import { formatDate } from '@/lib/i18n';
+import { useLocale } from '@/lib/use-locale';
 
 import BlogCover from './BlogCover';
 import Reveal from './Reveal';
@@ -15,8 +15,9 @@ type ArticleCardProps = {
 };
 
 export default function ArticleCard({ articles, headingAs: Heading = 'h2' }: ArticleCardProps) {
+  const { locale, t, href } = useLocale();
   if (!articles || articles.length === 0) {
-    return <div className="text-muted mt-10">Здесь пока нет статей…</div>;
+    return <div className="text-muted mt-10">{t.blog.empty}</div>;
   }
 
   return (
@@ -24,7 +25,7 @@ export default function ArticleCard({ articles, headingAs: Heading = 'h2' }: Art
       {articles.map((article, index) => (
         <Reveal key={article.slug} delay={(index % 3) * 90} className="flex">
           <Link
-            href={`/blog/${article.slug}`}
+            href={href(`/blog/${article.slug}`)}
             className="group flex w-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-fg/20 hover:bg-surface-2"
           >
             {article.scene ? (
@@ -43,11 +44,7 @@ export default function ArticleCard({ articles, headingAs: Heading = 'h2' }: Art
                 <span className="rounded-full border border-line px-2.5 py-0.5 lowercase">
                   {article.category.title}
                 </span>
-                <time dateTime={article.pubdate}>
-                  {format(new Date(article.pubdate), 'd MMMM yyyy', {
-                    locale: ru,
-                  })}
-                </time>
+                <time dateTime={article.pubdate}>{formatDate(locale, article.pubdate)}</time>
               </div>
               <Heading className="t-card transition-colors group-hover:text-accent">{article.title}</Heading>
               {article.annotation && (

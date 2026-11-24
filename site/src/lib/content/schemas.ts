@@ -110,6 +110,8 @@ export const blogPageSchema = z.strictObject({
 
 export const blogCategorySchema = z.strictObject({
   title: z.string(),
+  /** Title on the English site */
+  title_en: z.string().optional(),
   slug: z.string(),
 });
 
@@ -263,7 +265,8 @@ export type AboutData = z.infer<typeof aboutSchema>;
 export type ContactsData = z.infer<typeof contactsSchema>;
 export type ServicesPageData = z.infer<typeof servicesPageSchema>;
 export type BlogPageData = z.infer<typeof blogPageSchema>;
-export type BlogCategoriesData = z.infer<typeof blogCategorySchema>;
+/** A category as pages see it: `title` already in the page's language */
+export type BlogCategoriesData = Omit<z.infer<typeof blogCategorySchema>, 'title_en'>;
 /** A client as pages see it: `title` already in the page's language */
 export type ClientsData = Omit<z.infer<typeof clientSchema>, 'title_en'>;
 

@@ -3,7 +3,9 @@
  * /en. Next.js i18n routing doesn't work with `output: 'export'`, so the
  * locale is simply the URL prefix.
  *
- * The blog is Russian-only: its pages have no English counterpart.
+ * Every page exists in both languages except blog articles: each language
+ * has its own posts (an English post may adapt a Russian one, but it is
+ * written for a different search market), so an article has no counterpart.
  */
 
 export const LOCALES = ['ru', 'en'] as const;
@@ -49,22 +51,33 @@ export function localePath(locale: Locale, path: string): string {
   return path === '/' || /^\/[?#]/.test(path) ? `${PREFIX.en}${path.slice(1)}` : `${PREFIX.en}${path}`;
 }
 
-/** Pages that exist only in Russian */
-function isRussianOnly(path: string): boolean {
-  return /^\/(blog|404)(?=$|[/?#])/.test(path);
+/** Pages without a counterpart in the other language: blog articles and the 404 page */
+function isUntranslated(path: string): boolean {
+  return /^\/(blog\/[^/]+|404)$/.test(path);
 }
 
 /**
  * The same page in another language, without query or hash, or null when
- * that page doesn't exist there (the blog in English).
+ * the page has no counterpart there (a blog article). A page is always its
+ * own counterpart in its own language.
  */
 export function alternatePath(path: string, target: Locale): string | null {
   const base = stripLocale(path).split(/[?#]/)[0] || '/';
-  if (target !== 'ru' && isRussianOnly(base)) {
+  if (target !== localeFromPath(path) && isUntranslated(base)) {
     return null;
   }
 
   return localePath(target, base);
+}
+
+/**
+ * Where the language switch leads: the same page in that language, or the
+ * closest one that exists — the blog for an article, the home page otherwise.
+ */
+export function switchPath(path: string, target: Locale): string {
+  const base = stripLocale(path).split(/[?#]/)[0] || '/';
+
+  return alternatePath(path, target) ?? localePath(target, base.startsWith('/blog/') ? '/blog' : '/');
 }
 
 /* ------------------------------------------------------------------------ */
@@ -119,6 +132,16 @@ const ru = {
     byEstimate: 'Стоимость по оценке',
   },
   about: { resume: 'Резюме (PDF)', inNumbers: 'В цифрах', skills: 'Навыки' },
+  blog: {
+    categories: 'Категории',
+    all: 'Все',
+    pages: 'Страницы',
+    other: 'Другие статьи',
+    allArticles: 'Все статьи',
+    empty: 'Здесь пока нет статей…',
+    copyCode: 'Скопировать код',
+    copied: 'Скопировано',
+  },
   contacts: {
     labels: { email: 'E-mail', phone: 'Телефон', telegram: 'Telegram' },
     /** Show / hide buttons of the masked channels */
@@ -192,6 +215,16 @@ const en: Dictionary = {
     byEstimate: 'Priced on request',
   },
   about: { resume: 'Résumé (PDF)', inNumbers: 'In numbers', skills: 'Skills' },
+  blog: {
+    categories: 'Categories',
+    all: 'All',
+    pages: 'Pages',
+    other: 'More articles',
+    allArticles: 'All articles',
+    empty: 'No articles here yet…',
+    copyCode: 'Copy code',
+    copied: 'Copied',
+  },
   contacts: {
     labels: { email: 'E-mail', phone: 'Phone', telegram: 'Telegram' },
     reveal: {
@@ -221,6 +254,16 @@ export function formatPrice(locale: Locale, amount: number): string {
 
 export const CURRENCY: Record<Locale, string> = { ru: 'RUB', en: 'USD' };
 
+const DATE_FORMAT: Record<Locale, Intl.DateTimeFormat> = {
+  ru: new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+  en: new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+};
+
+/** Publication date: "16 января 2026 г." → "16 января 2026", "January 16, 2026" */
+export function formatDate(locale: Locale, isoDate: string): string {
+  return DATE_FORMAT[locale].format(new Date(isoDate)).replace(/\s*г\.$/, '');
+}
+
 /** Main menu, also mirrored in the footer and on the 404 page */
 export function navigation(locale: Locale) {
   const t = DICTIONARY[locale].nav;
@@ -228,7 +271,7 @@ export function navigation(locale: Locale) {
     { title: t.works, slug: '/' },
     { title: t.services, slug: '/services' },
     { title: t.about, slug: '/about' },
-    ...(locale === 'ru' ? [{ title: t.blog, slug: '/blog' }] : []),
+    { title: t.blog, slug: '/blog' },
   ];
 
   return items.map(item => ({ ...item, slug: localePath(locale, item.slug) }));

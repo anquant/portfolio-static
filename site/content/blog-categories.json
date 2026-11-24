@@ -1,11 +1,13 @@
 [
   {
     "title": "Разработка",
-    "slug": "razrabotka"
+    "title_en": "Development",
+    "slug": "development"
   },
   {
     "title": "Дизайн",
-    "slug": "dizayn"
+    "title_en": "Design",
+    "slug": "design"
   },
   {
     "title": "SEO",

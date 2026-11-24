@@ -7,6 +7,10 @@ import type { ContactItem } from '@/lib/contact';
 import {
   ContentError,
   getAbout,
+  getArticleBySlug,
+  getBlogArticles,
+  getBlogCategories,
+  getBlogPage,
   getClients,
   getContacts,
   getHome,
@@ -150,4 +154,41 @@ export const workProps =
     const next = n && n.slug !== slug ? { slug: n.slug, title: n.title } : null;
 
     return { props: { work, next } };
+  };
+
+export const blogProps =
+  (locale: Locale): GetStaticProps =>
+  async () => ({
+    props: {
+      blog_page: getBlogPage(locale),
+      blog_categories: getBlogCategories(locale),
+      blog_articles: getBlogArticles(locale),
+    },
+  });
+
+export const articlePaths =
+  (locale: Locale): GetStaticPaths =>
+  async () => ({
+    paths: getBlogArticles(locale).map(a => ({ params: { slug: a.slug } })),
+    fallback: false,
+  });
+
+export const articleProps =
+  (locale: Locale): GetStaticProps =>
+  async ({ params }) => {
+    const slug = params?.slug as string;
+    const found = getArticleBySlug(slug, locale);
+    if (!found) {
+      return { notFound: true };
+    }
+
+    return {
+      props: {
+        article: found.article,
+        articles: getBlogArticles(locale)
+          .filter(a => a.slug !== slug)
+          .slice(0, 3),
+        mdxSource: await serialize(found.body, { mdxOptions: { remarkPlugins: [remarkGfm] } }),
+      },
+    };
   };

@@ -97,10 +97,15 @@ export const getContacts = (locale: Locale = 'ru'): ContactsData =>
 export const getServicesPage = (locale: Locale = 'ru'): ServicesPageData =>
   readJson(servicesPageSchema, localized(locale, 'services-page.json'));
 
-export const getBlogPage = (): BlogPageData => readJson(blogPageSchema, 'blog-page.json');
+export const getBlogPage = (locale: Locale = 'ru'): BlogPageData =>
+  readJson(blogPageSchema, localized(locale, 'blog-page.json'));
 
-export const getBlogCategories = (): BlogCategoriesData[] =>
-  readJson(z.array(blogCategorySchema), 'blog-categories.json');
+/** One shared list of categories; the English site gets their English titles */
+export const getBlogCategories = (locale: Locale = 'ru'): BlogCategoriesData[] =>
+  readJson(z.array(blogCategorySchema), 'blog-categories.json').map(({ title_en, ...category }) => ({
+    ...category,
+    title: locale === 'en' && title_en ? title_en : category.title,
+  }));
 
 /** One shared list; the English site gets the Latin spelling of each name */
 export const getClients = (locale: Locale = 'ru'): ClientsData[] =>
@@ -209,25 +214,29 @@ export function toArticle(
   });
 }
 
-function readArticle(slug: string) {
-  const file = `blog/${slug}.mdx`;
+/** Each language has its own posts: blog/ (Russian) and en/blog/ */
+function readArticle(slug: string, locale: Locale) {
+  const file = localized(locale, `blog/${slug}.mdx`);
   const { data, content } = matter(fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8'));
   const fm = parseContent(articleFrontmatterSchema, data, file);
 
-  return { article: toArticle(fm, slug, getBlogCategories(), file), body: content };
+  return { article: toArticle(fm, slug, getBlogCategories(locale), file), body: content };
 }
 
 /** Newest first */
-export function getBlogArticles(): BlogArticlesData[] {
-  return slugsInDir('blog')
-    .map(slug => readArticle(slug).article)
+export function getBlogArticles(locale: Locale = 'ru'): BlogArticlesData[] {
+  return slugsInDir(localized(locale, 'blog'))
+    .map(slug => readArticle(slug, locale).article)
     .sort((a, b) => b.pubdate.localeCompare(a.pubdate));
 }
 
-export function getArticleBySlug(slug: string): { article: BlogArticlesData; body: string } | undefined {
-  if (!slugsInDir('blog').includes(slug)) {
+export function getArticleBySlug(
+  slug: string,
+  locale: Locale = 'ru',
+): { article: BlogArticlesData; body: string } | undefined {
+  if (!slugsInDir(localized(locale, 'blog')).includes(slug)) {
     return undefined;
   }
 
-  return readArticle(slug);
+  return readArticle(slug, locale);
 }

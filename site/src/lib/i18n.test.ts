@@ -12,6 +12,8 @@ import {
   localePath,
   navigation,
   stripLocale,
+  switchPath,
+  formatDate,
 } from './i18n';
 
 describe('localeFromPath', () => {
@@ -56,17 +58,36 @@ describe('alternatePath', () => {
     expect(alternatePath('/?page=2#works', 'en')).toBe('/en');
   });
 
-  it('has no English counterpart for the Russian-only blog', () => {
-    expect(alternatePath('/blog', 'en')).toBeNull();
+  it('pairs the blog index but not the articles, which are written per language', () => {
+    expect(alternatePath('/blog', 'en')).toBe('/en/blog');
+    expect(alternatePath('/en/blog?category=seo', 'ru')).toBe('/blog');
     expect(alternatePath('/blog/some-post', 'en')).toBeNull();
     expect(alternatePath('/blog/some-post', 'ru')).toBe('/blog/some-post');
+    expect(alternatePath('/en/blog/a-post', 'ru')).toBeNull();
+    expect(alternatePath('/en/blog/a-post', 'en')).toBe('/en/blog/a-post');
+  });
+});
+
+describe('switchPath', () => {
+  it('leads to the same page, or to the blog from an article', () => {
+    expect(switchPath('/services/seo', 'en')).toBe('/en/services/seo');
+    expect(switchPath('/blog/some-post', 'en')).toBe('/en/blog');
+    expect(switchPath('/en/blog/a-post', 'ru')).toBe('/blog');
+    expect(switchPath('/404', 'en')).toBe('/en');
   });
 });
 
 describe('navigation', () => {
-  it('drops the blog from the English menu and prefixes the links', () => {
-    expect(navigation('en').map(i => i.slug)).toEqual(['/en', '/en/services', '/en/about']);
+  it('prefixes the links on the English site', () => {
+    expect(navigation('en').map(i => i.slug)).toEqual(['/en', '/en/services', '/en/about', '/en/blog']);
     expect(navigation('ru').map(i => i.slug)).toEqual(['/', '/services', '/about', '/blog']);
+  });
+});
+
+describe('formatDate', () => {
+  it('writes the date the way each language does', () => {
+    expect(formatDate('ru', '2026-01-16')).toBe('16 января 2026');
+    expect(formatDate('en', '2026-01-16')).toBe('January 16, 2026');
   });
 });
 
@@ -85,20 +106,28 @@ describe('sitemap hreflang', () => {
   };
   const SITE = 'https://moiseevp.ru';
 
-  it.each(['/', '/about', '/services/seo', '/igem-ran', '/en', '/en/about', '/en/services/seo', '/blog', '/blog/x'])(
-    '%s',
-    async loc => {
-      const { alternateRefs } = await config.transform({}, loc);
-      const expected = LOCALES.flatMap(l => {
-        const path = alternatePath(loc, l);
+  it.each([
+    '/',
+    '/about',
+    '/services/seo',
+    '/igem-ran',
+    '/en',
+    '/en/about',
+    '/blog',
+    '/en/blog',
+    '/blog/x',
+    '/en/blog/y',
+  ])('%s', async loc => {
+    const { alternateRefs } = await config.transform({}, loc);
+    const expected = LOCALES.flatMap(l => {
+      const path = alternatePath(loc, l);
 
-        return path ? [{ hreflang: LANG_TAG[l], href: `${SITE}${path}` }] : [];
-      });
-      const xDefault = alternatePath(loc, X_DEFAULT_LOCALE);
-      const pairs =
-        expected.length > 1 && xDefault ? [...expected, { hreflang: 'x-default', href: `${SITE}${xDefault}` }] : [];
+      return path ? [{ hreflang: LANG_TAG[l], href: `${SITE}${path}` }] : [];
+    });
+    const xDefault = alternatePath(loc, X_DEFAULT_LOCALE);
+    const pairs =
+      expected.length > 1 && xDefault ? [...expected, { hreflang: 'x-default', href: `${SITE}${xDefault}` }] : [];
 
-      expect(alternateRefs.map(({ hreflang, href }) => ({ hreflang, href }))).toEqual(pairs);
-    },
-  );
+    expect(alternateRefs.map(({ hreflang, href }) => ({ hreflang, href }))).toEqual(pairs);
+  });
 });

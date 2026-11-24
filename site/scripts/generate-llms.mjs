@@ -40,19 +40,24 @@ const home = readJson('home.json');
 const services = jsonDir('services').sort((a, b) => a.sort - b.sort);
 const works = jsonDir('works').sort((a, b) => a.sort - b.sort);
 const categories = Object.fromEntries(readJson('blog-categories.json').map(c => [c.slug, c.title]));
-const articles = fs
-  .readdirSync(path.join(CONTENT, 'blog'))
-  .filter(file => file.endsWith('.mdx'))
-  .map(file => ({ slug: file.replace(/\.mdx$/, ''), ...matter.read(path.join(CONTENT, 'blog', file)).data }))
-  .sort((a, b) => String(b.pubdate).localeCompare(String(a.pubdate)));
+/** Articles of one language, newest first: "blog" (Russian) or "en/blog" */
+const articlesIn = dir =>
+  fs
+    .readdirSync(path.join(CONTENT, dir))
+    .filter(file => file.endsWith('.mdx'))
+    .map(file => ({ slug: file.replace(/\.mdx$/, ''), ...matter.read(path.join(CONTENT, dir, file)).data }))
+    .sort((a, b) => String(b.pubdate).localeCompare(String(a.pubdate)));
+const articles = articlesIn('blog');
 
-/* English version (/en): the same structure, no blog — it is Russian-only */
+/* English version (/en): the same structure, with its own blog posts */
 const en = {
   about: readJson('en/about.json'),
   home: readJson('en/home.json'),
   services: jsonDir('en/services').sort((a, b) => a.sort - b.sort),
   // translated text over the Russian file, which keeps links and order
   works: works.map(w => ({ ...w, ...readJson(path.join('en/works', `${w.slug}.json`)) })),
+  articles: articlesIn('en/blog'),
+  categories: Object.fromEntries(readJson('blog-categories.json').map(c => [c.slug, c.title_en ?? c.title])),
 };
 
 const englishLines = [
@@ -77,6 +82,13 @@ const englishLines = [
     `  - Stack: ${plain(w.infotext)}`,
     ...(w.link ? [`  - Website: ${w.link}`] : []),
   ]),
+  '',
+  '### Blog',
+  '',
+  ...en.articles.map(
+    a =>
+      `- [${a.title}](${SITE}/en/blog/${a.slug}) (${a.pubdate}, ${en.categories[a.category] ?? a.category}): ${plain(a.annotation)}`,
+  ),
   '',
   '### Contact',
   '',

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { LOCALES, alternatePath, localePath, type Locale } from '@/lib/i18n';
+import { LOCALES, switchPath, type Locale } from '@/lib/i18n';
 import { useLocale } from '@/lib/use-locale';
 
 const NAMES: Record<Locale, string> = { ru: 'Русский', en: 'English' };
@@ -14,7 +14,7 @@ type LanguageSwitchProps = {
 /**
  * "RU | EN" pill in the style of the main menu: the current language is
  * highlighted, the other one links to the same page in that language (or to
- * its home page when the page doesn't exist there, e.g. the blog).
+ * the closest one when it has no counterpart, e.g. the blog for an article).
  */
 export default function LanguageSwitch({ className = '', onNavigate }: LanguageSwitchProps) {
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function LanguageSwitch({ className = '', onNavigate }: LanguageS
         ) : (
           <Link
             key={l}
-            href={alternatePath(router.asPath, l) ?? localePath(l, '/')}
+            href={switchPath(router.asPath, l)}
             lang={l}
             hrefLang={l}
             onClick={onNavigate}
