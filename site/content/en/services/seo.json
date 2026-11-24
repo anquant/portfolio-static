@@ -1,0 +1,178 @@
+{
+  "sort": 3,
+  "preview_title": "SEO",
+  "preview_description": "Getting websites found on Google and in AI answers. Audits, technical SEO, keyword research and content — no black-hat tricks.",
+  "title": "SEO for Google and AI search",
+  "tech_list": [
+    "SEO audit",
+    "Keyword research",
+    "Technical SEO",
+    "Content",
+    "GEO",
+    "Google Search Console and Analytics"
+  ],
+  "introtext": "I help websites win leads from search — on Google and in the answers of AI assistants like ChatGPT, Gemini and Google's AI Overviews. I build websites myself, so I fix technical SEO in the code instead of leaving recommendations that wait months for a developer. Since 2012 I've worked with online stores, manufacturers, B2B and logistics companies.",
+  "scene": "burst",
+  "tasks": {
+    "title": "What clients come to me with",
+    "items": [
+      {
+        "title": "The website gets no leads from search",
+        "text": "I find the cause — technical issues, structure, copy or strong competitors — and build a step-by-step growth plan."
+      },
+      {
+        "title": "A new website is about to launch",
+        "text": "I build SEO in before launch: a structure based on real demand, keywords, meta tags, structured data. That's how I made the Kuban-Lotok website — everything from design to SEO. Today it gets more than 400 visitors a day."
+      },
+      {
+        "title": "A migration or redesign",
+        "text": "I keep your traffic when the domain, CMS or design changes: a redirect map, carried-over metadata, indexing checks."
+      },
+      {
+        "title": "Showing up in AI answers",
+        "text": "More and more people ask ChatGPT or Gemini instead of scrolling through search results. I help get your website mentioned and cited in those answers."
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "What SEO includes",
+      "color": "dark",
+      "blocks": [
+        {
+          "title": "Audit",
+          "content": "I check indexing, duplicates, speed, structure, copy and competitors. I find out what's holding the website back and in what order to fix it."
+        },
+        {
+          "title": "Keywords and structure",
+          "content": "I collect the queries people use to look for your services, group them and map them to pages. If there's no page for important demand, I design a new one."
+        },
+        {
+          "title": "Technical SEO",
+          "content": "Speed and Core Web Vitals, sitemap, robots.txt, canonicals, redirects, schema.org markup. I fix these directly in the code if I have access."
+        },
+        {
+          "title": "Content",
+          "content": "Copy and meta tags that match what people actually search for. I write for humans: clear, to the point, without keyword stuffing."
+        },
+        {
+          "title": "Internal linking",
+          "content": "I connect pages with internal links and breadcrumbs so search engines understand the structure and visitors find what they need in a couple of clicks. I don't buy links."
+        },
+        {
+          "title": "Analytics and reports",
+          "content": "I track rankings, traffic and leads in Google Search Console and Google Analytics. Once a month you get a report: what was done, what changed, what's next."
+        }
+      ]
+    },
+    {
+      "title": "Optimising for AI search (GEO)",
+      "color": "light",
+      "blocks": [
+        {
+          "title": "How it works",
+          "content": "An AI assistant builds its answer from several sources and often links to them. To be one of them, a page has to answer the question directly, be easy for a machine to understand and be trustworthy."
+        },
+        {
+          "title": "What I do",
+          "content": "I restructure copy so the answer comes in the first lines. I add questions and answers, definitions and comparisons. I mark pages up with schema.org, create llms.txt and open the website to AI crawlers."
+        },
+        {
+          "title": "Trust",
+          "content": "I show the author and their experience, dates, real case studies and numbers. AI assistants, like Google, prefer to rely on information that can be verified."
+        }
+      ]
+    }
+  ],
+  "process": {
+    "title": "How we work together",
+    "steps": [
+      {
+        "title": "Audit",
+        "text": "I study the website, the niche and the competitors, and show where the website stands and what's holding it back."
+      },
+      {
+        "title": "Strategy",
+        "text": "I put together a 3–6 month plan: what work, in what order and what results to expect."
+      },
+      {
+        "title": "Implementation",
+        "text": "I fix technical issues, improve structure and copy, and create new pages for real demand."
+      },
+      {
+        "title": "Growth and reporting",
+        "text": "I track rankings, traffic and leads, report monthly and adjust the plan based on the data."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "How much SEO costs",
+    "note": "The budget depends on competition in your niche, the size of the website and the scope of work. I don't guarantee a top-10 ranking — nobody honestly can. I guarantee a clear plan and a report on every step.",
+    "plans": [
+      {
+        "title": "One-off audit",
+        "text": "A technical and content review of the website. You get a document with problems, solutions and priorities. Works both as a starting point and as a way to check another contractor.",
+        "unit": "per audit",
+        "price_from": 800,
+        "term": "1–2 weeks"
+      },
+      {
+        "title": "Ongoing SEO",
+        "text": "Continuous work on the website: strategy, implementation, content, analytics and monthly reports.",
+        "unit": "per month",
+        "price_from": 900
+      },
+      {
+        "title": "SEO for a launch",
+        "text": "Structure, keywords, meta tags and a technical foundation for a new website before it goes live.",
+        "unit": "per project",
+        "price_from": 1000,
+        "term": "2–3 weeks"
+      },
+      {
+        "title": "Consultation",
+        "text": "If you're growing the website in-house: I review the situation, set priorities and answer your questions.",
+        "unit": "per session",
+        "price_from": 90
+      }
+    ]
+  },
+  "works": [
+    "sirius"
+  ],
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "question": "What is SEO in plain words?",
+        "answer": "It's work on a website that makes it rank higher in Google's free results for the queries your customers use. It covers the website's technical health, structure, copy and usability. Unlike ads, the traffic doesn't stop when the budget runs out."
+      },
+      {
+        "question": "How much does SEO cost per month?",
+        "answer": "It depends on the niche, the competition and the size of the website. The formats above give a rough guide. If your budget is limited, start with a one-off audit: it shows which work will pay off first."
+      },
+      {
+        "question": "When will I see the first results?",
+        "answer": "Technical fixes usually show an effect within one to two months, and noticeable traffic growth comes in three to six months. In competitive niches it takes longer: search engines need time to re-evaluate a website.\n\nA solid foundation keeps working for a long time. I've looked after the Kuban-Lotok website for several years, improving it once or twice a year, and it steadily keeps more than 400 visitors a day."
+      },
+      {
+        "question": "Do you guarantee a top-10 ranking?",
+        "answer": "No. Google doesn't disclose its algorithms, and an honest specialist can't promise specific positions. I guarantee a transparent plan, the work getting done and a monthly report on the results."
+      },
+      {
+        "question": "What is GEO and how is it different from SEO?",
+        "answer": "GEO (generative engine optimization) means optimising a website for AI systems that write the answer themselves: ChatGPT, Gemini, Perplexity and AI Overviews in Google. SEO competes for a place in the list of links; GEO competes to get your website quoted by the AI. Both rest on the same foundation: useful content, clear structure and trust."
+      },
+      {
+        "question": "Can my website appear in ChatGPT and Google AI answers?",
+        "answer": "Yes, but no one can guarantee a specific answer: the AI composes it anew every time. The chances grow noticeably when pages answer questions directly, are marked up with schema.org, are open to AI crawlers and are backed by case studies and the author's expertise."
+      },
+      {
+        "question": "Do you buy links?",
+        "answer": "No. Google penalises websites for paid links, and recovery takes months. I work with internal linking and natural mentions — in industry directories and on platforms where your audience spends time."
+      }
+    ]
+  },
+  "meta_title": "SEO for Google and AI search",
+  "meta_description": "SEO for Google and AI answers like ChatGPT and AI Overviews: audits, technical SEO, keyword research and content — no shortcuts, no paid links."
+}

@@ -1,0 +1,227 @@
+---
+pubdate: "2026-11-24"
+category: "development"
+title: "How to deploy a Next.js app to your own server"
+annotation: "A step-by-step guide: from the first SSH login to a Next.js app running under PM2 behind Nginx, with a free Let's Encrypt certificate."
+image_background_color: "#C4C7CE"
+image_src: "/images/blog/deploy-next-js-prilozheniya.png"
+image_width: 600
+image_height: 600
+scene: "cubes"
+meta_title: "How to deploy a Next.js app to a VPS: Nginx, PM2 and HTTPS"
+meta_description: "Step-by-step: deploy a Next.js app to an Ubuntu server — SSH hardening, Node.js, PM2, a UFW firewall, Nginx as a reverse proxy and HTTPS with Let's Encrypt."
+---
+Deploying a Next.js app to your own server can look daunting if you haven't managed a Linux server or configured a web server before. Follow the steps below and you'll have the app running reliably in the background, served through Nginx and protected with HTTPS. We'll go from the first SSH connection to a free SSL certificate from Let's Encrypt.
+
+The commands assume a fresh Ubuntu server and a domain whose DNS records — for both the bare domain and www — already point to the server's IP address.
+
+## Connect to the server
+
+Log in over SSH as root:
+
+```bash
+ssh root@<server_ip_or_domain> -p <port>
+```
+
+> Replace &lt;server_ip_or_domain&gt; and &lt;port&gt; with your values. If the server uses the standard port 22, you can leave out -p.
+
+## Update the packages
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+## Create a user and set up SSH access
+
+Working as root day to day is risky, so create a regular user with sudo rights:
+
+```bash
+adduser <username>
+usermod -aG sudo <username>
+```
+
+Log out (`exit`) and copy your SSH key to the new user from your own machine:
+
+```bash
+ssh-copy-id <username>@<server_ip_or_domain>
+```
+
+Then log in as that user:
+
+```bash
+ssh <username>@<server_ip_or_domain>
+```
+
+## Disable root login over SSH
+
+Open the SSH server configuration:
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+Find this line and set it to:
+
+```bash
+PermitRootLogin no
+```
+
+Save the file and restart SSH:
+
+```bash
+sudo systemctl restart ssh
+```
+
+> Keep your current session open and check that you can log in as the new user in a second terminal before you close it.
+
+## Give the server access to GitHub
+
+Generate a key pair on the server:
+
+```bash
+ssh-keygen -t ed25519
+```
+
+Print the public key:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+Add it to your repository as a **deploy key** on GitHub (*Settings → Deploy keys*). A deploy key gives the server read access to this one repository only.
+
+## Clone the repository and install Node.js
+
+```bash
+git clone <repository_url>
+cd <project_directory>
+```
+
+Install nvm and the current LTS version of Node.js:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+```
+
+## Install dependencies and build
+
+```bash
+npm ci
+npm run build
+```
+
+## Run Next.js with PM2
+
+PM2 keeps the app running in the background and restarts it if it crashes. Install it globally:
+
+```bash
+npm install -g pm2
+```
+
+Start the app (Next.js listens on port 3000 by default):
+
+```bash
+pm2 start npm --name <process_name> -- start
+```
+
+Make PM2 start automatically after a reboot — `pm2 startup` prints a command, run it, then save the process list:
+
+```bash
+pm2 startup
+pm2 save
+```
+
+## Install and configure Nginx
+
+```bash
+sudo apt install nginx
+sudo systemctl enable nginx
+```
+
+### Set up the firewall (UFW)
+
+Allow only SSH and web traffic:
+
+```bash
+sudo apt install ufw
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw enable
+sudo ufw status verbose
+```
+
+> If SSH runs on a non-standard port, allow that port instead of OpenSSH before enabling the firewall, or you'll lock yourself out.
+
+Now create a configuration file for your site:
+
+```bash
+sudo nano /etc/nginx/sites-available/<your_domain>.conf
+```
+
+Start with a plain HTTP server that forwards requests to the app. Certbot will add HTTPS to it in the next step:
+
+```bash
+server {
+    listen 80;
+    server_name <your_domain> www.<your_domain>;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Enable the site, check the configuration and reload Nginx:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/<your_domain>.conf /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+## Enable HTTPS with Let's Encrypt
+
+Install Certbot and request a certificate for both the bare domain and www:
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d <your_domain> -d www.<your_domain>
+```
+
+Certbot obtains the certificate, adds the HTTPS server block to your configuration and sets up the redirect from HTTP to HTTPS.
+
+Certificates renew automatically. Check that the renewal timer is active:
+
+```bash
+sudo systemctl status certbot.timer
+```
+
+And run a test renewal:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+## Updating the app
+
+To release a new version, pull the changes, rebuild and restart the process:
+
+```bash
+git pull
+npm ci
+npm run build
+pm2 restart <process_name>
+```
+
+> The build overwrites the files the running app uses, so the site may return errors for the few seconds it takes. For releases without downtime, build in CI or in a separate directory and switch over once the build is done.
+
+Your Next.js app is now running on your own server under PM2, available on your domain and protected with HTTPS. This setup is simple, stable and easy to automate later with a CI/CD pipeline.
+
+Need help with deployment or infrastructure? [Take a look at how I work](/en/services/development) or [get in touch](/en/contacts).

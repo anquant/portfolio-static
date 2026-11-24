@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IoPause, IoPlay } from 'react-icons/io5';
 
 import type { ImageAsset, VideoAsset } from '@/lib/content/schemas';
+import { useLocale } from '@/lib/use-locale';
 
 import ProjectMedia from './ProjectMedia';
 
@@ -17,6 +18,7 @@ type CaseVideoProps = {
  * Plays only while on screen; user can pause; no autoplay with reduced motion.
  */
 export default function CaseVideo({ video, poster, title, color }: CaseVideoProps) {
+  const { t } = useLocale();
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   // null = no explicit choice yet: follow visibility (and reduced-motion preference)
@@ -80,7 +82,7 @@ export default function CaseVideo({ video, poster, title, color }: CaseVideoProp
         poster={poster?.src}
         width={poster?.width}
         height={poster?.height}
-        aria-label={`${title} — видеообзор сайта`}
+        aria-label={`${title} — ${t.work.video}`}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       >
@@ -89,7 +91,7 @@ export default function CaseVideo({ video, poster, title, color }: CaseVideoProp
       <button
         type="button"
         onClick={toggle}
-        aria-label={playing ? 'Поставить видео на паузу' : 'Воспроизвести видео'}
+        aria-label={playing ? t.work.pause : t.work.play}
         className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-10 grid place-items-center size-10 md:size-12 rounded-full bg-bg/70 text-fg backdrop-blur ring-1 ring-white/15 transition-colors hover:bg-bg/90"
       >
         {playing ? <IoPause size={18} /> : <IoPlay size={18} className="translate-x-px" />}

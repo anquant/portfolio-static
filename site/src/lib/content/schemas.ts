@@ -88,6 +88,11 @@ export const contactsSchema = z.strictObject({
   title: z.string(),
   email: z.email().optional(),
   phone: z.string().optional(),
+  /** Telegram username without "@" */
+  telegram: z
+    .string()
+    .regex(/^[a-z0-9_]{5,32}$/i, 'a Telegram username without "@"')
+    .optional(),
   text: z.string().optional(),
   ...seo,
 });
@@ -105,12 +110,16 @@ export const blogPageSchema = z.strictObject({
 
 export const blogCategorySchema = z.strictObject({
   title: z.string(),
+  /** Title on the English site */
+  title_en: z.string().optional(),
   slug: z.string(),
 });
 
 export const clientSchema = z.strictObject({
   id: z.number().int(),
   title: z.string(),
+  /** Latin spelling for the English site, when `title` is in Cyrillic */
+  title_en: z.string().optional(),
   logo: imageAssetSchema,
   link: z.url().nullish(),
 });
@@ -141,6 +150,23 @@ export const workFileSchema = z.strictObject({
   mockups: z.array(imageAssetSchema).optional(),
   result: z.string(),
   ...seo,
+});
+
+/**
+ * en/works/<slug>.json: the translated text of a case. Media, colours and
+ * order come from the Russian file, so they can't drift between languages.
+ */
+export const workTranslationSchema = workFileSchema.pick({
+  title: true,
+  description: true,
+  infotext: true,
+  scope: true,
+  company: true,
+  problem: true,
+  mockups_description: true,
+  result: true,
+  meta_title: true,
+  meta_description: true,
 });
 
 /** services/<slug>.json */
@@ -176,7 +202,7 @@ export const serviceFileSchema = z.strictObject({
           z.strictObject({
             title: z.string().min(1),
             text: z.string().min(1),
-            /** Rubles; the card says "по оценке" when absent */
+            /** Rubles (US dollars on the English site); the card says "по оценке" when absent */
             price_from: z.number().int().positive().optional(),
             /** "за проект", "в месяц", … */
             unit: z.string().optional(),
@@ -239,8 +265,10 @@ export type AboutData = z.infer<typeof aboutSchema>;
 export type ContactsData = z.infer<typeof contactsSchema>;
 export type ServicesPageData = z.infer<typeof servicesPageSchema>;
 export type BlogPageData = z.infer<typeof blogPageSchema>;
-export type BlogCategoriesData = z.infer<typeof blogCategorySchema>;
-export type ClientsData = z.infer<typeof clientSchema>;
+/** A category as pages see it: `title` already in the page's language */
+export type BlogCategoriesData = Omit<z.infer<typeof blogCategorySchema>, 'title_en'>;
+/** A client as pages see it: `title` already in the page's language */
+export type ClientsData = Omit<z.infer<typeof clientSchema>, 'title_en'>;
 
 export type WorksData = z.infer<typeof workFileSchema> & { slug: string };
 export type ArticleFrontmatter = z.output<typeof articleFrontmatterSchema>;

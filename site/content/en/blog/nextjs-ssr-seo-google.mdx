@@ -1,0 +1,90 @@
+---
+pubdate: "2026-11-24"
+category: "seo"
+title: "Server-side rendering and SEO: how Next.js helps you rank on Google"
+annotation: "Google can run JavaScript, but most AI crawlers and link previews can't. Why server-rendered HTML still matters for search in 2026, and how to get it right with Next.js."
+image_background_color: "#E0DAAA"
+image_src: "/images/blog/nextjs-ssr-seo-yandex.png"
+image_width: 600
+image_height: 600
+scene: "blocks"
+meta_title: "SSR and SEO: how Next.js helps your website rank on Google"
+meta_description: "Why server-rendered HTML still matters for Google, AI search and link previews, and a practical Next.js SEO checklist: rendering, metadata, sitemaps, schema."
+---
+To win traffic from search, a website has to be useful and fast — but first it has to be **read correctly**. That's where many JavaScript websites stumble: their content only appears after the browser runs a script. **Server-side rendering (SSR)**, and frameworks like **Next.js** that make it easy, solve this. In this article I'll explain why rendering still matters for SEO in 2026 and how to set up a Next.js website so that [search engines and AI assistants](/en/services/seo) see everything.
+
+---
+
+## "But Google runs JavaScript"
+
+It does. Googlebot renders pages with an up-to-date version of Chrome, so a client-rendered React app can be indexed. In practice, relying on it has costs:
+
+- **Rendering is deferred.** Pages are crawled first and rendered later, when resources allow. New and updated content can take longer to show up in search.
+- **Things fail silently.** If an API call is slow, a script errors or a resource is blocked by robots.txt, the rendered page can come out empty or incomplete — and you only notice when rankings drop.
+- **Google isn't the only reader.** Most AI crawlers — the ones behind ChatGPT, Claude and Perplexity — and the bots that build link previews in Slack, LinkedIn or Telegram fetch the raw HTML and don't run JavaScript. If your content isn't in that HTML, to them the page is blank.
+
+The result is the same in every case: missing text, missing titles and descriptions, and weaker visibility than the page deserves.
+
+---
+
+## What SSR changes
+
+With server-side rendering, the page is rendered on the server before it's sent to the browser. Visitors and crawlers alike receive complete HTML with all the content already in place.
+
+Compared with a single-page app that assembles content in the browser, this:
+
+- delivers content immediately, without waiting for scripts;
+- improves loading metrics like Largest Contentful Paint;
+- makes the page readable for every crawler, not just the ones that render JavaScript.
+
+---
+
+## Next.js: rendering options for every page
+
+**Next.js** lets you choose how each page is rendered:
+
+- **Static generation** — pages built ahead of time at deploy. The fastest option, ideal for company pages, services and articles.
+- **Server rendering on request** — for pages that depend on fresh data or the request itself.
+- **Incremental regeneration** — static pages that refresh in the background on a schedule, a good fit for catalogues and listings.
+- **Client rendering** — still available for parts that don't need to be indexed, like a dashboard behind a login.
+
+With the App Router, components render on the server by default, so the HTML-first approach is the starting point rather than something you have to add.
+
+### What Next.js gives you for SEO
+
+1. **Predictable HTML** — every page arrives with its headings, text and meta tags.
+2. **Metadata in code** — titles, descriptions, canonical URLs and Open Graph tags per page, generated from your content.
+3. **Sitemaps and robots.txt** generated from the same data as the pages, so they never go stale.
+4. **Clean URLs** — every page has its own route and a logical structure.
+5. **Language versions** — localised routes, with `hreflang` links between them declared in the page metadata.
+6. **Performance by default** — automatic code splitting, image optimisation and font loading that help Core Web Vitals.
+
+---
+
+## How Next.js covers what Google looks for
+
+| <b>What search engines need</b> | <b>How Next.js handles it</b> |
+| --- | --- |
+| Fast loading | Static generation, code splitting, image optimisation |
+| Content in the HTML | Server components, static or server rendering |
+| Complete meta tags | Per-page metadata generated from content |
+| Clear structure and navigation | File-based routing with clean URLs |
+| Structured data | JSON-LD rendered into the HTML, no JavaScript needed |
+
+### A real example
+
+The Sirius messaging service needed a landing page that would bring in customers from both ads and search. I designed and built it on Next.js with pages that arrive fully rendered and optimised for search engines. Visitors who come from an ad immediately see the exact service they were looking for, which lifts conversion on top of the search traffic.
+
+---
+
+## A practical checklist
+
+1. **Render key pages on the server or at build time** — home, service and category pages, product pages, articles.
+2. **Add structured data and Open Graph tags** — they help Google understand the page and make your links look good when shared.
+3. **Generate sitemap.xml and robots.txt** from your content, and keep AI crawlers allowed unless you have a reason to block them.
+4. **Check what the crawler sees** — use the URL Inspection tool in Google Search Console, and look at the raw HTML with JavaScript disabled.
+5. **Watch bundle size and caching** — SSR helps, but heavy scripts can still slow a page down.
+
+If you want a React website that not only looks good but also ranks, Next.js with server or static rendering is the sensible default. It removes the fundamental problems of client-side rendering, puts your content where every crawler can read it and gives you full control over metadata.
+
+> Planning a migration from a client-rendered app, or wondering how to structure a Next.js project for SEO? [Get in touch](/en/contacts) — I'm happy to help.

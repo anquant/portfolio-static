@@ -1,10 +1,15 @@
-import { Html, Head, Main, NextScript } from 'next/document';
+import { Html, Head, Main, NextScript, type DocumentProps } from 'next/document';
 
-export default function Document() {
+import { LANG_TAG, localeFromPath } from '@/lib/i18n';
+
+export default function Document({ __NEXT_DATA__ }: DocumentProps) {
+  // the route pattern ("/en/[slug]") tells the language of every prerendered page
+  const lang = LANG_TAG[localeFromPath(__NEXT_DATA__.page)];
+
   return (
     // data-scroll-behavior: page changes jump to the top instantly; the CSS smooth
     // scroll stays for in-page anchors (Next 16 no longer does this by default)
-    <Html lang="ru" className="bg-bg" data-scroll-behavior="smooth">
+    <Html lang={lang} className="bg-bg" data-scroll-behavior="smooth">
       <Head>
         <meta name="theme-color" content="#0c0c0e" />
         <meta name="color-scheme" content="dark" />

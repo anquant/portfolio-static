@@ -53,3 +53,18 @@ describe('ldGraph', () => {
     });
   });
 });
+
+describe('English pages', () => {
+  it('sign titles with the English name', () => {
+    expect(pageTitle('Contact', 'en')).toBe('Contact — Pavel Moiseev');
+  });
+
+  it('start breadcrumbs at the English home page', () => {
+    expect(breadcrumbLd([{ name: 'Services', path: '/en/services' }], 'en')).toMatchObject({
+      itemListElement: [
+        { position: 1, name: 'Home', item: 'https://moiseevp.ru/en' },
+        { position: 2, name: 'Services', item: 'https://moiseevp.ru/en/services' },
+      ],
+    });
+  });
+});

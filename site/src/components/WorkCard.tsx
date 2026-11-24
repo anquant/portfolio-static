@@ -3,6 +3,7 @@ import { FiArrowRight } from 'react-icons/fi';
 
 import type { WorksData } from '@/lib/content/schemas';
 import { displayHost } from '@/lib/url';
+import { useLocale } from '@/lib/use-locale';
 
 import ProjectMedia from './ProjectMedia';
 import Reveal from './Reveal';
@@ -13,8 +14,9 @@ type WorkCardProps = {
 };
 
 export default function WorkCard({ works }: WorkCardProps) {
+  const { t, href } = useLocale();
   if (!works || works.length === 0) {
-    return <div className="text-muted mt-10">Здесь пока нет проектов…</div>;
+    return <div className="text-muted mt-10">{t.workCard.empty}</div>;
   }
 
   return (
@@ -22,7 +24,7 @@ export default function WorkCard({ works }: WorkCardProps) {
       {works.map((work, index) => (
         <Reveal as="article" key={work.slug} id={`work-${index + 1}`} className="scroll-mt-24">
           <Link
-            href={`/${work.slug}`}
+            href={href(`/${work.slug}`)}
             className="group grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12 lg:items-center"
           >
             {work.scene ? (
@@ -49,7 +51,7 @@ export default function WorkCard({ works }: WorkCardProps) {
               <p className="text-base md:text-lg text-fg/85 leading-snug mt-4">{work.description}</p>
               <p className="text-sm md:text-base text-muted leading-snug mt-3">{work.infotext}</p>
               <span className="mt-7 inline-flex w-fit items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm transition-colors group-hover:border-accent group-hover:text-accent">
-                Смотреть кейс
+                {t.workCard.open}
                 <FiArrowRight className="transition-transform group-hover:translate-x-1" />
               </span>
             </div>

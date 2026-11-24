@@ -1,0 +1,176 @@
+{
+  "sort": 1,
+  "preview_title": "Development",
+  "preview_description": "Company websites, client portals and web services on Next.js — from structure to launch and support.",
+  "title": "Website and web app development on Next.js",
+  "tech_list": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Directus",
+    "Docker"
+  ],
+  "introtext": "I build company websites, client portals and web services end to end: from structure and design to launch and support. You talk directly to the developer, with no account managers and nothing lost in translation. The result is a fast website your team can easily update and that's ready for search from day one.",
+  "scene": "lattice",
+  "tasks": {
+    "title": "What clients come to me with",
+    "items": [
+      {
+        "title": "A new company website from scratch",
+        "text": "A website that explains what you do within a minute, earns trust and brings in leads. That's how the MLS and OcEx websites were made."
+      },
+      {
+        "title": "A client portal or web service",
+        "text": "A portal for customers, employees or students: sign-up, documents, requests, statuses and integrations with your systems. Example: the graduate-school portal for IGEM RAS."
+      },
+      {
+        "title": "The old website is slow and hard to update",
+        "text": "I move it to a modern stack without losing search rankings. After the move, texts, news and documents are edited in an admin panel — no HTML needed."
+      },
+      {
+        "title": "An existing project needs work",
+        "text": "I get to grips with someone else's code, fix bugs, add features, speed things up and take the website on for support."
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "What development includes",
+      "color": "dark",
+      "blocks": [
+        {
+          "title": "Structure and prototype",
+          "content": "Before any code, I map out the pages and user flows: what people look for, where they click, where they get in touch. Changing decisions at this stage costs the least."
+        },
+        {
+          "title": "Interface",
+          "content": "Fast loading, mobile-friendly layouts, accessibility. Pages are served with their text already rendered on the server, so Google and AI assistants see all the content straight away.\n\n**Next.js, React, TypeScript, Tailwind CSS**"
+        },
+        {
+          "title": "Backend and integrations",
+          "content": "APIs, forms, authentication, payments, CRM, email and third-party services. I choose the architecture to fit the job: a monolith for a website, separate services where load demands it.\n\n**Node.js, REST, GraphQL, PostgreSQL, MySQL, Redis**"
+        },
+        {
+          "title": "An admin panel that's easy to use",
+          "content": "Content lives in the Directus headless CMS. Your staff update texts, news, job openings and documents themselves — no developer required."
+        },
+        {
+          "title": "SEO from day one",
+          "content": "Clean URLs, meta tags, schema.org markup, a sitemap, llms.txt for AI assistants and good Core Web Vitals. The website is ready for search as soon as it launches."
+        },
+        {
+          "title": "Launch and infrastructure",
+          "content": "Server or hosting, HTTPS, CI/CD, backups and monitoring. After launch I hand over all access and a short guide.\n\n**Docker, GitHub Actions, GitLab CI**"
+        }
+      ]
+    },
+    {
+      "title": "Why Next.js and not a website builder",
+      "color": "light",
+      "blocks": [
+        {
+          "title": "Speed",
+          "content": "Pages are built ahead of time and stay lightweight. Visitors don't wait, and search engines take speed into account when ranking."
+        },
+        {
+          "title": "Freedom",
+          "content": "No template or pricing-plan limits: any design, any logic, any integration. The code and the data belong to you."
+        },
+        {
+          "title": "When a builder is the better choice",
+          "content": "If you need a simple landing page within a week on a minimal budget, I'll honestly recommend Webflow or Wix. Next.js pays off when a website grows, connects to other systems and needs to bring in customers from search."
+        }
+      ]
+    }
+  ],
+  "process": {
+    "title": "How we work together",
+    "steps": [
+      {
+        "title": "Intro call",
+        "text": "We get on a call and go through the task, timeline and budget. If you already have a website, I review it and its analytics."
+      },
+      {
+        "title": "Plan and estimate",
+        "text": "I send a plan with stages, timelines and cost. We agree on the scope up front, so there are no surprises."
+      },
+      {
+        "title": "Development",
+        "text": "I work in iterations and show progress on a staging address. You see how it's going and give feedback along the way, not at the very end."
+      },
+      {
+        "title": "Launch",
+        "text": "I move the website to production, set up analytics and redirects, and show you how to use the admin panel. After that — support, if you need it."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "How much a website costs",
+    "note": "The total depends on the number of pages and user flows, integrations, and whether design and copy are ready. I give an exact figure after a short brief and fix it before work begins.",
+    "plans": [
+      {
+        "title": "Company website",
+        "text": "A corporate or services website: structure, design, development, admin panel and basic SEO.",
+        "unit": "per project",
+        "price_from": 4000,
+        "term": "4–8 weeks"
+      },
+      {
+        "title": "Client portal or web service",
+        "text": "Authentication, roles, data and document handling, integrations with CRM, payments and external APIs.",
+        "unit": "per project",
+        "price_from": 10000,
+        "term": "2–4 months"
+      },
+      {
+        "title": "Improvements",
+        "text": "New features, bug fixes, performance work, migration to a modern stack.",
+        "unit": "per hour",
+        "price_from": 50
+      },
+      {
+        "title": "Support",
+        "text": "Updates, backups, monitoring and small changes on request.",
+        "unit": "per month",
+        "price_from": 300
+      }
+    ]
+  },
+  "works": [
+    "igem-ran",
+    "quantumtec",
+    "mls"
+  ],
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "question": "How much does a turnkey website cost?",
+        "answer": "It depends on the scope: a company website with a few pages and a web service with a client portal differ in effort many times over. The formats above give a rough guide. I name the exact cost after a brief and fix it before we start."
+      },
+      {
+        "question": "How long does development take?",
+        "answer": "A company website usually takes one to two months, a web service with a client portal two months or more. What affects the timeline most is how ready the copy is and how quickly decisions get approved."
+      },
+      {
+        "question": "Why Next.js and not Webflow, WordPress or Wix?",
+        "answer": "Next.js gives you fast pages, complete freedom in design and logic, and no platform lock-in. For a simple landing page a builder can be the smarter choice — and I'll say so. For a website that grows, works with data and brings in customers from search, Next.js pays off in the long run."
+      },
+      {
+        "question": "Will I be able to update the website myself?",
+        "answer": "Yes. I set up Directus — a clear admin panel where you change texts, images, news and documents. No HTML required, and after launch I walk you through how everything works."
+      },
+      {
+        "question": "Can I redesign my website without losing search rankings?",
+        "answer": "Yes, if the move is planned in advance. I keep the old URLs or set up 301 redirects, carry over meta tags and copy, and after launch I monitor indexing in Google Search Console."
+      },
+      {
+        "question": "Do you take on projects built by someone else?",
+        "answer": "Yes. First I review the code and infrastructure and tell you honestly what shape it's in. Then I suggest a plan: improve it, rewrite it piece by piece, or leave it as it is."
+      }
+    ]
+  },
+  "meta_title": "Turnkey website and web app development on Next.js",
+  "meta_description": "Company websites, client portals and web services on Next.js, end to end: from structure to launch and support. Fast, easy to update, SEO-ready."
+}

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
 
 import type { ServicePreview } from '@/lib/content/schemas';
+import { useLocale } from '@/lib/use-locale';
 
 import Reveal from './Reveal';
 
@@ -10,8 +11,9 @@ type ServiceCardProps = {
 };
 
 export default function ServiceCard({ services }: ServiceCardProps) {
+  const { t, href } = useLocale();
   if (!services || services.length === 0) {
-    return <div className="text-muted mt-10">Здесь пока нет услуг…</div>;
+    return <div className="text-muted mt-10">{t.serviceCard.empty}</div>;
   }
 
   return (
@@ -19,7 +21,7 @@ export default function ServiceCard({ services }: ServiceCardProps) {
       {services.map((service, index) => (
         <Reveal key={service.slug} delay={index * 90}>
           <Link
-            href={`/services/${service.slug}`}
+            href={href(`/services/${service.slug}`)}
             className="group relative grid grid-cols-[auto_1fr_auto] items-start md:items-center gap-5 md:gap-10 rounded-2xl border border-line bg-surface p-6 md:p-10 transition-colors hover:bg-surface-2 hover:border-fg/20"
           >
             <span className="font-display text-sm md:text-base font-semibold text-muted pt-1.5 md:pt-0">

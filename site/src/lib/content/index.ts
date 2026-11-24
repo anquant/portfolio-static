@@ -4,6 +4,8 @@ import path from 'path';
 import matter from 'gray-matter';
 import { z } from 'zod';
 
+import type { Locale } from '@/lib/i18n';
+
 import {
   aboutSchema,
   articleFrontmatterSchema,
@@ -15,6 +17,7 @@ import {
   serviceFileSchema,
   servicesPageSchema,
   workFileSchema,
+  workTranslationSchema,
   type AboutData,
   type ArticleFrontmatter,
   type BlogArticlesData,
@@ -71,40 +74,73 @@ export function slugsInDir(dir: string): string[] {
     .sort();
 }
 
+/**
+ * Russian content sits at the root of `content/`, English in `content/en/`
+ * with the same file names. The blog, its categories and the client logos
+ * are Russian-only / shared and have no English copy.
+ */
+export function localized(locale: Locale, file: string): string {
+  return locale === 'ru' ? file : `${locale}/${file}`;
+}
+
 /* ------------------------------------------------------------------------ */
 /* Single pages                                                             */
 /* ------------------------------------------------------------------------ */
 
-export const getHome = (): HomeData => readJson(homeSchema, 'home.json');
+export const getHome = (locale: Locale = 'ru'): HomeData => readJson(homeSchema, localized(locale, 'home.json'));
 
-export const getAbout = (): AboutData => readJson(aboutSchema, 'about.json');
+export const getAbout = (locale: Locale = 'ru'): AboutData => readJson(aboutSchema, localized(locale, 'about.json'));
 
-export const getContacts = (): ContactsData => readJson(contactsSchema, 'contacts.json');
+export const getContacts = (locale: Locale = 'ru'): ContactsData =>
+  readJson(contactsSchema, localized(locale, 'contacts.json'));
 
-export const getServicesPage = (): ServicesPageData => readJson(servicesPageSchema, 'services-page.json');
+export const getServicesPage = (locale: Locale = 'ru'): ServicesPageData =>
+  readJson(servicesPageSchema, localized(locale, 'services-page.json'));
 
-export const getBlogPage = (): BlogPageData => readJson(blogPageSchema, 'blog-page.json');
+export const getBlogPage = (locale: Locale = 'ru'): BlogPageData =>
+  readJson(blogPageSchema, localized(locale, 'blog-page.json'));
 
-export const getBlogCategories = (): BlogCategoriesData[] =>
-  readJson(z.array(blogCategorySchema), 'blog-categories.json');
+/** One shared list of categories; the English site gets their English titles */
+export const getBlogCategories = (locale: Locale = 'ru'): BlogCategoriesData[] =>
+  readJson(z.array(blogCategorySchema), 'blog-categories.json').map(({ title_en, ...category }) => ({
+    ...category,
+    title: locale === 'en' && title_en ? title_en : category.title,
+  }));
 
-export const getClients = (): ClientsData[] => readJson(z.array(clientSchema), 'clients.json');
+/** One shared list; the English site gets the Latin spelling of each name */
+export const getClients = (locale: Locale = 'ru'): ClientsData[] =>
+  readJson(z.array(clientSchema), 'clients.json').map(({ title_en, ...client }) => ({
+    ...client,
+    title: locale === 'en' && title_en ? title_en : client.title,
+  }));
 
 /* ------------------------------------------------------------------------ */
 /* Works                                                                    */
 /* ------------------------------------------------------------------------ */
 
-export function getWorks(): WorksData[] {
+/** A translation replaces the text fields; a field it leaves out is dropped, not kept in Russian */
+function readWork(slug: string, locale: Locale): WorksData {
+  const base = readJson(workFileSchema, `works/${slug}.json`);
+  if (locale === 'ru') {
+    return { ...base, slug };
+  }
+  const { scope: _scope, mockups_description: _mockups, meta_description: _meta, ...media } = base;
+
+  return withoutUndefined({
+    ...media,
+    ...readJson(workTranslationSchema, localized(locale, `works/${slug}.json`)),
+    slug,
+  });
+}
+
+export function getWorks(locale: Locale = 'ru'): WorksData[] {
   return slugsInDir('works')
-    .map(slug => ({
-      ...readJson(workFileSchema, `works/${slug}.json`),
-      slug,
-    }))
+    .map(slug => readWork(slug, locale))
     .sort((a, b) => a.sort - b.sort);
 }
 
-export function getWorkBySlug(slug: string): WorksData | undefined {
-  return getWorks().find(w => w.slug === slug);
+export function getWorkBySlug(slug: string, locale: Locale = 'ru'): WorksData | undefined {
+  return getWorks(locale).find(w => w.slug === slug);
 }
 
 /* ------------------------------------------------------------------------ */
@@ -127,14 +163,16 @@ export function toService(file: ServiceFile, slug: string): ServicesListData {
   return withoutUndefined({ ...service, content: sections, slug });
 }
 
-export function getServicesList(): ServicesListData[] {
-  return slugsInDir('services')
-    .map(slug => toService(readJson(serviceFileSchema, `services/${slug}.json`), slug))
+export function getServicesList(locale: Locale = 'ru'): ServicesListData[] {
+  const dir = localized(locale, 'services');
+
+  return slugsInDir(dir)
+    .map(slug => toService(readJson(serviceFileSchema, `${dir}/${slug}.json`), slug))
     .sort((a, b) => a.sort - b.sort);
 }
 
-export function getServiceBySlug(slug: string): ServicesListData | undefined {
-  return getServicesList().find(s => s.slug === slug);
+export function getServiceBySlug(slug: string, locale: Locale = 'ru'): ServicesListData | undefined {
+  return getServicesList(locale).find(s => s.slug === slug);
 }
 
 /* ------------------------------------------------------------------------ */
@@ -176,25 +214,29 @@ export function toArticle(
   });
 }
 
-function readArticle(slug: string) {
-  const file = `blog/${slug}.mdx`;
+/** Each language has its own posts: blog/ (Russian) and en/blog/ */
+function readArticle(slug: string, locale: Locale) {
+  const file = localized(locale, `blog/${slug}.mdx`);
   const { data, content } = matter(fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8'));
   const fm = parseContent(articleFrontmatterSchema, data, file);
 
-  return { article: toArticle(fm, slug, getBlogCategories(), file), body: content };
+  return { article: toArticle(fm, slug, getBlogCategories(locale), file), body: content };
 }
 
 /** Newest first */
-export function getBlogArticles(): BlogArticlesData[] {
-  return slugsInDir('blog')
-    .map(slug => readArticle(slug).article)
+export function getBlogArticles(locale: Locale = 'ru'): BlogArticlesData[] {
+  return slugsInDir(localized(locale, 'blog'))
+    .map(slug => readArticle(slug, locale).article)
     .sort((a, b) => b.pubdate.localeCompare(a.pubdate));
 }
 
-export function getArticleBySlug(slug: string): { article: BlogArticlesData; body: string } | undefined {
-  if (!slugsInDir('blog').includes(slug)) {
+export function getArticleBySlug(
+  slug: string,
+  locale: Locale = 'ru',
+): { article: BlogArticlesData; body: string } | undefined {
+  if (!slugsInDir(localized(locale, 'blog')).includes(slug)) {
     return undefined;
   }
 
-  return readArticle(slug);
+  return readArticle(slug, locale);
 }

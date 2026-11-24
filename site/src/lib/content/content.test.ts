@@ -4,14 +4,17 @@ import path from 'path';
 import { describe, expect, it } from 'vitest';
 
 import {
+  CONTENT_DIR,
   ContentError,
   getAbout,
   getArticleBySlug,
   getBlogArticles,
+  getBlogCategories,
   getClients,
   getContacts,
   getHome,
   getServicesList,
+  getServicesPage,
   getWorks,
   parseContent,
   slugsInDir,
@@ -86,6 +89,66 @@ describe('real content', () => {
 
   it('returns undefined for an unknown article slug', () => {
     expect(getArticleBySlug('does-not-exist')).toBeUndefined();
+  });
+});
+
+describe('English content', () => {
+  const ru = { works: getWorks('ru'), services: getServicesList('ru') };
+  const en = { works: getWorks('en'), services: getServicesList('en') };
+
+  it('loads and validates every file', () => {
+    expect(() => [getHome('en'), getAbout('en'), getContacts('en'), getServicesPage('en')]).not.toThrow();
+    expect(getBlogArticles('en').length).toBe(slugsInDir('en/blog').length);
+    expect(getBlogCategories('en').filter(c => /[а-яё]/i.test(c.title))).toEqual([]);
+  });
+
+  it('translates every case and every service, and nothing extra', () => {
+    expect(slugsInDir('en/works')).toEqual(slugsInDir('works'));
+    expect(en.services.map(s => s.slug)).toEqual(ru.services.map(s => s.slug));
+  });
+
+  it('keeps cases identical apart from the text', () => {
+    for (const [i, work] of en.works.entries()) {
+      const base = ru.works[i]!;
+      expect([work.slug, work.sort, work.scene, work.cover, work.mockups]).toEqual([
+        base.slug,
+        base.sort,
+        base.scene,
+        base.cover,
+        base.mockups,
+      ]);
+    }
+  });
+
+  it('keeps service structure in step with the Russian site', () => {
+    for (const [i, service] of en.services.entries()) {
+      const base = ru.services[i]!;
+      expect([service.sort, service.scene, service.works, service.content?.length]).toEqual([
+        base.sort,
+        base.scene,
+        base.works,
+        base.content?.length,
+      ]);
+    }
+  });
+
+  it('has no Russian left in it', () => {
+    const files = [
+      ...['home', 'about', 'contacts', 'services-page', 'blog-page'].map(f => `en/${f}.json`),
+      ...slugsInDir('en/blog').map(s => `en/blog/${s}.mdx`),
+      ...slugsInDir('en/works').map(s => `en/works/${s}.json`),
+      ...slugsInDir('en/services').map(s => `en/services/${s}.json`),
+    ];
+    const cyrillic = files.filter(f => /[а-яё]/i.test(fs.readFileSync(path.join(CONTENT_DIR, f), 'utf8')));
+    expect(cyrillic).toEqual([]);
+  });
+
+  it('spells every client name in Latin letters', () => {
+    expect(getClients('en').filter(c => /[а-яё]/i.test(c.title))).toEqual([]);
+  });
+
+  it('never lets a case slug shadow the /en prefix', () => {
+    expect(slugsInDir('works')).not.toContain('en');
   });
 });
 

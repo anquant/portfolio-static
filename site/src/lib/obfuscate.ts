@@ -22,3 +22,8 @@ export function maskPhone(phone: string): string {
 
   return visible + '*'.repeat(Math.max(phone.length - visible.length, 0));
 }
+
+/** "pavelmoses" → "@pa********" */
+export function maskTelegram(username: string): string {
+  return `@${username.slice(0, 2)}${'*'.repeat(Math.max(username.length - 2, 0))}`;
+}

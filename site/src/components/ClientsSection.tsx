@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import type { ClientsData } from '@/lib/content/schemas';
+import { useLocale } from '@/lib/use-locale';
 
 import Reveal from './Reveal';
 import SectionHeader from './SectionHeader';
@@ -15,14 +16,15 @@ interface ClientsSectionProps {
  * Static logo grid instead of an autoplaying carousel:
  * all clients are visible at once and nothing moves on its own.
  */
-export default function ClientsSection({ clients, title = 'Клиенты' }: ClientsSectionProps) {
+export default function ClientsSection({ clients, title }: ClientsSectionProps) {
+  const { t } = useLocale();
   if (!clients || clients.length === 0) {
     return null;
   }
 
   return (
     <section className="section-gap" aria-labelledby="clients-title">
-      <SectionHeader id="clients-title" title={title} aside={`${clients.length} компаний`} />
+      <SectionHeader id="clients-title" title={title ?? t.clients.title} aside={t.clients.count(clients.length)} />
       <Reveal>
         <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px overflow-hidden rounded-2xl border border-line bg-line">
           {clients.map(client => {
@@ -44,7 +46,7 @@ export default function ClientsSection({ clients, title = 'Клиенты' }: Cl
                     href={client.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Сайт ${client.title}`}
+                    aria-label={t.clients.site(client.title)}
                     className="block"
                   >
                     {logo}
