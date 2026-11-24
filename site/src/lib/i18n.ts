@@ -11,8 +11,12 @@ export type Locale = (typeof LOCALES)[number];
 
 const PREFIX: Record<Locale, string> = { ru: '', en: '/en' };
 
-/** BCP 47 tag for `lang`, hreflang and schema.org `inLanguage` */
-export const LANG_TAG: Record<Locale, string> = { ru: 'ru-RU', en: 'en' };
+/**
+ * BCP 47 tag for `lang`, hreflang and schema.org `inLanguage`. Language only,
+ * no region: "ru-RU" would make Google send Russian speakers outside Russia
+ * (ru-KZ, ru-FI, …) to the x-default page, which is English.
+ */
+export const LANG_TAG: Record<Locale, string> = { ru: 'ru', en: 'en' };
 export const OG_LOCALE: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 
 /**

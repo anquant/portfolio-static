@@ -46,6 +46,45 @@ const articles = fs
   .map(file => ({ slug: file.replace(/\.mdx$/, ''), ...matter.read(path.join(CONTENT, 'blog', file)).data }))
   .sort((a, b) => String(b.pubdate).localeCompare(String(a.pubdate)));
 
+/* English version (/en): the same structure, no blog — it is Russian-only */
+const en = {
+  about: readJson('en/about.json'),
+  home: readJson('en/home.json'),
+  services: jsonDir('en/services').sort((a, b) => a.sort - b.sort),
+  // translated text over the Russian file, which keeps links and order
+  works: works.map(w => ({ ...w, ...readJson(path.join('en/works', `${w.slug}.json`)) })),
+};
+
+const englishLines = [
+  '## English version',
+  '',
+  `> ${en.about.title_part1} ${en.about.title_part2}. ${plain(en.home.meta_description)}`,
+  '',
+  plain(en.about.content),
+  '',
+  '### Services',
+  '',
+  ...en.services.flatMap(s => [
+    `- [${s.preview_title}](${SITE}/en/services/${s.slug}): ${plain(s.meta_description)}`,
+    ...(s.faq?.items ?? []).map(item => `  - ${item.question} ${plain(item.answer)}`),
+  ]),
+  '',
+  '### Work',
+  '',
+  ...en.works.flatMap(w => [
+    `- [${w.title}](${SITE}/en/${w.slug}): ${plain(w.description)}`,
+    ...(w.scope ? [`  - Scope: ${w.scope.join(', ')}`] : []),
+    `  - Stack: ${plain(w.infotext)}`,
+    ...(w.link ? [`  - Website: ${w.link}`] : []),
+  ]),
+  '',
+  '### Contact',
+  '',
+  `- [Get in touch](${SITE}/en/contacts)`,
+  `- [About](${SITE}/en/about)`,
+  '',
+];
+
 const lines = [
   '# Павел Моисеев',
   '',
@@ -87,6 +126,7 @@ const lines = [
   `- [Связаться](${SITE}/contacts)`,
   `- [Обо мне](${SITE}/about)`,
   '',
+  ...englishLines,
 ];
 
 fs.writeFileSync(OUT, lines.join('\n'));

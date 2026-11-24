@@ -38,7 +38,7 @@ const Layout = ({ seo, jsonLd, children }: LayoutProps) => {
     return path ? [{ locale: l, url: absUrl(path) }] : [];
   });
   const translated = !seo.noindex && alternates.length > 1;
-  const image: OgImage = seo.image ?? DEFAULT_OG_IMAGE;
+  const image: OgImage = seo.image ?? DEFAULT_OG_IMAGE[locale];
 
   return (
     <>

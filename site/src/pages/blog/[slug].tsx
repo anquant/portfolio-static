@@ -17,6 +17,7 @@ import Scene3D from '@/components/Scene3D';
 import SectionHeader from '@/components/SectionHeader';
 import { getBlogArticles, getArticleBySlug } from '@/lib/content';
 import type { BlogArticlesData } from '@/lib/content/schemas';
+import { LANG_TAG } from '@/lib/i18n';
 import { mdxComponents } from '@/lib/mdx-components';
 import { absUrl, breadcrumbLd, personRef } from '@/lib/seo';
 
@@ -39,7 +40,7 @@ export default function Article({ article, articles, mdxSource }: ArticleProps) 
       author: personRef,
       publisher: personRef,
       articleSection: article.category.title,
-      inLanguage: 'ru-RU',
+      inLanguage: LANG_TAG.ru,
     },
     breadcrumbLd([
       { name: 'Блог', path: '/blog' },

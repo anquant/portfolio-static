@@ -34,7 +34,7 @@ function alternateRefs(loc) {
   const en = `${SITE}${base === '/' ? '/en' : `/en${base}`}`;
 
   return [
-    { href: ru, hreflang: 'ru-RU', hrefIsAbsolute: true },
+    { href: ru, hreflang: 'ru', hrefIsAbsolute: true },
     { href: en, hreflang: 'en', hrefIsAbsolute: true },
     // visitors whose language is neither get English (X_DEFAULT_LOCALE)
     { href: en, hreflang: 'x-default', hrefIsAbsolute: true },

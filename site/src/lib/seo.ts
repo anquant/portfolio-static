@@ -1,10 +1,13 @@
-import { DICTIONARY, LANG_TAG, localePath, type Locale } from './i18n';
+import { DICTIONARY, LANG_TAG, LOCALES, localePath, type Locale } from './i18n';
 import { BEHANCE_URL, SITE_URL } from './site';
 
 export const AUTHOR_PROFILES = [BEHANCE_URL];
 
-/** Link previews (Telegram, VK, …) for pages without an image of their own */
-export const DEFAULT_OG_IMAGE = { src: '/og.png', width: 1200, height: 630 };
+/** Link previews (Telegram, LinkedIn, …) for pages without an image of their own, per language */
+export const DEFAULT_OG_IMAGE: Record<Locale, { src: string; width: number; height: number }> = {
+  ru: { src: '/og.png', width: 1200, height: 630 },
+  en: { src: '/og-en.png', width: 1200, height: 630 },
+};
 
 const BASE = SITE_URL.replace(/\/$/, '');
 
@@ -43,6 +46,8 @@ export function personLd(locale: Locale = 'ru', knowsAbout: string[] = []): Json
     '@type': 'Person',
     '@id': PERSON_ID,
     name: t.authorName,
+    // one person on both language versions: the other spelling of the name
+    alternateName: LOCALES.filter(l => l !== locale).map(l => DICTIONARY[l].authorName),
     jobTitle: t.authorJob,
     url: absUrl(localePath(locale, '/')),
     sameAs: AUTHOR_PROFILES,
