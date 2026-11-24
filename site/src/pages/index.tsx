@@ -6,7 +6,7 @@ import { FiArrowDown } from 'react-icons/fi';
 
 import Button from '@/components/Button';
 import ClientsSection from '@/components/ClientsSection';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Layout from '@/components/Layout';
 import SectionHeader from '@/components/SectionHeader';

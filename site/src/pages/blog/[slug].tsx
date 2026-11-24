@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm';
 
 import ArticleCard from '@/components/ArticleCard';
 import BlogCover from '@/components/BlogCover';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';

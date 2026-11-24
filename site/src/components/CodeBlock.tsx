@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { IoMdCopy, IoMdCheckmark } from 'react-icons/io';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

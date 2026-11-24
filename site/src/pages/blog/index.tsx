@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import ArticleCard from '@/components/ArticleCard';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';

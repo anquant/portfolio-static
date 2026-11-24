@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
 
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
