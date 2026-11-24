@@ -147,8 +147,37 @@ describe('English content', () => {
     expect(getClients('en').filter(c => /[а-яё]/i.test(c.title))).toEqual([]);
   });
 
+  it('links to English pages, not Russian ones', () => {
+    const files = (dir: string): string[] =>
+      fs
+        .readdirSync(dir, { withFileTypes: true })
+        .flatMap(e => (e.isDirectory() ? files(path.join(dir, e.name)) : [path.join(dir, e.name)]));
+    const ruLinks = files(path.join(process.cwd(), 'content/en')).flatMap(file =>
+      Array.from(
+        fs.readFileSync(file, 'utf8').matchAll(/(?:href=\\?"|\]\()(\/(?:services|about|contacts|blog)\b[^"\\)]*)/g),
+        m => `${path.basename(file)}: ${m[1]}`,
+      ),
+    );
+    expect(ruLinks).toEqual([]);
+  });
+
   it('never lets a case slug shadow the /en prefix', () => {
     expect(slugsInDir('works')).not.toContain('en');
+  });
+
+  it('pairs only articles that exist, each at most once', () => {
+    const pairs = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/blog-translations.json'), 'utf8')) as {
+      ru: string;
+      en: string;
+    }[];
+    const ru = getBlogArticles('ru').map(a => a.slug);
+    const en = getBlogArticles('en').map(a => a.slug);
+    for (const p of pairs) {
+      expect(ru).toContain(p.ru);
+      expect(en).toContain(p.en);
+    }
+    expect(new Set(pairs.map(p => p.ru)).size).toBe(pairs.length);
+    expect(new Set(pairs.map(p => p.en)).size).toBe(pairs.length);
   });
 });
 

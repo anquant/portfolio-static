@@ -31,7 +31,7 @@ const Layout = ({ seo, jsonLd, children }: LayoutProps) => {
   const { locale, t } = useLocale();
   const url = absUrl(router.asPath);
   const title = pageTitle(seo.meta_title, locale);
-  // the same page in every language it exists in (the blog is Russian-only)
+  // the same page in every language it exists in (unpaired articles and the 404 page have none)
   const alternates = LOCALES.flatMap(l => {
     const path = alternatePath(router.asPath, l);
 

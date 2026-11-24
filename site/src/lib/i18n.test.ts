@@ -66,6 +66,12 @@ describe('alternatePath', () => {
     expect(alternatePath('/en/blog/a-post', 'ru')).toBeNull();
     expect(alternatePath('/en/blog/a-post', 'en')).toBe('/en/blog/a-post');
   });
+
+  it('pairs translated articles listed in blog-translations.json', () => {
+    expect(alternatePath('/blog/nextjs-dlya-biznesa', 'en')).toBe('/en/blog/nextjs-for-business');
+    expect(alternatePath('/en/blog/nextjs-for-business', 'ru')).toBe('/blog/nextjs-dlya-biznesa');
+    expect(alternatePath('/blog/ustanovka-mysql-dlya-directus', 'en')).toBeNull();
+  });
 });
 
 describe('switchPath', () => {
@@ -74,6 +80,7 @@ describe('switchPath', () => {
     expect(switchPath('/blog/some-post', 'en')).toBe('/en/blog');
     expect(switchPath('/en/blog/a-post', 'ru')).toBe('/blog');
     expect(switchPath('/404', 'en')).toBe('/en');
+    expect(switchPath('/blog/nextjs-ssr-seo-yandex', 'en')).toBe('/en/blog/nextjs-ssr-seo-google');
   });
 });
 
@@ -117,6 +124,8 @@ describe('sitemap hreflang', () => {
     '/en/blog',
     '/blog/x',
     '/en/blog/y',
+    '/blog/nextjs-dlya-biznesa',
+    '/en/blog/nextjs-ssr-seo-google',
   ])('%s', async loc => {
     const { alternateRefs } = await config.transform({}, loc);
     const expected = LOCALES.flatMap(l => {

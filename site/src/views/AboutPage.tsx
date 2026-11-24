@@ -9,6 +9,7 @@ import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
 import { Cards } from '@/components/service/ServiceBlocks';
 import type { AboutData } from '@/lib/content/schemas';
+import { splitHtmlBlocks } from '@/lib/html-blocks';
 import { breadcrumbLd, personLd } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
@@ -31,6 +32,8 @@ export default function AboutPage({ about }: AboutProps) {
     meta_title,
     meta_description,
   } = about;
+  // one reveal per block, so the story reads in as it appears
+  const blocks = splitHtmlBlocks(content);
   const seo = { meta_title, meta_description, type: 'profile' as const };
   const jsonLd = [
     {
@@ -40,14 +43,12 @@ export default function AboutPage({ about }: AboutProps) {
           locale,
           (skills ?? []).flatMap(group => group.items),
         ),
-        // the English site leaves the location out on purpose
         ...(locale === 'ru'
           ? {
               alumniOf: {
                 '@type': 'CollegeOrUniversity',
                 name: 'Санкт-Петербургский государственный университет аэрокосмического приборостроения (ГУАП)',
               },
-              homeLocation: { '@type': 'City', name: 'Санкт-Петербург' },
             }
           : {
               alumniOf: {
@@ -76,44 +77,62 @@ export default function AboutPage({ about }: AboutProps) {
               )}
             </>
           }
-          lead={lead}
+          lead={
+            // the lead links its key words to the matching services
+            lead && <span className="text-links" dangerouslySetInnerHTML={{ __html: lead }} />
+          }
         />
 
-        {/* Story: one comfortable reading column, first paragraph as the lead */}
-        <section className="mt-16 md:mt-24">
-          <Reveal className="story">
-            <div dangerouslySetInnerHTML={{ __html: content }} />
-          </Reveal>
-          <Reveal delay={100} className="mt-12 flex flex-wrap gap-3">
-            {resume && (
-              <Button type="link" href={resume} external>
-                {t.about.resume} <FiArrowUpRight aria-hidden />
-              </Button>
-            )}
-            <Button type="link" href={href('/contacts')} variant="secondary">
-              {t.nav.contacts} <FiArrowRight aria-hidden />
-            </Button>
-          </Reveal>
-        </section>
-
-        {/* Numbers: a pause between the story and the skills */}
-        {stats && stats.length > 0 && (
-          <section aria-label={t.about.inNumbers} className="section-gap">
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line">
-              {stats.map((s, i) => (
-                <Reveal key={s.label} delay={i * 100} className="bg-bg px-8 py-10 md:px-12 md:py-14">
-                  <dt className="sr-only">{s.label}</dt>
-                  <dd>
-                    <span className="block font-display text-6xl md:text-7xl font-bold tracking-tight">{s.value}</span>
-                    <span aria-hidden className="mt-3 block text-muted">
-                      {s.label}
-                    </span>
-                  </dd>
+        {/* Story on the left, the numbers pinned beside it on desktop.
+            On the first screen everything continues the PageIntro sequence (lead lands at 300ms). */}
+        <section className="mt-16 md:mt-24 grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-8">
+            <div className="story">
+              {blocks.map((html, i) => (
+                <Reveal key={i} delay={i * 80} introDelay={450}>
+                  <div dangerouslySetInnerHTML={{ __html: html }} />
                 </Reveal>
               ))}
-            </dl>
-          </section>
-        )}
+            </div>
+            <Reveal delay={blocks.length * 80} introDelay={450} className="mt-12 flex flex-wrap gap-3">
+              {resume && (
+                <Button type="link" href={resume} external>
+                  {t.about.resume} <FiArrowUpRight aria-hidden />
+                </Button>
+              )}
+              <Button type="link" href={href('/contacts')} variant="secondary">
+                {t.nav.contacts} <FiArrowRight aria-hidden />
+              </Button>
+            </Reveal>
+          </div>
+
+          {stats && stats.length > 0 && (
+            <aside aria-label={t.about.inNumbers} className="lg:col-span-3 lg:col-start-10">
+              {/* The card reveals as a whole (no grey gaps), then its numbers one by one */}
+              <Reveal
+                as="dl"
+                introDelay={600}
+                className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line lg:sticky lg:top-8 lg:grid-cols-1"
+              >
+                {stats.map((s, i) => (
+                  <div key={s.label} className="bg-bg px-6 py-8 md:px-8 md:py-10">
+                    <dt className="sr-only">{s.label}</dt>
+                    <dd>
+                      <Reveal as="span" delay={150 + i * 120} introDelay={600} className="block">
+                        <span className="block font-display text-5xl md:text-6xl font-bold tracking-tight">
+                          {s.value}
+                        </span>
+                        <span aria-hidden className="mt-3 block text-muted">
+                          {s.label}
+                        </span>
+                      </Reveal>
+                    </dd>
+                  </div>
+                ))}
+              </Reveal>
+            </aside>
+          )}
+        </section>
 
         {principles && <Cards {...principles} />}
 
