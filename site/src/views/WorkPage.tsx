@@ -18,6 +18,7 @@ import { useLocale } from '@/lib/use-locale';
 interface WorkProps {
   work: WorksData;
   next: { slug: string; title: string } | null;
+  services: { slug: string; title: string }[];
 }
 
 /**
@@ -59,7 +60,7 @@ function Cell({
   );
 }
 
-export default function WorkPage({ work, next }: WorkProps) {
+export default function WorkPage({ work, next, services }: WorkProps) {
   const { locale, t, href } = useLocale();
   const {
     title,
@@ -232,6 +233,25 @@ export default function WorkPage({ work, next }: WorkProps) {
           <Row index={mockups_description ? 4 : 3} label={t.work.result}>
             <div dangerouslySetInnerHTML={{ __html: result }} />
           </Row>
+          {services.length > 0 && (
+            <Reveal className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8">
+              <nav aria-label={t.work.services} className="md:col-span-9 md:col-start-4">
+                <div className="eyebrow mb-3">{t.work.services}</div>
+                <ul className="flex flex-wrap gap-2">
+                  {services.map(s => (
+                    <li key={s.slug}>
+                      <Link
+                        href={href(`/services/${s.slug}`)}
+                        className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 transition-colors hover:border-fg/40 hover:text-accent"
+                      >
+                        {s.title} <FiArrowRight aria-hidden />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </Reveal>
+          )}
         </div>
 
         {next && (

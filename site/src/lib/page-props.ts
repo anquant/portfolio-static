@@ -152,8 +152,12 @@ export const workProps =
     const i = works.findIndex(w => w.slug === slug);
     const n = works[(i + 1) % works.length];
     const next = n && n.slug !== slug ? { slug: n.slug, title: n.title } : null;
+    // services that list this case, linked back from it
+    const services = getServicesList(locale)
+      .filter(s => s.works?.includes(slug))
+      .map(s => ({ slug: s.slug, title: s.preview_title }));
 
-    return { props: { work, next } };
+    return { props: { work, next, services } };
   };
 
 export const blogProps =

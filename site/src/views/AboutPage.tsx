@@ -77,7 +77,15 @@ export default function AboutPage({ about }: AboutProps) {
               )}
             </>
           }
-          lead={lead}
+          lead={
+            // the lead links its key words to the matching services
+            lead && (
+              <span
+                className="[&_a]:text-fg/90 [&_a]:underline [&_a]:decoration-fg/30 [&_a]:underline-offset-4 [&_a]:transition-colors [&_a:hover]:decoration-fg"
+                dangerouslySetInnerHTML={{ __html: lead }}
+              />
+            )
+          }
         />
 
         {/* Story on the left, the numbers pinned beside it on desktop.
@@ -116,7 +124,9 @@ export default function AboutPage({ about }: AboutProps) {
                     <dt className="sr-only">{s.label}</dt>
                     <dd>
                       <Reveal as="span" delay={150 + i * 120} introDelay={600} className="block">
-                        <span className="block font-display text-5xl md:text-6xl font-bold tracking-tight">{s.value}</span>
+                        <span className="block font-display text-5xl md:text-6xl font-bold tracking-tight">
+                          {s.value}
+                        </span>
                         <span aria-hidden className="mt-3 block text-muted">
                           {s.label}
                         </span>
