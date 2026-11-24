@@ -52,12 +52,34 @@ export const homeSchema = z.strictObject({
   ...seo,
 });
 
+const titledText = z.strictObject({ title: z.string().min(1), text: z.string().min(1) });
+
 export const aboutSchema = z.strictObject({
   title_part1: z.string(),
   title_part2: z.string().optional(),
   content: z.string(),
   stats: z.array(z.strictObject({ value: z.string(), label: z.string() })).optional(),
+  /** One-sentence answer to "who is this", shown under the title */
+  lead: z.string().optional(),
   skills: z.array(z.strictObject({ title: z.string(), items: z.array(z.string()) })).optional(),
+  /** "How I work": principles as cards */
+  principles: z.strictObject({ title: z.string(), items: z.array(titledText).min(1) }).optional(),
+  /** Career and education, newest first */
+  experience: z
+    .strictObject({
+      title: z.string(),
+      items: z
+        .array(
+          z.strictObject({
+            period: z.string().min(1).optional(),
+            role: z.string().min(1),
+            place: z.string().min(1),
+            text: z.string().optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
   resume: publicPath.optional(),
   ...seo,
 });
@@ -120,8 +142,6 @@ export const workFileSchema = z.strictObject({
   result: z.string(),
   ...seo,
 });
-
-const titledText = z.strictObject({ title: z.string().min(1), text: z.string().min(1) });
 
 /** services/<slug>.json */
 export const serviceFileSchema = z.strictObject({

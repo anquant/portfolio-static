@@ -13,7 +13,7 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
-import { Faq, Pricing, Process, Tasks, faqLd } from '@/components/service/ServiceBlocks';
+import { Cards, Faq, Pricing, Process, faqLd } from '@/components/service/ServiceBlocks';
 import WorkCard from '@/components/WorkCard';
 import { getServicesList, getServiceBySlug, getWorkBySlug, getWorks } from '@/lib/content';
 import type { WorksData } from '@/lib/content/schemas';
@@ -114,7 +114,7 @@ export default function CurrentService({ service, works }: CurrentServiceProps) 
 
       {tasks && (
         <div className="container-page">
-          <Tasks {...tasks} />
+          <Cards {...tasks} />
         </div>
       )}
 

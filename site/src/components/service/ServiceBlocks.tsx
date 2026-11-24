@@ -24,7 +24,8 @@ function Paragraphs({ text, className = '' }: { text: string; className?: string
   );
 }
 
-export function Tasks({ title, items }: NonNullable<ServiceFile['tasks']>) {
+/** Numbered cards: service tasks, About principles */
+export function Cards({ title, items }: { title: string; items: { title: string; text: string }[] }) {
   return (
     <section className="section-gap">
       <SectionHeader title={title} />
