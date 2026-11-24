@@ -88,6 +88,11 @@ export const contactsSchema = z.strictObject({
   title: z.string(),
   email: z.email().optional(),
   phone: z.string().optional(),
+  /** Telegram username without "@" */
+  telegram: z
+    .string()
+    .regex(/^[a-z0-9_]{5,32}$/i, 'a Telegram username without "@"')
+    .optional(),
   text: z.string().optional(),
   ...seo,
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { decode, encode, maskPhone } from './obfuscate';
+import { decode, encode, maskPhone, maskTelegram } from './obfuscate';
 
 describe('obfuscate', () => {
   it.each(['inbox@moiseevp.ru', '+7 (921) 123-45-67', 'Павел ✉'])('round-trips %s', value => {
@@ -13,5 +13,9 @@ describe('obfuscate', () => {
 
   it('masks everything after the area code', () => {
     expect(maskPhone('+7 (921) 123-45-67')).toBe('+7 (921) *********');
+  });
+
+  it('masks a Telegram username after the first two letters', () => {
+    expect(maskTelegram('pavelmoses')).toBe('@pa********');
   });
 });

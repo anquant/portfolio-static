@@ -16,7 +16,7 @@ import {
 } from '@/lib/content';
 import type { ServicePreview } from '@/lib/content/schemas';
 import type { Locale } from '@/lib/i18n';
-import { encode, maskPhone } from '@/lib/obfuscate';
+import { encode, maskPhone, maskTelegram } from '@/lib/obfuscate';
 import type { SerializedSection } from '@/views/ServicePage';
 
 /*
@@ -50,6 +50,8 @@ export const contactsProps =
         emailEncoded: encode(contacts.email ?? ''),
         phoneEncoded: encode(contacts.phone ?? ''),
         maskedPhone: contacts.phone ? maskPhone(contacts.phone) : '',
+        telegramEncoded: encode(contacts.telegram ?? ''),
+        maskedTelegram: contacts.telegram ? maskTelegram(contacts.telegram) : '',
       },
     };
   };

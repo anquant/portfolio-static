@@ -19,6 +19,8 @@ interface ContactsProps {
   emailEncoded: string;
   phoneEncoded: string;
   maskedPhone: string;
+  telegramEncoded: string;
+  maskedTelegram: string;
 }
 
 function IconButton({ onClick, label, children }: { onClick: () => void; label: string; children: React.ReactNode }) {
@@ -84,6 +86,8 @@ export default function ContactsPage({
   emailEncoded,
   phoneEncoded,
   maskedPhone,
+  telegramEncoded,
+  maskedTelegram,
 }: ContactsProps) {
   const seo = { meta_title, meta_description };
   const { locale, t, href } = useLocale();
@@ -91,13 +95,16 @@ export default function ContactsPage({
   const [phoneRevealed, setPhoneRevealed] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [telegramRevealed, setTelegramRevealed] = useState(false);
+  const [telegram, setTelegram] = useState('');
 
   // Decoded only on the client, after mount, so the prerendered static
   // HTML never contains the plain email/phone for simple scrapers to read.
   useEffect(() => {
     setEmail(decode(emailEncoded));
     setPhone(decode(phoneEncoded));
-  }, [emailEncoded, phoneEncoded]);
+    setTelegram(decode(telegramEncoded));
+  }, [emailEncoded, phoneEncoded, telegramEncoded]);
 
   return (
     <Layout
@@ -148,6 +155,32 @@ export default function ContactsPage({
                     {phoneRevealed ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
                   </IconButton>
                   <CopyButton getValue={() => phone} />
+                </div>
+              </Reveal>
+            )}
+            {maskedTelegram && (
+              <Reveal delay={450} className="rounded-2xl border border-line bg-surface p-6 md:p-8">
+                <div className="eyebrow mb-3">Telegram</div>
+                <div className="flex flex-wrap items-center gap-3">
+                  {telegramRevealed && telegram ? (
+                    <a
+                      href={`https://t.me/${telegram}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xl md:text-2xl font-medium transition-colors hover:text-accent"
+                    >
+                      @{telegram}
+                    </a>
+                  ) : (
+                    <span className="text-xl md:text-2xl font-medium">{maskedTelegram}</span>
+                  )}
+                  <IconButton
+                    onClick={() => setTelegramRevealed(v => !v)}
+                    label={telegramRevealed ? t.contacts.hideTelegram : t.contacts.showTelegram}
+                  >
+                    {telegramRevealed ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
+                  </IconButton>
+                  <CopyButton getValue={() => (telegram ? `@${telegram}` : '')} />
                 </div>
               </Reveal>
             )}

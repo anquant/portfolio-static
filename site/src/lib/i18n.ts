@@ -126,6 +126,8 @@ const ru = {
     copyFailed: 'Не удалось скопировать',
     showPhone: 'Показать номер',
     hidePhone: 'Скрыть номер',
+    showTelegram: 'Показать ник в Telegram',
+    hideTelegram: 'Скрыть ник в Telegram',
   },
 };
 
@@ -190,6 +192,8 @@ const en: Dictionary = {
     copyFailed: 'Could not copy',
     showPhone: 'Show number',
     hidePhone: 'Hide number',
+    showTelegram: 'Show Telegram username',
+    hideTelegram: 'Hide Telegram username',
   },
 };
 
