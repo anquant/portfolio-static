@@ -1,0 +1,12 @@
+{
+  "title": "Sirius",
+  "description": "Website for an SMS and email messaging service that automates business communication with customers.",
+  "infotext": "Designed in Figma, built on Next.js, content managed in Directus.",
+  "scope": ["Design", "Development", "SEO"],
+  "company": "Sirius is an SMS and email messaging service focused on end-to-end business process automation. The company develops and implements advanced technology that helps clients engage their audience and stay competitive.",
+  "problem": "The task was to build a website from scratch that clearly presented the company's services, gave complete information about the platform and its features, and earned the trust of potential customers.",
+  "mockups_description": "I designed a landing page that brings together SMS and email messaging, highlights what makes the service unique and gives fast access to key information. The website is responsive, optimised for search engines and shows visitors arriving from ads the exact service they were looking for, which increases conversion.",
+  "result": "The result is a fast, convenient and stylish website that combines a memorable design with solid functionality. It has become an effective tool for winning new customers and growing sales.",
+  "meta_title": "Case study: landing page for the Sirius messaging service",
+  "meta_description": "Website for Sirius, an SMS and email messaging service that automates business communication with customers."
+}

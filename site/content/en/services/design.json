@@ -1,0 +1,174 @@
+{
+  "sort": 2,
+  "preview_title": "Design",
+  "preview_description": "UX/UI design for websites, client portals and mobile apps: from a Figma prototype to developer-ready designs.",
+  "title": "UX/UI design for websites, interfaces and mobile apps",
+  "tech_list": [
+    "UX/UI design",
+    "Figma",
+    "Prototyping",
+    "Design systems",
+    "Mobile apps",
+    "Brand identity"
+  ],
+  "introtext": "I design interfaces people don't have to figure out: company websites, client portals, mobile apps. I'm a developer too, so my designs stay realistic — no ideas that look great in Figma and fall apart in code.",
+  "scene": "ring",
+  "tasks": {
+    "title": "What clients come to me with",
+    "items": [
+      {
+        "title": "A new website or product",
+        "text": "Structure, user flows and look need to be thought through from scratch. We start with a prototype, not with pretty pictures."
+      },
+      {
+        "title": "A redesign",
+        "text": "The website looks dated, doesn't reflect the brand, or confuses people. That's how the new Benefit Litigation website came about — after several law firms merged."
+      },
+      {
+        "title": "A complex interface",
+        "text": "A client portal, a dashboard or an app with dozens of screens. Here logic matters more than visual effects."
+      },
+      {
+        "title": "A UX audit",
+        "text": "The website exists, but leads are few or users complain. I find where people stumble and give you a prioritised list of fixes."
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "What design includes",
+      "color": "dark",
+      "blocks": [
+        {
+          "title": "Research",
+          "content": "I look into the business goal, the audience and the competition. If there's analytics, I check where people drop off and what they search for."
+        },
+        {
+          "title": "Prototype",
+          "content": "Structure and user flows as a clickable Figma prototype. Changes here are cheap: we move blocks around instead of redrawing designs."
+        },
+        {
+          "title": "Visual design",
+          "content": "Style, typography, colour, illustration and motion. Versions for phone, tablet and desktop."
+        },
+        {
+          "title": "Design system",
+          "content": "Buttons, fields, cards, spacing and colours collected into a component library. New pages are assembled from ready-made parts, and the product looks consistent."
+        },
+        {
+          "title": "Mobile apps",
+          "content": "Interfaces for iOS and Android that follow platform guidelines: navigation, gestures, system components, dark mode."
+        },
+        {
+          "title": "Developer handoff",
+          "content": "Designs with every state, responsive rules and exported assets. If I'm also building it, nothing gets lost along the way."
+        }
+      ]
+    },
+    {
+      "title": "How I think about design",
+      "color": "light",
+      "blocks": [
+        {
+          "title": "Meaning before style",
+          "content": "Every screen answers one question: what should a person do here? If there's no answer, the screen isn't needed."
+        },
+        {
+          "title": "Less, but more precise",
+          "content": "I turn a complex process into a few clear steps. Every element on screen serves the task instead of filling space."
+        },
+        {
+          "title": "Design that can be built",
+          "content": "Already at the design stage I account for code constraints, loading speed and maintenance cost. That's why the live website looks just like it did in Figma."
+        }
+      ]
+    }
+  ],
+  "process": {
+    "title": "How we work together",
+    "steps": [
+      {
+        "title": "Brief",
+        "text": "We discuss goals, audience, and examples you like and dislike. I gather everything that already exists: brand, copy, analytics."
+      },
+      {
+        "title": "Prototype",
+        "text": "I show the structure and user flows without styling. We agree on the logic before anything gets drawn."
+      },
+      {
+        "title": "Design",
+        "text": "I design the key screens, we approve the style, then I work through the remaining pages and responsive layouts."
+      },
+      {
+        "title": "Handoff",
+        "text": "I deliver a Figma file with components and notes, answer the developers' questions — or build the website myself."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "How much website design costs",
+    "note": "The cost depends on the number of unique screens, the complexity of user flows and whether a design system is needed. I send an estimate after the brief.",
+    "plans": [
+      {
+        "title": "Website design",
+        "text": "Prototype, visual design and responsive layouts for a company or services website.",
+        "unit": "per project",
+        "term": "3–5 weeks"
+      },
+      {
+        "title": "Interface or app",
+        "text": "A client portal, web service or mobile app with a design system.",
+        "unit": "per project",
+        "term": "6–10 weeks"
+      },
+      {
+        "title": "Redesign",
+        "text": "A new look and logic for an existing website, keeping what already works.",
+        "unit": "per project",
+        "term": "3–5 weeks"
+      },
+      {
+        "title": "UX audit",
+        "text": "A review of user flows, errors and the places where leads are lost. You get a document with prioritised fixes.",
+        "unit": "per audit",
+        "term": "1–2 weeks"
+      }
+    ]
+  },
+  "works": [
+    "benefit-litigation",
+    "quantumtec",
+    "vesta"
+  ],
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "question": "What is UX/UI design in plain words?",
+        "answer": "UX is the logic: what steps a person takes to get their task done and how easy that is. UI is the look: buttons, fonts, colours, icons. A good interface is both clear and pleasant — one doesn't work without the other."
+      },
+      {
+        "question": "How much does website design cost?",
+        "answer": "It depends on the number of unique screens and the complexity of user flows: a services website and a client portal with dozens of states are different jobs. The formats above give a rough guide; I give an exact estimate after the brief."
+      },
+      {
+        "question": "What's the difference between a prototype and a design?",
+        "answer": "A prototype is a draft of the structure: blocks, copy and transitions, without colour or style. The design is the final look. We agree on the prototype first and then draw — that way changes cost less."
+      },
+      {
+        "question": "Which tool do you design in?",
+        "answer": "Figma. You get access to the file: you can view it, leave comments and share it with colleagues via a link."
+      },
+      {
+        "question": "Can I order design only, without development?",
+        "answer": "Yes. I'll hand the designs to your team with components and responsive rules and answer the developers' questions while they build."
+      },
+      {
+        "question": "Do you design logos and brand identities?",
+        "answer": "Yes, when the website or product needs them. I've created logos and brand identities for QuantumTec, OcEx and VESTA."
+      }
+    ]
+  },
+  "meta_title": "UX/UI design for websites and mobile apps in Figma",
+  "meta_description": "I design interfaces for websites, client portals and mobile apps: research, a Figma prototype, a design system and developer-ready designs."
+}

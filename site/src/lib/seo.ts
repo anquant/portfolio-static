@@ -1,6 +1,6 @@
-import { AUTHOR_NAME, BEHANCE_URL, SITE_URL } from './site';
+import { DICTIONARY, LANG_TAG, localePath, type Locale } from './i18n';
+import { BEHANCE_URL, SITE_URL } from './site';
 
-export const AUTHOR_JOB = 'Fullstack веб-разработчик';
 export const AUTHOR_PROFILES = [BEHANCE_URL];
 
 /** Link previews (Telegram, VK, …) for pages without an image of their own */
@@ -22,54 +22,60 @@ export function absUrl(path: string): string {
 const TITLE_LIMIT = 70;
 
 /** "<page> — Павел Моисеев", unless the title already names the author or is long enough on its own */
-export function pageTitle(metaTitle: string): string {
-  const withAuthor = `${metaTitle} — ${AUTHOR_NAME}`;
+export function pageTitle(metaTitle: string, locale: Locale = 'ru'): string {
+  const author = DICTIONARY[locale].authorName;
+  const withAuthor = `${metaTitle} — ${author}`;
 
-  return metaTitle.includes(AUTHOR_NAME) || withAuthor.length > TITLE_LIMIT ? metaTitle : withAuthor;
+  return metaTitle.includes(author) || withAuthor.length > TITLE_LIMIT ? metaTitle : withAuthor;
 }
 
 type JsonLd = Record<string, unknown>;
 
 const PERSON_ID = `${BASE}/#person`;
-const WEBSITE_ID = `${BASE}/#website`;
 
 /** Reference to the person node, for author/creator/provider fields */
 export const personRef: JsonLd = { '@id': PERSON_ID };
 
-export function personLd(knowsAbout: string[] = []): JsonLd {
+export function personLd(locale: Locale = 'ru', knowsAbout: string[] = []): JsonLd {
+  const t = DICTIONARY[locale];
+
   return {
     '@type': 'Person',
     '@id': PERSON_ID,
-    name: AUTHOR_NAME,
-    jobTitle: AUTHOR_JOB,
-    url: `${BASE}/`,
+    name: t.authorName,
+    jobTitle: t.authorJob,
+    url: absUrl(localePath(locale, '/')),
     sameAs: AUTHOR_PROFILES,
     ...(knowsAbout.length > 0 && { knowsAbout }),
   };
 }
 
-export function websiteLd(description?: string): JsonLd {
+export function websiteLd(locale: Locale = 'ru', description?: string): JsonLd {
+  const url = absUrl(localePath(locale, '/'));
+
   return {
     '@type': 'WebSite',
-    '@id': WEBSITE_ID,
-    url: `${BASE}/`,
-    name: AUTHOR_NAME,
+    '@id': `${url}#website`,
+    url,
+    name: DICTIONARY[locale].authorName,
     ...(description && { description }),
-    inLanguage: 'ru-RU',
+    inLanguage: LANG_TAG[locale],
     publisher: personRef,
   };
 }
 
-/** Breadcrumbs from the home page down to the current page */
-export function breadcrumbLd(items: { name: string; path: string }[]): JsonLd {
+/** Breadcrumbs from the home page down to the current page; paths are already localized */
+export function breadcrumbLd(items: { name: string; path: string }[], locale: Locale = 'ru'): JsonLd {
   return {
     '@type': 'BreadcrumbList',
-    itemListElement: [{ name: 'Главная', path: '/' }, ...items].map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: absUrl(item.path),
-    })),
+    itemListElement: [{ name: DICTIONARY[locale].home, path: localePath(locale, '/') }, ...items].map(
+      (item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: absUrl(item.path),
+      }),
+    ),
   };
 }
 

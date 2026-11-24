@@ -143,6 +143,23 @@ export const workFileSchema = z.strictObject({
   ...seo,
 });
 
+/**
+ * en/works/<slug>.json: the translated text of a case. Media, colours and
+ * order come from the Russian file, so they can't drift between languages.
+ */
+export const workTranslationSchema = workFileSchema.pick({
+  title: true,
+  description: true,
+  infotext: true,
+  scope: true,
+  company: true,
+  problem: true,
+  mockups_description: true,
+  result: true,
+  meta_title: true,
+  meta_description: true,
+});
+
 /** services/<slug>.json */
 export const serviceFileSchema = z.strictObject({
   sort: z.number(),
@@ -176,7 +193,7 @@ export const serviceFileSchema = z.strictObject({
           z.strictObject({
             title: z.string().min(1),
             text: z.string().min(1),
-            /** Rubles; the card says "по оценке" when absent */
+            /** Rubles (euros on the English site); the card says "по оценке" when absent */
             price_from: z.number().int().positive().optional(),
             /** "за проект", "в месяц", … */
             unit: z.string().optional(),

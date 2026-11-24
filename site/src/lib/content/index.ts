@@ -4,6 +4,8 @@ import path from 'path';
 import matter from 'gray-matter';
 import { z } from 'zod';
 
+import type { Locale } from '@/lib/i18n';
+
 import {
   aboutSchema,
   articleFrontmatterSchema,
@@ -15,6 +17,7 @@ import {
   serviceFileSchema,
   servicesPageSchema,
   workFileSchema,
+  workTranslationSchema,
   type AboutData,
   type ArticleFrontmatter,
   type BlogArticlesData,
@@ -71,17 +74,28 @@ export function slugsInDir(dir: string): string[] {
     .sort();
 }
 
+/**
+ * Russian content sits at the root of `content/`, English in `content/en/`
+ * with the same file names. The blog, its categories and the client logos
+ * are Russian-only / shared and have no English copy.
+ */
+export function localized(locale: Locale, file: string): string {
+  return locale === 'ru' ? file : `${locale}/${file}`;
+}
+
 /* ------------------------------------------------------------------------ */
 /* Single pages                                                             */
 /* ------------------------------------------------------------------------ */
 
-export const getHome = (): HomeData => readJson(homeSchema, 'home.json');
+export const getHome = (locale: Locale = 'ru'): HomeData => readJson(homeSchema, localized(locale, 'home.json'));
 
-export const getAbout = (): AboutData => readJson(aboutSchema, 'about.json');
+export const getAbout = (locale: Locale = 'ru'): AboutData => readJson(aboutSchema, localized(locale, 'about.json'));
 
-export const getContacts = (): ContactsData => readJson(contactsSchema, 'contacts.json');
+export const getContacts = (locale: Locale = 'ru'): ContactsData =>
+  readJson(contactsSchema, localized(locale, 'contacts.json'));
 
-export const getServicesPage = (): ServicesPageData => readJson(servicesPageSchema, 'services-page.json');
+export const getServicesPage = (locale: Locale = 'ru'): ServicesPageData =>
+  readJson(servicesPageSchema, localized(locale, 'services-page.json'));
 
 export const getBlogPage = (): BlogPageData => readJson(blogPageSchema, 'blog-page.json');
 
@@ -94,17 +108,29 @@ export const getClients = (): ClientsData[] => readJson(z.array(clientSchema), '
 /* Works                                                                    */
 /* ------------------------------------------------------------------------ */
 
-export function getWorks(): WorksData[] {
+/** A translation replaces the text fields; a field it leaves out is dropped, not kept in Russian */
+function readWork(slug: string, locale: Locale): WorksData {
+  const base = readJson(workFileSchema, `works/${slug}.json`);
+  if (locale === 'ru') {
+    return { ...base, slug };
+  }
+  const { scope: _scope, mockups_description: _mockups, meta_description: _meta, ...media } = base;
+
+  return withoutUndefined({
+    ...media,
+    ...readJson(workTranslationSchema, localized(locale, `works/${slug}.json`)),
+    slug,
+  });
+}
+
+export function getWorks(locale: Locale = 'ru'): WorksData[] {
   return slugsInDir('works')
-    .map(slug => ({
-      ...readJson(workFileSchema, `works/${slug}.json`),
-      slug,
-    }))
+    .map(slug => readWork(slug, locale))
     .sort((a, b) => a.sort - b.sort);
 }
 
-export function getWorkBySlug(slug: string): WorksData | undefined {
-  return getWorks().find(w => w.slug === slug);
+export function getWorkBySlug(slug: string, locale: Locale = 'ru'): WorksData | undefined {
+  return getWorks(locale).find(w => w.slug === slug);
 }
 
 /* ------------------------------------------------------------------------ */
@@ -127,14 +153,16 @@ export function toService(file: ServiceFile, slug: string): ServicesListData {
   return withoutUndefined({ ...service, content: sections, slug });
 }
 
-export function getServicesList(): ServicesListData[] {
-  return slugsInDir('services')
-    .map(slug => toService(readJson(serviceFileSchema, `services/${slug}.json`), slug))
+export function getServicesList(locale: Locale = 'ru'): ServicesListData[] {
+  const dir = localized(locale, 'services');
+
+  return slugsInDir(dir)
+    .map(slug => toService(readJson(serviceFileSchema, `${dir}/${slug}.json`), slug))
     .sort((a, b) => a.sort - b.sort);
 }
 
-export function getServiceBySlug(slug: string): ServicesListData | undefined {
-  return getServicesList().find(s => s.slug === slug);
+export function getServiceBySlug(slug: string, locale: Locale = 'ru'): ServicesListData | undefined {
+  return getServicesList(locale).find(s => s.slug === slug);
 }
 
 /* ------------------------------------------------------------------------ */

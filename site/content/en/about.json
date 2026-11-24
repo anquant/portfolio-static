@@ -1,0 +1,142 @@
+{
+  "title_part1": "Full-stack",
+  "title_part2": "web developer",
+  "lead": "I'm Pavel Moiseev. Since 2012 I've been building websites, client portals and web services — design, Next.js development and SEO, from the first idea to launch.",
+  "content": "<p>I'm a designer and a developer at the same time, and that's the main thing to know about me. My designs already account for how they'll be built, and my code for how people will use it and how they'll find it on Google.</p>\n<p>Over 14 years I've led a web department, spent five years running development in a product team, and since 2019 I've been building web apps on Next.js, APIs, client portals and design systems. My clients include logistics and law firms, a research institute of the Russian Academy of Sciences, messaging services, appraisers and manufacturers — more than 100 projects in total.</p>\n<p>I'm an engineer by training, with a degree in computer systems and networks — and I also graduated from art school. The engineering side makes sure everything is fast and reliable; the art side makes sure it's a pleasure to use.</p>\n<p>You work with me directly, with no account managers in between. I care that a website doesn't just look good on launch day but keeps bringing in customers for years, stays easy to update and doesn't need to be rebuilt.</p>",
+  "stats": [
+    {
+      "value": "14+",
+      "label": "years in web development"
+    },
+    {
+      "value": "100+",
+      "label": "projects delivered"
+    }
+  ],
+  "principles": {
+    "title": "How I work",
+    "items": [
+      {
+        "title": "The problem comes first",
+        "text": "Before I open Figma, I find out why the website is needed, who will use it and how it will make money."
+      },
+      {
+        "title": "Honest about time and money",
+        "text": "I give a realistic timeline and cost before we start. If the job can be done simpler and cheaper — say, with a website builder — I'll tell you."
+      },
+      {
+        "title": "No disappearing acts",
+        "text": "I share work in progress on a staging address instead of going quiet for a month. You always know where the project stands."
+      },
+      {
+        "title": "No lock-in",
+        "text": "I write clear code and leave documentation. If another team ever takes over, they won't have to rewrite everything."
+      }
+    ]
+  },
+  "experience": {
+    "title": "Experience and education",
+    "items": [
+      {
+        "period": "2019 — present",
+        "role": "Full-stack developer",
+        "place": "Nometa Studio",
+        "text": "SSR apps on Next.js, REST APIs, client portals and internal platforms, design systems and Figma prototypes."
+      },
+      {
+        "period": "2014 — 2019",
+        "role": "Lead web developer",
+        "place": "Alpira",
+        "text": "Application and API architecture in a product team, corporate portals and client portals; led the UI/UX practice."
+      },
+      {
+        "period": "2013 — 2014",
+        "role": "Head of web development",
+        "place": "Vysokie Tekhnologii",
+        "text": "Ran the web development team and its processes, from strategy to release. Online stores, landing pages and B2B solutions."
+      },
+      {
+        "period": "2008 — 2013",
+        "role": "Engineer, computer systems and networks",
+        "place": "SUAI — State University of Aerospace Instrumentation"
+      },
+      {
+        "role": "Art education",
+        "place": "N. A. Yaroshenko Art School",
+        "text": "Composition and visual thinking — the foundation UI/UX design is built on."
+      }
+    ]
+  },
+  "skills": [
+    {
+      "title": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "JavaScript (ES6+)",
+        "Redux",
+        "Apollo Client",
+        "next-intl",
+        "Tailwind CSS",
+        "HTML5",
+        "CSS3",
+        "SASS/LESS",
+        "Webpack",
+        "Turborepo"
+      ]
+    },
+    {
+      "title": "Backend and infrastructure",
+      "items": [
+        "Node.js",
+        "Python (FastAPI)",
+        "PHP",
+        "Rust (actix-web)",
+        "REST",
+        "GraphQL",
+        "OAuth 2.0 / JWT",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "Prisma",
+        "Directus",
+        "Docker",
+        "Kubernetes",
+        "Terraform",
+        "CI/CD",
+        "Linux",
+        "Git"
+      ]
+    },
+    {
+      "title": "Design and graphics",
+      "items": [
+        "UX/UI design",
+        "Design systems",
+        "Prototyping",
+        "Graphic design",
+        "Figma",
+        "Sketch",
+        "Illustrator",
+        "Photoshop",
+        "Blender",
+        "DaVinci Resolve"
+      ]
+    },
+    {
+      "title": "SEO and analytics",
+      "items": [
+        "Technical SEO",
+        "Keyword research",
+        "Schema.org",
+        "Core Web Vitals",
+        "GEO",
+        "Google Search Console",
+        "Google Analytics"
+      ]
+    }
+  ],
+  "meta_title": "Pavel Moiseev — full-stack web developer and designer",
+  "meta_description": "Web developer and designer working since 2012: websites, client portals and web services on Next.js, UX/UI design and SEO. More than 100 projects."
+}

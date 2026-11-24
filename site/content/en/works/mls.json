@@ -1,0 +1,12 @@
+{
+  "title": "MLS",
+  "description": "Website for a logistics company specialising in container shipping from China to Russia.",
+  "infotext": "Designed in Figma, built on Next.js, content managed in the Directus headless CMS.",
+  "scope": ["Research", "Design", "Development"],
+  "company": "Multimodal Logistics Service (MLS) is a leading container shipping operator that provides reliable, on-time transport services for businesses. Drawing on years of experience and in-depth market analysis, MLS designs efficient, cost-effective and safe logistics solutions that streamline shipping for its clients.",
+  "problem": "As the company grew, its old website no longer met modern standards and didn't reflect the brand or its services. It needed a new website that fully conveyed the company's values and made information about its offering easy to find.",
+  "mockups_description": "Before creating the design concept, I analysed the existing website, studied user behaviour and shaped an overall brand strategy. The page designs focus on easy navigation and the company's visual identity, and all the necessary materials were prepared.",
+  "result": "The result is a modern, functional and attractive website that fully reflects the brand's values and character. The new interface improves the user experience, makes navigation intuitive and highlights what makes the company unique. The website has become a convenient way to present services and an effective channel for reaching clients.",
+  "meta_title": "Case study: website for the MLS logistics company",
+  "meta_description": "Website for MLS, a logistics company specialising in container shipping from China to Russia."
+}

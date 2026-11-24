@@ -6,26 +6,33 @@ import { FiArrowRight } from 'react-icons/fi';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
 import { IoClose } from 'react-icons/io5';
 
-import { AUTHOR_NAME, NAVIGATION } from '@/lib/site';
+import { navigation, stripLocale } from '@/lib/i18n';
+import { useLocale } from '@/lib/use-locale';
 
 import Button from './Button';
+import LanguageSwitch from './LanguageSwitch';
 
 type HeaderProps = {
   classes?: string;
 };
 
+/** `path` is the route pattern, `slug` a menu link; both may carry the /en prefix */
 function isActive(path: string, slug: string) {
-  if (slug === '/') {
-    return path === '/' || path === '/[slug]';
+  const route = stripLocale(path);
+  const link = stripLocale(slug);
+  if (link === '/') {
+    return route === '/' || route === '/[slug]';
   }
 
-  return path === slug || path.startsWith(`${slug}/`);
+  return route === link || route.startsWith(`${link}/`);
 }
 
 export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
   const router = useRouter();
   const path = router.pathname;
-  const isHomePage = path === '/';
+  const { locale, t, href } = useLocale();
+  const isHomePage = stripLocale(path) === '/';
+  const nav = navigation(locale);
   const [open, setOpen] = useState(false);
 
   // The dialog is only hidden by CSS on desktop; close it for real when the
@@ -44,9 +51,9 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
         aria-hidden
         className="grid place-items-center size-8 rounded-full bg-fg text-bg font-display text-sm font-bold"
       >
-        ПМ
+        {t.authorInitials}
       </span>
-      {AUTHOR_NAME}
+      {t.authorName}
     </span>
   );
 
@@ -56,17 +63,17 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
         {isHomePage ? (
           <div className="cursor-default">{logo}</div>
         ) : (
-          <Link href="/" className="transition-opacity hover:opacity-70">
+          <Link href={href('/')} className="transition-opacity hover:opacity-70">
             {logo}
           </Link>
         )}
 
         {/* Desktop navigation */}
         <nav
-          aria-label="Основное меню"
+          aria-label={t.mainMenu}
           className="hidden lg:flex items-center gap-1 rounded-full border border-line bg-surface/70 backdrop-blur p-1"
         >
-          {NAVIGATION.map(item => {
+          {nav.map(item => {
             const active = isActive(path, item.slug);
 
             return (
@@ -85,15 +92,16 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button type="link" href="/contacts" size="small" className="hidden sm:inline-flex">
-            Контакты
+          <LanguageSwitch />
+          <Button type="link" href={href('/contacts')} size="small" className="hidden sm:inline-flex">
+            {t.nav.contacts}
           </Button>
           <Button
             variant="secondary"
             size="small"
             className="lg:hidden !px-3"
             onClick={() => setOpen(true)}
-            aria-label="Открыть меню"
+            aria-label={t.openMenu}
           >
             <HiOutlineMenuAlt4 size={18} />
           </Button>
@@ -132,13 +140,13 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
                     size="small"
                     className="!px-3"
                     onClick={() => setOpen(false)}
-                    aria-label="Закрыть меню"
+                    aria-label={t.closeMenu}
                   >
                     <IoClose size={18} />
                   </Button>
                 </div>
-                <nav aria-label="Основное меню" className="mt-16 flex flex-col">
-                  {[...NAVIGATION, { title: 'Контакты', slug: '/contacts' }].map((item, i) => {
+                <nav aria-label={t.mainMenu} className="mt-16 flex flex-col">
+                  {[...nav, { title: t.nav.contacts, slug: href('/contacts') }].map((item, i) => {
                     const active = isActive(path, item.slug);
 
                     return (
@@ -158,9 +166,10 @@ export default function Header({ classes = 'mb-16 md:mb-28' }: HeaderProps) {
                     );
                   })}
                 </nav>
-                <div className="mt-auto pb-10 pt-10">
-                  <Button type="link" href="/contacts" className="w-full" onClick={() => setOpen(false)}>
-                    Обсудить проект
+                <div className="mt-auto flex flex-col gap-6 pb-10 pt-10">
+                  <LanguageSwitch className="w-fit" onNavigate={() => setOpen(false)} />
+                  <Button type="link" href={href('/contacts')} className="w-full" onClick={() => setOpen(false)}>
+                    {t.discussProject}
                   </Button>
                 </div>
               </DialogPanel>

@@ -1,6 +1,8 @@
 import { FiPlus } from 'react-icons/fi';
 
 import type { ServiceFile } from '@/lib/content/schemas';
+import { formatPrice } from '@/lib/i18n';
+import { useLocale } from '@/lib/use-locale';
 
 import Reveal from '../Reveal';
 import SectionHeader from '../SectionHeader';
@@ -43,6 +45,8 @@ export function Cards({ title, items }: { title: string; items: { title: string;
 }
 
 export function Process({ title, steps }: NonNullable<ServiceFile['process']>) {
+  const { t } = useLocale();
+
   return (
     <section className="section-gap">
       <SectionHeader title={title} />
@@ -50,7 +54,9 @@ export function Process({ title, steps }: NonNullable<ServiceFile['process']>) {
         {steps.map((step, i) => (
           <Reveal as="li" key={i} delay={i * 90} className="relative border-t border-line pt-6">
             <span aria-hidden className="absolute -top-[5px] left-0 size-[9px] rounded-full bg-accent" />
-            <div className="eyebrow">Этап {num(i)}</div>
+            <div className="eyebrow">
+              {t.service.step} {num(i)}
+            </div>
             <h3 className="t-card mt-3">{step.title}</h3>
             <p className="mt-3 text-muted leading-relaxed">{step.text}</p>
           </Reveal>
@@ -60,9 +66,9 @@ export function Process({ title, steps }: NonNullable<ServiceFile['process']>) {
   );
 }
 
-const rub = new Intl.NumberFormat('ru-RU');
-
 export function Pricing({ title, note, plans }: NonNullable<ServiceFile['pricing']>) {
+  const { locale, t } = useLocale();
+
   return (
     <section className="section-gap">
       <SectionHeader title={title} />
@@ -79,12 +85,14 @@ export function Pricing({ title, note, plans }: NonNullable<ServiceFile['pricing
               <div>
                 {plan.price_from ? (
                   <>
-                    <span className="text-muted">от </span>
-                    <span className="font-display text-2xl md:text-3xl font-bold">{rub.format(plan.price_from)} ₽</span>
+                    <span className="text-muted">{t.service.from} </span>
+                    <span className="font-display text-2xl md:text-3xl font-bold">
+                      {formatPrice(locale, plan.price_from)}
+                    </span>
                     {plan.unit && <span className="text-muted"> {plan.unit}</span>}
                   </>
                 ) : (
-                  <span className="font-display text-xl font-semibold">Стоимость по оценке</span>
+                  <span className="font-display text-xl font-semibold">{t.service.byEstimate}</span>
                 )}
               </div>
               {plan.term && (

@@ -1,0 +1,12 @@
+{
+  "title": "IGEM RAS",
+  "description": "Official website and graduate-school portal of the Institute of Geology of Ore Deposits, Petrography, Mineralogy and Geochemistry of the Russian Academy of Sciences.",
+  "infotext": "Designed in Figma, built on Next.js, content managed in Directus.",
+  "scope": ["Design", "Development", "Client portal", "Content"],
+  "company": "IGEM RAS is a leading research institute that studies ore deposits, petrography, mineralogy and geochemistry. Founded in 1930, it became an independent institution in 1956. Today it carries out fundamental and applied research, develops new methods of mineral exploration and studies how minerals form, making a significant contribution to geological science.",
+  "problem": "The institute's old website had a complicated structure and poorly organised information, which made it hard to use. Editing content required knowledge of HTML and CSS, which made administration difficult. The decision was made to build a new website with clear navigation, a modern design and an intuitive content management system.",
+  "mockups_description": "The project began with an in-depth study of the institute's work, including its history and key research areas, and an analysis of the regulatory requirements for websites of public institutions. Based on this, page designs were created and approved. I then built the website, filled it with content and presented the final version, followed by testing and optimisation for different devices, improved navigation and training for staff on the content management system.",
+  "result": "The project required detailed work on many fronts. Every requirement was met, with full functionality, high speed and fault tolerance. Special attention went to testing, optimisation and user experience. The result is a modern, reliable and convenient website that meets current standards and serves its users well.",
+  "meta_title": "Case study: website and portal for IGEM RAS",
+  "meta_description": "Official website and graduate-school portal for the Institute of Geology of Ore Deposits, Petrography, Mineralogy and Geochemistry of the Russian Academy of Sciences."
+}

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { type CSSProperties, type ReactNode } from 'react';
 
+import { useLocale } from '@/lib/use-locale';
+
 type Crumb = { href: string; label: string };
 
 type PageIntroProps = {
@@ -36,6 +38,8 @@ export default function PageIntro({
   glow,
   className = '',
 }: PageIntroProps) {
+  const { t } = useLocale();
+
   return (
     <section className={`relative isolate ${className}`}>
       {glow !== false && (
@@ -52,7 +56,7 @@ export default function PageIntro({
         />
       )}
       {crumbs && crumbs.length > 0 && (
-        <nav aria-label="Хлебные крошки" className="reveal flex flex-wrap gap-2 text-sm text-muted mb-6" style={d(50)}>
+        <nav aria-label={t.breadcrumbs} className="reveal flex flex-wrap gap-2 text-sm text-muted mb-6" style={d(50)}>
           {crumbs.map(c => (
             <span key={c.href} className="flex gap-2">
               <Link href={c.href} className="transition-colors hover:text-fg">

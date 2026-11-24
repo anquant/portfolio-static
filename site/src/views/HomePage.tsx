@@ -1,0 +1,137 @@
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { FiArrowDown } from 'react-icons/fi';
+
+import Button from '@/components/Button';
+import ClientsSection from '@/components/ClientsSection';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
+import SectionHeader from '@/components/SectionHeader';
+import WorkCard from '@/components/WorkCard';
+import type { ClientsData, HomeData, WorksData } from '@/lib/content/schemas';
+import { pageFromQuery } from '@/lib/pagination';
+import { personLd, websiteLd } from '@/lib/seo';
+import { useLocale } from '@/lib/use-locale';
+
+// three.js is loaded only in the browser and after the page is interactive
+const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
+  ssr: false,
+});
+
+interface HomeProps {
+  home: HomeData;
+  works: WorksData[];
+  clients?: ClientsData[];
+}
+
+const ITEMS_PER_PAGE = 3;
+
+export default function HomePage({ home, works, clients }: HomeProps) {
+  const { title_h1, introtext, title_h2, meta_title, meta_description } = home;
+  const seo = { meta_title, meta_description };
+  const { locale, t, href } = useLocale();
+  const homePath = href('/');
+
+  // "Load more" pagination, mirrored in ?page=N so a shared link restores it
+  const router = useRouter();
+  const { page } = router.query;
+  const totalPages = Math.ceil(works.length / ITEMS_PER_PAGE);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (page === undefined) {
+      return setCurrentPage(1);
+    }
+    const n = pageFromQuery(page, totalPages);
+    if (n === 1) {
+      router.replace(homePath, undefined, { shallow: true });
+    } else {
+      setCurrentPage(n);
+    }
+  }, [page, router, totalPages, homePath]);
+
+  const handleClickLoadMore = () => {
+    const nextPage = currentPage + 1;
+    if (nextPage > totalPages) {
+      return;
+    }
+    setCurrentPage(nextPage);
+    router.push({ pathname: homePath, query: { page: nextPage } }, undefined, {
+      shallow: true,
+      scroll: false,
+    });
+  };
+
+  const paginatedWorks = works.slice(0, currentPage * ITEMS_PER_PAGE);
+
+  return (
+    <Layout seo={seo} jsonLd={[websiteLd(locale, meta_description), personLd(locale)]}>
+      {/* Hero: interactive 3D background (wave field + morphing shape) */}
+      <section className="relative isolate overflow-hidden min-h-[100svh] lg:min-h-[92svh] flex flex-col">
+        <div className="absolute inset-0 -z-10">
+          <HeroScene />
+          {/* Keeps the text readable over the scene and blends into the next section */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-bg via-bg/60 to-transparent lg:via-bg/30"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-bg to-transparent"
+          />
+        </div>
+        <div className="container-page flex-1 flex flex-col">
+          <Header />
+          <div className="flex-1 flex items-start lg:items-center pb-24 md:pb-32">
+            <div className="max-w-2xl lg:max-w-[46rem]">
+              <div className="reveal eyebrow mb-6" style={{ '--d': '150ms' } as React.CSSProperties}>
+                {t.hero.eyebrow}
+              </div>
+              <h1 style={{ '--d': '300ms' } as React.CSSProperties} className="reveal t-hero">
+                {title_h1}
+              </h1>
+              <p
+                style={{ '--d': '500ms' } as React.CSSProperties}
+                className="reveal mt-6 md:mt-8 max-w-xl text-lg md:text-xl text-muted"
+              >
+                {introtext}
+              </p>
+              <div style={{ '--d': '700ms' } as React.CSSProperties} className="reveal mt-10 flex flex-wrap gap-3">
+                <Button type="link" href="#works">
+                  {t.hero.viewWorks} <FiArrowDown aria-hidden />
+                </Button>
+                <Button type="link" href={href('/contacts')} variant="secondary">
+                  {t.discussProject}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Works */}
+      <section id="works" className="container-page scroll-mt-6">
+        <SectionHeader
+          title={title_h2}
+          aside={
+            <span className="tabular-nums">
+              <span className="text-fg">{paginatedWorks.length}</span> / {works.length}
+            </span>
+          }
+        />
+        <WorkCard works={paginatedWorks} />
+        {works.length > paginatedWorks.length && (
+          <div className="flex justify-center mt-16 md:mt-24">
+            <Button variant="secondary" onClick={handleClickLoadMore}>
+              {t.hero.loadMore}
+            </Button>
+          </div>
+        )}
+        <ClientsSection clients={clients} />
+        <Footer />
+      </section>
+    </Layout>
+  );
+}
