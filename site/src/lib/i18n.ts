@@ -4,9 +4,12 @@
  * locale is simply the URL prefix.
  *
  * Every page exists in both languages except blog articles: each language
- * has its own posts (an English post may adapt a Russian one, but it is
- * written for a different search market), so an article has no counterpart.
+ * has its own posts. An English post may adapt a Russian one for its search
+ * market; such pairs are listed in content/blog-translations.json and are
+ * each other's counterpart. Other articles have none.
  */
+
+import BLOG_TRANSLATIONS from '../../content/blog-translations.json';
 
 export const LOCALES = ['ru', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -51,7 +54,7 @@ export function localePath(locale: Locale, path: string): string {
   return path === '/' || /^\/[?#]/.test(path) ? `${PREFIX.en}${path.slice(1)}` : `${PREFIX.en}${path}`;
 }
 
-/** Pages without a counterpart in the other language: blog articles and the 404 page */
+/** Pages without a same-path counterpart in the other language: blog articles and the 404 page */
 function isUntranslated(path: string): boolean {
   return /^\/(blog\/[^/]+|404)$/.test(path);
 }
@@ -63,8 +66,12 @@ function isUntranslated(path: string): boolean {
  */
 export function alternatePath(path: string, target: Locale): string | null {
   const base = stripLocale(path).split(/[?#]/)[0] || '/';
-  if (target !== localeFromPath(path) && isUntranslated(base)) {
-    return null;
+  const source = localeFromPath(path);
+  if (target !== source && isUntranslated(base)) {
+    const slug = base.startsWith('/blog/') ? base.slice('/blog/'.length) : null;
+    const pair = slug ? BLOG_TRANSLATIONS.find(p => p[source] === slug) : undefined;
+
+    return pair ? localePath(target, `/blog/${pair[target]}`) : null;
   }
 
   return localePath(target, base);

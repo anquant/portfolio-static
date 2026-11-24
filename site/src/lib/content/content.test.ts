@@ -150,6 +150,21 @@ describe('English content', () => {
   it('never lets a case slug shadow the /en prefix', () => {
     expect(slugsInDir('works')).not.toContain('en');
   });
+
+  it('pairs only articles that exist, each at most once', () => {
+    const pairs = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/blog-translations.json'), 'utf8')) as {
+      ru: string;
+      en: string;
+    }[];
+    const ru = getBlogArticles('ru').map(a => a.slug);
+    const en = getBlogArticles('en').map(a => a.slug);
+    for (const p of pairs) {
+      expect(ru).toContain(p.ru);
+      expect(en).toContain(p.en);
+    }
+    expect(new Set(pairs.map(p => p.ru)).size).toBe(pairs.length);
+    expect(new Set(pairs.map(p => p.en)).size).toBe(pairs.length);
+  });
 });
 
 describe('validation errors', () => {

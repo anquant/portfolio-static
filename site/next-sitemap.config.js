@@ -21,18 +21,30 @@ const dates = { ...blogDates('blog', '/blog'), ...blogDates('en/blog', '/en/blog
 /*
  * hreflang alternates for every page that exists in both languages — the
  * same pairs as the <link rel="alternate"> tags (src/lib/i18n.ts; this file
- * is CommonJS and can't import it). Blog articles are written per language
- * and have no counterpart; the blog index itself does.
+ * is CommonJS and can't import it). Blog articles are written per language;
+ * only the pairs in content/blog-translations.json are each other's
+ * counterpart. The blog index itself always has one.
  */
 const SITE = (process.env.SITE_URL || 'https://moiseevp.ru/').replace(/\/$/, '');
+const BLOG_TRANSLATIONS = require('./content/blog-translations.json');
 
 function alternateRefs(loc) {
   const base = loc === '/en' ? '/' : loc.replace(/^\/en(?=\/)/, '');
+  let ruPath = base;
+  let enPath = base;
   if (/^\/(blog\/[^/]+|404)$/.test(base)) {
-    return [];
+    const slug = base.slice('/blog/'.length);
+    const pair = base.startsWith('/blog/')
+      ? BLOG_TRANSLATIONS.find(p => p[loc.startsWith('/en/') ? 'en' : 'ru'] === slug)
+      : undefined;
+    if (!pair) {
+      return [];
+    }
+    ruPath = `/blog/${pair.ru}`;
+    enPath = `/blog/${pair.en}`;
   }
-  const ru = `${SITE}${base === '/' ? '/' : base}`;
-  const en = `${SITE}${base === '/' ? '/en' : `/en${base}`}`;
+  const ru = `${SITE}${ruPath === '/' ? '/' : ruPath}`;
+  const en = `${SITE}${enPath === '/' ? '/en' : `/en${enPath}`}`;
 
   return [
     { href: ru, hreflang: 'ru', hrefIsAbsolute: true },
