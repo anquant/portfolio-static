@@ -1,5 +1,6 @@
 [
   { "ru": "nextjs-dlya-biznesa", "en": "nextjs-for-business" },
   { "ru": "nextjs-ssr-seo-yandex", "en": "nextjs-ssr-seo-google" },
-  { "ru": "deploy-next-js-prilozheniya", "en": "deploy-nextjs-to-a-vps" }
+  { "ru": "deploy-next-js-prilozheniya", "en": "deploy-nextjs-to-a-vps" },
+  { "ru": "kak-popast-v-otvety-nejrosetej", "en": "generative-engine-optimization" }
 ]

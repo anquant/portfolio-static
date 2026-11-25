@@ -4,7 +4,7 @@ const path = require('path');
 
 const matter = require('gray-matter');
 
-/** Publication date of each blog post, from its front matter: "/blog/<slug>", "/en/blog/<slug>" → ISO date */
+/** Last revision (or publication) date of each blog post, from its front matter: "/blog/<slug>", "/en/blog/<slug>" → ISO date */
 function blogDates(contentDir, urlPrefix) {
   const dir = path.join(__dirname, 'content', contentDir);
 
@@ -12,7 +12,11 @@ function blogDates(contentDir, urlPrefix) {
     fs
       .readdirSync(dir)
       .filter(file => file.endsWith('.mdx'))
-      .map(file => [`${urlPrefix}/${file.replace(/\.mdx$/, '')}`, matter.read(path.join(dir, file)).data.pubdate]),
+      .map(file => {
+        const { pubdate, updated } = matter.read(path.join(dir, file)).data;
+
+        return [`${urlPrefix}/${file.replace(/\.mdx$/, '')}`, updated ?? pubdate];
+      }),
   );
 }
 

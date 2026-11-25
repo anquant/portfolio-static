@@ -15,6 +15,7 @@ export const SCENE_IDS = [
   'blocks',
   'servers',
   'cubes',
+  'robot',
 ] as const;
 
 export type SceneId = (typeof SCENE_IDS)[number];

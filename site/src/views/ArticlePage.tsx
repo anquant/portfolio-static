@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { Fragment } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 
 import ArticleCard from '@/components/ArticleCard';
@@ -13,7 +14,7 @@ import SectionHeader from '@/components/SectionHeader';
 import type { BlogArticlesData } from '@/lib/content/schemas';
 import { LANG_TAG, formatDate } from '@/lib/i18n';
 import { mdxComponents } from '@/lib/mdx-components';
-import { absUrl, breadcrumbLd, personRef } from '@/lib/seo';
+import { absUrl, breadcrumbLd, faqLd, personRef } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
 interface ArticleProps {
@@ -32,6 +33,7 @@ export default function ArticlePage({ article, articles, mdxSource }: ArticlePro
       headline: title,
       ...(meta_description && { description: meta_description }),
       datePublished: article.pubdate,
+      ...(article.updated && { dateModified: article.updated }),
       ...(image && { image: absUrl(image.src) }),
       author: personRef,
       publisher: personRef,
@@ -45,7 +47,22 @@ export default function ArticlePage({ article, articles, mdxSource }: ArticlePro
       ],
       locale,
     ),
+    ...(article.faq ? [faqLd(article.faq)] : []),
   ];
+  // the body places the FAQ with <Faq />; its questions come from the front matter, the same as the JSON-LD
+  const components = {
+    ...mdxComponents,
+    Faq: () => (
+      <>
+        {article.faq?.map(item => (
+          <Fragment key={item.question}>
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </Fragment>
+        ))}
+      </>
+    ),
+  };
 
   return (
     <Layout seo={seo} jsonLd={jsonLd}>
@@ -60,9 +77,19 @@ export default function ArticlePage({ article, articles, mdxSource }: ArticlePro
             // 3D covers live in the accent palette; the old pastel tint would clash
             glow={article.scene ? undefined : image_background_color}
           >
-            <time dateTime={article.pubdate} className="block text-sm text-muted">
-              {formatDate(locale, article.pubdate)}
-            </time>
+            <p className="text-sm text-muted">
+              <Link href={href('/about')} rel="author" className="transition-colors hover:text-fg">
+                {t.authorName}
+              </Link>
+              {' · '}
+              <time dateTime={article.pubdate}>{formatDate(locale, article.pubdate)}</time>
+              {article.updated && (
+                <>
+                  {' · '}
+                  {t.blog.updated} <time dateTime={article.updated}>{formatDate(locale, article.updated)}</time>
+                </>
+              )}
+            </p>
           </PageIntro>
           {article.scene ? (
             <Scene3D
@@ -82,7 +109,7 @@ export default function ArticlePage({ article, articles, mdxSource }: ArticlePro
             />
           )}
           <div className="content-blocks mt-12 text-lg text-fg/90">
-            <MDXRemote {...mdxSource} components={mdxComponents} />
+            <MDXRemote {...mdxSource} components={components} />
           </div>
         </article>
         {articles?.length > 0 && (

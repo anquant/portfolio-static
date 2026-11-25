@@ -19,6 +19,10 @@ const publicPath = z.string().startsWith('/', 'must be a /-rooted public path');
 
 const isoDate = z.iso.date();
 
+/** One question with its answer: service FAQ blocks and article FAQ sections */
+const faqItemSchema = z.strictObject({ question: z.string().min(1), answer: z.string().min(1) });
+export type FaqItem = z.infer<typeof faqItemSchema>;
+
 const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'must be a #rrggbb colour');
 
 const seo = {
@@ -218,7 +222,7 @@ export const serviceFileSchema = z.strictObject({
   faq: z
     .strictObject({
       title: z.string(),
-      items: z.array(z.strictObject({ question: z.string().min(1), answer: z.string().min(1) })).min(1),
+      items: z.array(faqItemSchema).min(1),
     })
     .optional(),
   ...seo,
@@ -228,6 +232,8 @@ export const serviceFileSchema = z.strictObject({
 export const articleFrontmatterSchema = z
   .strictObject({
     pubdate: isoDate,
+    /** Date of the last substantial revision; shown on the page and sent as dateModified */
+    updated: isoDate.optional(),
     /** Slug of a category in blog-categories.json */
     category: z.string(),
     title: z.string(),
@@ -238,7 +244,13 @@ export const articleFrontmatterSchema = z
     image_height: z.number().int().positive().optional(),
     /** Animated 3D cover; replaces the image when set */
     scene: sceneIdSchema.optional(),
+    /** Questions answered in the article; rendered where the body places <Faq /> and emitted as FAQPage JSON-LD */
+    faq: z.array(faqItemSchema).min(1).optional(),
     ...seo,
+  })
+  .refine(fm => fm.updated === undefined || fm.updated >= fm.pubdate, {
+    message: 'updated must not be earlier than pubdate',
+    path: ['updated'],
   })
   .refine(
     fm => {
@@ -285,16 +297,18 @@ export type ServicePreview = Pick<ServicesListData, 'slug' | 'preview_title' | '
 
 export type BlogArticlesData = {
   pubdate: string;
+  updated?: string;
   category: BlogCategoriesData;
   title: string;
   annotation?: string;
   image?: ImageAsset;
   image_background_color?: string;
   scene?: z.infer<typeof sceneIdSchema>;
+  faq?: FaqItem[];
   meta_title: string;
   meta_description?: string;
   slug: string;
 };
 
 /** What an article card needs — a subset of the article */
-export type ArticleCardData = Omit<BlogArticlesData, 'meta_title' | 'meta_description'>;
+export type ArticleCardData = Omit<BlogArticlesData, 'meta_title' | 'meta_description' | 'faq'>;

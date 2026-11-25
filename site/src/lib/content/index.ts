@@ -193,6 +193,7 @@ export function toArticle(
 
   return withoutUndefined({
     pubdate: fm.pubdate,
+    updated: fm.updated,
     category,
     title: fm.title,
     annotation: fm.annotation,
@@ -208,6 +209,7 @@ export function toArticle(
           height: fm.image_height,
         },
       }),
+    faq: fm.faq,
     meta_title: fm.meta_title,
     meta_description: fm.meta_description,
     slug,

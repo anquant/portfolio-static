@@ -1,0 +1,240 @@
+---
+pubdate: "2026-11-25"
+category: "seo"
+title: "Generative engine optimization: how to get your site cited by ChatGPT and Google AI in 2027"
+annotation: "ChatGPT, Perplexity and Google's AI Overviews increasingly answer before anyone clicks a link. How to get your website into those answers: the technical basics, content that gets quoted, and how to measure it."
+image_background_color: "#D6D3E8"
+scene: "robot"
+meta_title: "GEO in 2027: how to get cited by ChatGPT and Google AI"
+meta_description: "Generative engine optimization (GEO) explained: how to get your site cited by ChatGPT, Perplexity and Google AI Overviews. AI crawler table, robots.txt, content and tracking."
+faq:
+  - question: "Can you get into AI answers without SEO?"
+    answer: "Hardly. AI search assistants look for answers in a search index, and if your page isn't indexed or ranks far down, the assistant won't find it. So GEO still starts with ordinary technical SEO."
+  - question: "How long does it take before AI assistants start citing a site?"
+    answer: "Usually anywhere from a few weeks to a few months, which is how long search engines take to recrawl changed pages. Nobody can promise an exact date. In competitive niches, and for sites nobody else writes about, it takes longer."
+  - question: "If I block GPTBot, will my site disappear from ChatGPT?"
+    answer: "No. According to OpenAI's documentation, GPTBot collects data for model training, while search in ChatGPT relies on OAI-SearchBot. You can block the first and allow the second, and your site will still show up in ChatGPT search."
+  - question: "Does llms.txt help you get into ChatGPT or Google AI answers?"
+    answer: "There's no proven effect. The major AI search products haven't said they use this file for answers. It's cheap to add, but it won't replace indexing, structured data and genuinely useful content."
+  - question: "How is GEO different from SEO?"
+    answer: "SEO competes for a page's position in search results. GEO is about getting an AI assistant to quote a piece of your page in its answer and link to it. One rarely works without the other: a page that isn't indexed can't be cited."
+---
+In short: generative engine optimization (GEO) is the work of getting ChatGPT, Perplexity, Gemini and Google's AI Overviews to cite your website when they answer a question. These assistants don't know the answer in advance. They find a few pages in a search index and summarize them. So your site needs to be indexed and open to their crawlers, your pages need clear answers backed by facts, and other websites need to mention you too.
+
+---
+
+Search used to be simple. Someone typed a query, saw ten links and picked one. Now Google often shows an AI Overview above the results, and plenty of people skip the search engine altogether and ask ChatGPT or Perplexity directly.
+
+Those answers usually come with two or three source links. If you're one of them, you get a visitor who already knows what you do. If you're not, they may never reach you, even if you rank on the first page.
+
+Below I'll go through where AI assistants get their answers, which crawlers to let in, what kind of content they like to quote and how to check whether any of it is working. At the end I'll show how this site is set up and give you a checklist.
+
+---
+
+## What generative engine optimization is and how it differs from SEO
+
+GEO stands for generative engine optimization. The goal is to be quoted and linked in an AI-generated answer. Rankings still matter, but they're no longer the whole story. You'll also see it called AEO (answer engine optimization) or AI search optimization.
+
+GEO doesn't replace SEO. AI assistants find pages through the same search indexes, so a site that's poorly indexed won't make it into their answers either.
+
+| | <b>SEO</b> | <b>GEO</b> |
+| --- | --- | --- |
+| Goal | A position in search results | A citation in an AI answer |
+| What gets evaluated | The whole page | A single paragraph, list or table |
+| What matters | Relevance, links, user signals | Clear answers, facts, a trustworthy source |
+| Outcome | A click from the results page | A mention and a click from the answer |
+
+---
+
+## Where AI assistants get their answers
+
+AI search assistants work in a similar way. They take the question, search an index, pick a few relevant pages, pull out the useful parts and put together an answer with links. The main difference is whose index they use.
+
+| <b>Assistant</b> | <b>Where it finds pages</b> |
+| --- | --- |
+| Google AI Overviews and AI Mode | Google's index |
+| Gemini | Google's index |
+| ChatGPT (search) | OpenAI's own crawler and third-party search indexes |
+| Perplexity | Its own crawler and index |
+| Microsoft Copilot | Bing's index |
+
+In Europe Google has by far the largest share of search, so being well indexed there comes first. Bing is easy to forget, but Copilot runs on it, and adding your site to Bing Webmaster Tools takes about ten minutes.
+
+---
+
+## Step 1. The technical basics: let AI read your site
+
+### Which AI crawlers to allow
+
+One company often runs several crawlers with different jobs. Some fetch pages for answers and send you visitors. Others collect text to train models. They're easy to mix up, and it's easy to block the wrong ones. I took the names below from each company's own documentation at the time of writing. They do change, so it's worth checking the list every six months or so.
+
+| <b>User-agent</b> | <b>Company</b> | <b>What it does</b> | <b>Block it?</b> |
+| --- | --- | --- | --- |
+| Googlebot | Google | Google Search and AI Overviews | No |
+| Bingbot | Microsoft | Bing search and Copilot | No |
+| OAI-SearchBot | OpenAI | Search in ChatGPT | No |
+| ChatGPT-User | OpenAI | Opens a page when a user asks | No |
+| PerplexityBot | Perplexity | Perplexity's index | No |
+| Claude-SearchBot | Anthropic | Search in Claude | No |
+| MistralAI-User | Mistral | Opens a page when a Le Chat user asks | No |
+| GPTBot | OpenAI | Model training | Your call |
+| ClaudeBot | Anthropic | Model training | Your call |
+| Google-Extended | Google | Use of content in Gemini; doesn't affect Google Search | Your call |
+
+Keep in mind that user-triggered agents like ChatGPT-User may not follow robots.txt. The companies' reasoning is that a person asked for the page, not an automated crawler.
+
+### A ready-made robots.txt
+
+If there's nothing to hide, the simplest option is to let everyone in:
+
+```txt
+User-agent: *
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml
+```
+
+And here's a version that keeps you in AI answers while keeping your text out of model training:
+
+```txt
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml
+```
+
+robots.txt isn't the only thing that can keep crawlers out. Bot protection in a CDN or hosting firewall sometimes blocks AI crawlers on its own, and the site owner never finds out. When I suspect that, I check the server logs for the crawler's user-agent and see whether it got a 200 or a 403.
+
+### Serve your content as HTML
+
+Most AI crawlers don't run JavaScript, and the ones that do are worse at it than Google. If your text is loaded by a script after the page opens, the crawler sees an empty page. The fix is the same as for regular SEO: server-side rendering or static generation. I wrote about this in more detail in [Server-side rendering and SEO: how Next.js helps you rank on Google](/en/blog/nextjs-ssr-seo-google).
+
+You can check it in a minute. Open the page, choose "View page source" (the source, not developer tools) and search for an important paragraph. If it isn't there, the crawler can't see it either.
+
+### Add Schema.org structured data
+
+Structured data tells machines what a page is and who wrote it. For a service business I'd start with:
+
+- `Organization` or `Person`: who's behind the site, contact details, social profiles;
+- `Article` or `BlogPosting` with an author and publication and update dates, for articles;
+- `Service` for service pages;
+- `FAQPage` for questions and answers, as long as they're visible on the page;
+- `BreadcrumbList` for navigation.
+
+### Multilingual sites: one language per URL
+
+Many European businesses serve customers in several languages, and AI assistants answer in the language of the question. A German speaker asking ChatGPT about your service will mostly get German sources. So give each language its own URL with a real translation (machine output nobody has checked doesn't count), link the versions to each other with `hreflang`, and make sure every one of them is in your sitemap. A language switcher that swaps text with JavaScript on a single URL is invisible to crawlers.
+
+### llms.txt is optional
+
+`llms.txt` sits in the root of your site. It's a markdown file that briefly describes the project and lists the key pages, written for language models. It isn't a standard yet, and the major AI search products haven't said they read it. On the other hand it takes little time to make, and AI agents and developer tools may find it useful.
+
+---
+
+## Step 2. Content that AI assistants quote
+
+An AI assistant is looking for a piece of text it can drop into an answer almost unchanged. The page as a whole matters less. That changes how you should write.
+
+### Answer first, then explain
+
+The first lines under a heading should already contain the answer. Weak: "Many people wonder how long development takes, and it's an important question." Better: "A company website takes me one to two months; a web app with a client portal takes two months or more." Details can follow.
+
+### Write headings as questions
+
+People ask AI assistants full questions: "how much does a Next.js website cost", "Directus or WordPress for a company site". If your heading reads the same way, it's easier for the model to see that the answer is right there.
+
+### Be specific
+
+Numbers, timelines, prices, comparisons, step-by-step instructions. Nobody will quote "we build fast websites". "The page loads in 0.8 seconds; the old one took 3.5" has a chance, provided it's true and can be checked.
+
+### Use lists and tables
+
+It's easier for an assistant to pull the right piece out of a list or a table and retell it without getting it wrong. I put comparisons in tables and sequences of steps in numbered lists.
+
+### Show who wrote it
+
+Like search engines, AI assistants trust sources that have a real person or company behind them. Sign your articles and show publication and update dates. On your About page, stick to facts: how long you've been doing this, which projects you've worked on, where you studied.
+
+### Keep content up to date
+
+For questions about prices, technology versions or "in 2027", models prefer recent sources. I'd review key articles every six months, and only change the update date when something in the text has actually changed.
+
+---
+
+## Step 3. Get mentioned beyond your own site
+
+An AI assistant builds its answer from several sources. If the only place that talks about your company is your own website, that's not much to go on. It helps when you're mentioned where models often look:
+
+- industry directories and rankings;
+- your Google Business Profile;
+- reviews on independent platforms;
+- articles and answers on sites like Medium, dev.to, LinkedIn or Reddit;
+- forums and communities in your field.
+
+You don't need to buy links for this. It's enough to show up where your topic is already being discussed.
+
+---
+
+## How to check whether AI assistants cite you
+
+1. Write down 10 to 20 questions your customers use to look for what you offer. For example, "who builds Next.js websites in Europe" or "how much does an SEO audit cost". Add the questions your articles answer.
+2. Ask them in ChatGPT with search turned on, Perplexity, Gemini and Copilot, and check the AI Overview in Google. Use a private window or a fresh chat so earlier conversations don't affect the answer.
+3. Record the results in a spreadsheet: the question, the assistant, whether your site appears among the sources and which competitors are mentioned. The same question can get a different answer each time, so ask it two or three times.
+4. Repeat once a month. The spreadsheet will show whether your changes are doing anything.
+5. Look at referrals in Google Analytics 4: `chatgpt.com`, `perplexity.ai`, `copilot.microsoft.com` and `gemini.google.com`. ChatGPT also adds `utm_source=chatgpt.com` to its links.
+6. Watch searches for your brand name in Google Search Console. Someone may see you in an AI answer and then look you up. Note that Search Console counts clicks from AI Overviews inside the regular Performance report, mixed in with ordinary results.
+
+AI answers usually send fewer visitors than search results. But the people who do click through already know who you are and what you can help with.
+
+---
+
+## Example: how this site is set up
+
+Everything above is already in place on moiseevp.ru, and you can check any of it yourself:
+
+- robots.txt is open to all crawlers, AI crawlers included, and points to sitemap.xml.
+- The site is built with Next.js as a static site. Every page is generated ahead of time, so crawlers get the text straight away without running anything.
+- Articles are marked up as `BlogPosting` with an author and dates, the author is described with `Person`, and pages have `BreadcrumbList` breadcrumbs. Questions on service pages and in articles are marked up as `FAQPage`.
+- The Russian and English versions live on separate URLs and are linked with `hreflang`.
+- llms.txt is generated on every build from the same data as the site, so the two can't drift apart.
+
+Open `/robots.txt` and `/llms.txt`, look at the source of any page or run it through the Schema.org validator. It takes a couple of minutes.
+
+---
+
+## Checklist: how to get into AI answers
+
+- Your site is indexed in Google and Bing.
+- AI search crawlers aren't blocked in robots.txt or at the hosting level.
+- The main text of each page is in the HTML source.
+- Structured data is set up: author or organization, articles, services, FAQ.
+- Every language version has its own URL and `hreflang` links.
+- Each heading is followed by the answer first.
+- Your texts include numbers, timelines, comparisons and tables.
+- Articles show an author and publication and update dates.
+- Other websites mention your company.
+- Once a month you check AI answers against your list of questions.
+- AI referrals are visible in Google Analytics.
+
+---
+
+## Frequently asked questions about GEO
+
+<Faq />
+
+---
+
+## Summary
+
+There's not much fundamentally new in GEO. It's the same work on the technical side and on your content, except that now an AI assistant reads the page too, and it wants a ready answer. The sooner your site is in good shape, the sooner it starts showing up in those answers, and the more time you'll have to learn what works in your niche.
+
+> If you'd like to know whether AI assistants can see your site and what keeps it out of their answers, take a look at how I approach [SEO for Google and AI search](/en/services/seo), or [get in touch](/en/contacts). I'll start with a review of your site.
