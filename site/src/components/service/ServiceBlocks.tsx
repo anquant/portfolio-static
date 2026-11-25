@@ -134,15 +134,3 @@ export function Faq({ title, items }: NonNullable<ServiceFile['faq']>) {
     </section>
   );
 }
-
-/** schema.org FAQPage node for the same questions */
-export function faqLd(items: NonNullable<ServiceFile['faq']>['items']) {
-  return {
-    '@type': 'FAQPage',
-    mainEntity: items.map(item => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: { '@type': 'Answer', text: item.answer },
-    })),
-  };
-}

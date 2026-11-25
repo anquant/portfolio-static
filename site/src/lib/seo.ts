@@ -1,3 +1,4 @@
+import type { FaqItem } from './content/schemas';
 import { DICTIONARY, LANG_TAG, LOCALES, localePath, type Locale } from './i18n';
 import { BEHANCE_URL, SITE_URL } from './site';
 
@@ -81,6 +82,18 @@ export function breadcrumbLd(items: { name: string; path: string }[], locale: Lo
         item: absUrl(item.path),
       }),
     ),
+  };
+}
+
+/** schema.org FAQPage node; the same questions must be visible on the page */
+export function faqLd(items: FaqItem[]): JsonLd {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: items.map(item => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
   };
 }
 

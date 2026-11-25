@@ -279,3 +279,28 @@ describe('article image fields', () => {
     expect(() => parseContent(articleFrontmatterSchema, { ...base, ...partial }, 'blog/x.mdx')).toThrow(/go together/);
   });
 });
+
+describe('article revision date and FAQ', () => {
+  const base = { pubdate: '2026-01-10', category: 'seo', title: 'T', meta_title: 'M' };
+
+  it('rejects an update dated before publication', () => {
+    expect(() => parseContent(articleFrontmatterSchema, { ...base, updated: '2026-01-09' }, 'blog/x.mdx')).toThrow(
+      /updated/,
+    );
+    expect(() =>
+      parseContent(articleFrontmatterSchema, { ...base, updated: '2026-01-10' }, 'blog/x.mdx'),
+    ).not.toThrow();
+  });
+
+  it('carries the FAQ and the update date into the page data', () => {
+    const faq = [{ question: 'Q?', answer: 'A.' }];
+    const fm = parseContent(articleFrontmatterSchema, { ...base, updated: '2026-02-01', faq }, 'blog/x.mdx');
+    const article = toArticle(fm, 'x', [{ title: 'SEO', slug: 'seo' }]);
+    expect(article.faq).toEqual(faq);
+    expect(article.updated).toBe('2026-02-01');
+  });
+
+  it('rejects an empty FAQ', () => {
+    expect(() => parseContent(articleFrontmatterSchema, { ...base, faq: [] }, 'blog/x.mdx')).toThrow(/faq/);
+  });
+});

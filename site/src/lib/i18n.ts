@@ -148,6 +148,7 @@ const ru = {
     allArticles: 'Все статьи',
     empty: 'Здесь пока нет статей…',
     copyCode: 'Скопировать код',
+    updated: 'Обновлено',
     copied: 'Скопировано',
   },
   contacts: {
@@ -232,6 +233,7 @@ const en: Dictionary = {
     allArticles: 'All articles',
     empty: 'No articles here yet…',
     copyCode: 'Copy code',
+    updated: 'Updated',
     copied: 'Copied',
   },
   contacts: {

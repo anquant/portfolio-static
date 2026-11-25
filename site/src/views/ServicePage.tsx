@@ -10,13 +10,13 @@ import Layout from '@/components/Layout';
 import PageIntro from '@/components/PageIntro';
 import Reveal from '@/components/Reveal';
 import SectionHeader from '@/components/SectionHeader';
-import { Cards, Faq, Pricing, Process, faqLd } from '@/components/service/ServiceBlocks';
+import { Cards, Faq, Pricing, Process } from '@/components/service/ServiceBlocks';
 import WorkCard from '@/components/WorkCard';
 import type { ServicesListData, WorksData } from '@/lib/content/schemas';
 import { CURRENCY, LANG_TAG } from '@/lib/i18n';
 import { mdxComponents } from '@/lib/mdx-components';
 import type { SerializedSection } from '@/lib/page-props';
-import { breadcrumbLd, personRef } from '@/lib/seo';
+import { breadcrumbLd, faqLd, personRef } from '@/lib/seo';
 import { useLocale } from '@/lib/use-locale';
 
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
