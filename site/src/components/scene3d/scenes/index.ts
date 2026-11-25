@@ -4,6 +4,7 @@ import type { SceneDef } from '../stage';
 import { blocks } from './blog/blocks';
 import { cubes } from './blog/cubes';
 import { laptop } from './blog/laptop';
+import { robot } from './blog/robot';
 import { servers } from './blog/servers';
 import { containers } from './works/containers';
 import { diamond } from './works/diamond';
@@ -33,4 +34,5 @@ export const SCENES: Record<SceneId, () => SceneDef> = {
   blocks,
   servers,
   cubes,
+  robot,
 };
